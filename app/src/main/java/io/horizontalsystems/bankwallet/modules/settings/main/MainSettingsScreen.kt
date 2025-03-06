@@ -434,6 +434,46 @@ private fun SettingSections(
             )
         })
     )
+
+    VSpacer(32.dp)
+
+    CellUniversalLawrenceSection(
+        listOf({
+            HsSettingCell(
+                R.string.Settings_Faq,
+                R.drawable.ic_faq_20,
+                onClick = {
+                    navController.slideFromRight(R.id.faqListFragment)
+                }
+            )
+        }, {
+            HsSettingCell(
+                R.string.Guides_Title,
+                R.drawable.ic_academy_20,
+                onClick = {
+                    navController.slideFromRight(R.id.academyFragment)
+                }
+            )
+        })
+    )
+
+    VSpacer(32.dp)
+
+    CellUniversalLawrenceSection(
+        listOf {
+            HsSettingCell(
+                R.string.Settings_Donate,
+                R.drawable.ic_heart_24,
+                onClick = {
+                    navController.slideFromRight(R.id.donateTokenSelectFragment)
+
+                    stat(page = StatPage.Settings, event = StatEvent.Open(StatPage.Donate))
+                }
+            )
+        }
+    )
+
+    VSpacer(32.dp)
 }
 
 @Composable

@@ -123,7 +123,7 @@ fun SendTronScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 16.dp),
-                title = stringResource(R.string.Button_Check),
+                title = stringResource(R.string.Button_Next),
                 onClick = {
                     if (!viewModel.hasConnection()) {
                         HudHelper.showErrorMessage(view, R.string.Hud_Text_NoInternet)

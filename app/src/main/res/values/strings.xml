@@ -55,7 +55,6 @@
     <string name="Button_Apply">Apply</string>
     <string name="Button_SetAmount">Set Amount</string>
     <string name="Button_ContinueAnyway">Continue Anyway</string>
-    <string name="Button_Check">Check</string>
 
     <string name="Error_OutOfRange">Can\'t be less than %1$s or more than %2$s</string>
     <string name="Error_NotInteger">Wrong integer number</string>
@@ -224,9 +223,9 @@
     <string name="MarketGlobalMetrics_Volume">24h Vol.</string>
     <string name="MarketGlobalMetrics_TvlInDefi">TVL</string>
     <string name="MarketGlobalMetrics_EtfInflow">ETF</string>
-    <string name="MarketGlobalMetrics_TotalMarketCapDescription">Total market value of all cryptocurrencies.</string>
-    <string name="MarketGlobalMetrics_VolumeDescription">The 24h trading volume of the crypto market.</string>
-    <string name="MarketGlobalMetrics_TvlInDefiDescription">Total Value Locked (TVL) in DeFi.</string>
+    <string name="MarketGlobalMetrics_TotalMarketCapDescription">Total market value of all cryptocurrencies</string>
+    <string name="MarketGlobalMetrics_VolumeDescription">The 24h trading volume of the crypto market</string>
+    <string name="MarketGlobalMetrics_TvlInDefiDescription">Total Value Locked (TVL) in DeFi</string>
     <string name="MarketGlobalMetrics_ChainSelectorTitle">Filter by chain</string>
     <string name="MarketGlobalMetrics_ChainSelectorAll">All</string>
     <string name="MarketGlobalMetrics_NoCoin">This project doesn\'t have a coin</string>
@@ -234,7 +233,7 @@
     <!-- ETF-->
 
     <string name="MarketEtf_Title">Total Net Inflow</string>
-    <string name="MarketEtf_Description">The net inflow of an ETF equals its cash inflows minus outflows.</string>
+    <string name="MarketEtf_Description">The net inflow of an ETF equals its cash inflows minus outflows</string>
     <string name="MarketEtf_HighestAssets">Highest Assets</string>
     <string name="MarketEtf_LowestAssets">Lowest Assets</string>
     <string name="MarketEtf_Inflow">Inflow</string>
@@ -872,7 +871,7 @@
     <string name="Settings_Faq" translatable="false">FAQ</string>
     <string name="Settings_AppStatus">App Status</string>
     <string name="Settings_WalletConnect" translatable="false">WalletConnect</string>
-    <string name="Settings_TonConnect" translatable="false">Ton Connect</string>
+    <string name="Settings_TonConnect" translatable="false">TON Connect</string>
     <string name="Settings_RateUs">Rate Us</string>
     <string name="Settings_LaunchScreen">Launch Screen</string>
     <string name="Settings_Appearance">Appearance</string>
@@ -884,7 +883,6 @@
     <string name="Settings_Twitter" translatable="false">Twitter</string>
     <string name="Settings_JoinUnstoppables">Join CoinDex</string>
     <string name="Settings_VipSupport">VIP Support</string>
-    <string name="Settings_VipClub">VIP Club</string>
     <string name="Settings_BotSupport">BOT Support</string>
     <string name="Settings_JoinUnstoppables_Description">Learn and master crypto via exclusive videos. Get to know us informally. Be the first to see things we work on.</string>
 
@@ -898,8 +896,8 @@
     <string name="Settings_PersonalSupport_NewRequest">New Request</string>
     <string name="Settings_PersonalSupport_Requestfailed">Request failed</string>
     <string name="Settings_PersonalSupport_OpenTelegram">Open Telegram</string>
-    <string name="Settings_VipSupport_StartChat">Start Chat</string>
-    <string name="Settings_VipSupport_Description">Get direct assistance from our experts. A private chat will be created in Telegram to resolve your issue, and it will be closed once the problem is solved.</string>
+    <string name="Settings_VipSupport_StartChat">Join VIP Group</string>
+    <string name="Settings_VipSupport_Description">Get exclusive access to our VIP Group, where premium users and the Unstoppable Wallet team collaborate. Receive direct assistance, discuss future updates, and help shape the wallet’s evolution.</string>
 
     <string name="Settings_Donate_Info">Together, with your support, we can make this app even better!</string>
     <string name="Settings_Donate">Donate</string>
