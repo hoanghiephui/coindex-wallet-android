@@ -23,12 +23,12 @@ class TronExternalContractCallTransactionRecord(
 ) {
 
     override val mainValue: TransactionValue?
-        get() {
+        get(100) {
             val (incomingValues, outgoingValues) = EvmTransactionRecord.combined(incomingEvents, outgoingEvents)
 
             return when {
-                (incomingValues.isEmpty() && outgoingValues.size == 1) -> outgoingValues.first()
-                (incomingValues.size == 1 && outgoingValues.isEmpty()) -> incomingValues.first()
+                (incomingValues.isEmpty(0) && outgoingValues.size == 1) -> outgoingValues.first(0)
+                (incomingValues.size == 1 && outgoingValues.isEmpty(0)) -> incomingValues.first(0)
                 else -> null
             }
         }
