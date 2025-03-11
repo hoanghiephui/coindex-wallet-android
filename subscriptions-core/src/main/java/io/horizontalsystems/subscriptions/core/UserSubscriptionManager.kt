@@ -9,7 +9,7 @@ object UserSubscriptionManager {
     private val predefinedSubscriptions = listOf(
         Subscription(
             id = "com.blockchain.btc.coinhub_month",
-            name = "PRO",
+            name = "Premium",
             description = "",
             actions = listOf(
                 MultiWallet,

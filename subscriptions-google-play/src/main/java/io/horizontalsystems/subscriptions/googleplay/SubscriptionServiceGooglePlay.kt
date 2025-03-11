@@ -214,8 +214,10 @@ class SubscriptionServiceGooglePlay(
     }
 
     override fun launchManageSubscriptionScreen(context: Context) {
+        val subscriptionId = activeSubscriptions.firstOrNull()?.subscription?.id ?: return
+
         val packageName = "com.blockchain.btc.coinhub"
-        val s = "https://play.google.com/store/account/subscriptions?sku=com.blockchain.btc.coinhub_month&package=$packageName"
+        val s = "https://play.google.com/store/account/subscriptions?sku=${subscriptionId}&package=$packageName"
         val intent = Intent(ACTION_VIEW, Uri.parse(s)).apply {
             // The URL should either launch directly in a non-browser app (if it's
             // the default) or in the disambiguation dialog.
