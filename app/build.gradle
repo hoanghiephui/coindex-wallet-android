@@ -108,8 +108,8 @@ android {
         coinhub {
             dimension = "distribution"
             applicationId 'com.blockchain.btc.coinhub'
-            versionCode 165
-            versionName '1.3.9'
+            versionCode 166
+            versionName '1.4.0'
             resValue "string", "companyWebPageLink", "https://bestwallet.money"
             resValue "string", "appWebPageLink", "http://play.google.com/store/apps/details?id=com.blockchain.btc.coinhub"
         }
