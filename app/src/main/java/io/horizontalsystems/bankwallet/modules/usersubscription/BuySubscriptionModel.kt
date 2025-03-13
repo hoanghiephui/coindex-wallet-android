@@ -14,6 +14,7 @@ import io.horizontalsystems.subscriptions.core.PricingPhase
 import io.horizontalsystems.subscriptions.core.TokenInsights
 import io.horizontalsystems.subscriptions.core.TradeSignals
 import io.horizontalsystems.subscriptions.core.VIPSupport
+import java.time.Period
 import io.horizontalsystems.subscriptions.core.Watchlist
 
 object BuySubscriptionModel {
@@ -78,9 +79,27 @@ object BuySubscriptionModel {
             else -> throw IllegalArgumentException("Unknown IPaidAction")
         }
 
+    fun BasePlan.title(): String {
+        return pricingPhases.last().period.title()
+    }
+
+    fun Period.title(): String {
+        return when {
+            years > 0 -> Translator.getString(R.string.Premium_SubscriptionPeriod_Annually)
+            months > 0 -> Translator.getString(R.string.Premium_SubscriptionPeriod_Monthly)
+            else -> ""
+        }
+    }
+
     fun BasePlan.stringRepresentation(): String {
-        return pricingPhases.joinToString(" then ") {
-            "${it.formattedPrice} / ${it.period()}"
+        val phase = pricingPhases.last()
+        return "${phase.formattedPrice} / ${phase.period()}"
+    }
+
+    fun BasePlan.badge(): String? {
+        return when (pricingPhases.last().period.years) {
+            1 -> Translator.getString(R.string.Premium_SubscriptionPeriod_AnnuallySave)
+            else -> null
         }
     }
 

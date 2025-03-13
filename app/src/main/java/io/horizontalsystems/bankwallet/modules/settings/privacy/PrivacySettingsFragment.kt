@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -229,7 +230,7 @@ fun PrivacyScreen(
         Spacer(Modifier.height(12.dp))
 
         Text(
-            text = stringResource(R.string.FooterText),
+            text = stringResource(R.string.FooterText, uiState.currentYear),
             style = ComposeAppTheme.typography.caption,
             color = ComposeAppTheme.colors.grey,
             modifier = Modifier

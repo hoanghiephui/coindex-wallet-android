@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -149,7 +150,9 @@ private fun PlatformScreen(
         },
     ) { innerPaddings ->
         Column(
-            modifier = Modifier.padding(innerPaddings)
+            modifier = Modifier
+                .padding(innerPaddings)
+                .navigationBarsPadding()
         ) {
             HSSwipeRefresh(
                 refreshing = uiState.isRefreshing,

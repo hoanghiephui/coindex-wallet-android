@@ -7,9 +7,11 @@ import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.core.ViewModelUiState
 import io.horizontalsystems.bankwallet.core.stats.StatsManager
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class PrivacyViewModel(private val statsManager: StatsManager) : ViewModelUiState<PrivacyUiState>() {
     private var uiStatsEnabled = statsManager.uiStatsEnabledFlow.value
+    private val currentYear: Int = Calendar.getInstance().get(Calendar.YEAR)
     private var isDetectCrash = statsManager.isDetectCrashEnabledFlow.value
 
 
@@ -30,6 +32,7 @@ class PrivacyViewModel(private val statsManager: StatsManager) : ViewModelUiStat
 
     override fun createState() = PrivacyUiState(
         uiStatsEnabled = uiStatsEnabled,
+        currentYear = currentYear,
         isEnableDetectCrash = isDetectCrash
     )
 
@@ -52,5 +55,6 @@ class PrivacyViewModel(private val statsManager: StatsManager) : ViewModelUiStat
 
 data class PrivacyUiState(
     val uiStatsEnabled: Boolean,
+    val currentYear: Int,
     val isEnableDetectCrash: Boolean
 )

@@ -1,6 +1,7 @@
 package io.horizontalsystems.bankwallet.modules.markdown
 
 import android.os.Parcelable
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -83,7 +84,9 @@ private fun MarkdownScreen(
         }
     ) {
         MarkdownContent(
-            modifier = Modifier.padding(it),
+            modifier = Modifier
+                .padding(it)
+                .navigationBarsPadding(),
             viewState = viewModel.viewState,
             markdownBlocks = viewModel.markdownBlocks,
             handleRelativeUrl = handleRelativeUrl,

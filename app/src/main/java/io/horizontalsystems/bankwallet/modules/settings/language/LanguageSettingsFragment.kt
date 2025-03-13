@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -67,29 +68,31 @@ private fun LanguageScreen(
         reloadApp()
     }
 
-    NiaBackground {
-        Column {
-            AppBar(
-                title = stringResource(R.string.Settings_Language),
-                navigationIcon = {
-                    HsBackButton(onClick = { navController.popBackStack() })
-                }
-            )
-            Column(
-                Modifier.verticalScroll(rememberScrollState())
-            ) {
-                Spacer(Modifier.height(12.dp))
-                CellUniversalLawrenceSection(viewModel.languageItems) { item ->
-                    LanguageCell(
-                        title = item.name,
-                        subtitle = item.nativeName,
-                        icon = item.icon,
-                        checked = item.current,
-                        onClick = { viewModel.onSelectLocale(item.localeType) }
-                    )
-                }
-                Spacer(Modifier.height(24.dp))
+    Column(
+        modifier = Modifier
+            .background(color = ComposeAppTheme.colors.tyler)
+            .navigationBarsPadding()
+    ) {
+        AppBar(
+            title = stringResource(R.string.Settings_Language),
+            navigationIcon = {
+                HsBackButton(onClick = { navController.popBackStack() })
             }
+        )
+        Column(
+            Modifier.verticalScroll(rememberScrollState())
+        ) {
+            Spacer(Modifier.height(12.dp))
+            CellUniversalLawrenceSection(viewModel.languageItems) { item ->
+                LanguageCell(
+                    title = item.name,
+                    subtitle = item.nativeName,
+                    icon = item.icon,
+                    checked = item.current,
+                    onClick = { viewModel.onSelectLocale(item.localeType) }
+                )
+            }
+            Spacer(Modifier.height(24.dp))
         }
     }
 }
