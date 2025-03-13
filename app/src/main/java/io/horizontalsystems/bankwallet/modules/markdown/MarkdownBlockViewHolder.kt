@@ -14,11 +14,11 @@ import coil.load
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.wallet.blockchain.bitcoin.databinding.ViewHolderMarkdownFooterBinding
-import io.horizontalsystems.bankwallet.databinding.ViewHolderMarkdownH1Binding
-import io.horizontalsystems.bankwallet.databinding.ViewHolderMarkdownH2Binding
-import io.horizontalsystems.bankwallet.databinding.ViewHolderMarkdownH3Binding
-import io.horizontalsystems.bankwallet.databinding.ViewHolderMarkdownImageBinding
-import io.horizontalsystems.bankwallet.databinding.ViewHolderMarkdownParagraphBinding
+import com.wallet.blockchain.bitcoin.databinding.ViewHolderMarkdownH1Binding
+import com.wallet.blockchain.bitcoin.databinding.ViewHolderMarkdownH2Binding
+import com.wallet.blockchain.bitcoin.databinding.ViewHolderMarkdownH3Binding
+import com.wallet.blockchain.bitcoin.databinding.ViewHolderMarkdownImageBinding
+import com.wallet.blockchain.bitcoin.databinding.ViewHolderMarkdownParagraphBinding
 import io.horizontalsystems.bankwallet.ui.helpers.LayoutHelper
 import org.apache.commons.io.FilenameUtils
 import java.net.URL

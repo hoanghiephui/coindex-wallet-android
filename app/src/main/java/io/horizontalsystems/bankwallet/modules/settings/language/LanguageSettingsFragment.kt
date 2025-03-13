@@ -1,6 +1,7 @@
 package io.horizontalsystems.bankwallet.modules.settings.language
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -71,7 +72,6 @@ private fun LanguageScreen(
     Column(
         modifier = Modifier
             .background(color = ComposeAppTheme.colors.tyler)
-            .navigationBarsPadding()
     ) {
         AppBar(
             title = stringResource(R.string.Settings_Language),

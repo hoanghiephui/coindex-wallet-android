@@ -141,21 +141,7 @@ class MarketSearchViewModel(
                     val topSectors =
                         topSectorsRepository.get(currencyManager.baseCurrency, forceRefresh)
 
-                    val topCategoryWithDiffList = topSectors.filter {
-                        it.coinCategory.uid in listOf(
-                            "blockchains",
-                            "dexes",
-                            "lending",
-                            "yield_aggregators",
-                            "investment_tools",
-                            "oracles",
-                            "gaming",
-                            "scaling",
-                            "privacy",
-                            "exchange_tokens",
-                            "wallets"
-                        )
-                    }.map {
+                    val topCategoryWithDiffList = topSectors.map {
                         TopSectorWithDiff(
                             it.coinCategory,
                             it.coinCategory.diff24H,
