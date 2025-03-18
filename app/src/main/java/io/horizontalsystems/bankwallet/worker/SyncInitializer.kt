@@ -69,8 +69,8 @@ internal const val MORNING_SYNC_WORK_NAME = "MorningSyncWork"
 internal const val EVENING_SYNC_WORK_NAME = "EveningSyncWork"
 
 private fun createPeriodicWork(): PeriodicWorkRequest =
-    PeriodicWorkRequestBuilder<DelegatingWorker>(15, TimeUnit.MINUTES)
+    PeriodicWorkRequestBuilder<DelegatingWorker>(2, TimeUnit.HOURS)
         .setConstraints(SyncConstraints)
         .setInputData(NewsNotificationWorker::class.delegatedData())
-        .setInitialDelay(1, TimeUnit.MINUTES)
+        .setInitialDelay(5, TimeUnit.MINUTES)
         .build()

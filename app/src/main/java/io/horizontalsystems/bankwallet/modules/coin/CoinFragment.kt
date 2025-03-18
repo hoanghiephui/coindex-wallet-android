@@ -196,7 +196,6 @@ fun CoinTabs(
         Column(
             modifier = Modifier
                 .padding(innerPaddings)
-                .navigationBarsPadding()
         ) {
             val selectedTab = tabs[pagerState.currentPage]
             val tabItems = tabs.map {
