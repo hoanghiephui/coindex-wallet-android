@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -71,6 +72,9 @@ fun ReleaseNotesScreen(
     Scaffold(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.background,
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         topBar = {
             if (closeablePopup) {
                 AppBar(
@@ -95,9 +99,7 @@ fun ReleaseNotesScreen(
         }
     ) {
         Column(
-            modifier = Modifier
-                .padding(it)
-                .navigationBarsPadding()
+            modifier = Modifier.padding(it)
         ) {
             MarkdownContent(
                 modifier = Modifier.weight(1f),

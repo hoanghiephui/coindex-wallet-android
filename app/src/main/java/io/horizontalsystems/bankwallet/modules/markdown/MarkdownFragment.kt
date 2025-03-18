@@ -3,6 +3,7 @@ package io.horizontalsystems.bankwallet.modules.markdown
 import android.os.Parcelable
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -81,12 +82,12 @@ private fun MarkdownScreen(
             } else {
                 AppBar(navigationIcon = { HsBackButton(onClick = onCloseClick) })
             }
-        }
+        },
+        modifier = Modifier
+            .statusBarsPadding(),
     ) {
         MarkdownContent(
-            modifier = Modifier
-                .padding(it)
-                .navigationBarsPadding(),
+            modifier = Modifier.padding(it),
             viewState = viewModel.viewState,
             markdownBlocks = viewModel.markdownBlocks,
             handleRelativeUrl = handleRelativeUrl,
