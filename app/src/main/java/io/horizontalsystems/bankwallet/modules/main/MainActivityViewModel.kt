@@ -1,6 +1,7 @@
 package io.horizontalsystems.bankwallet.modules.main
 
 import android.content.Intent
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -37,6 +38,9 @@ class MainActivityViewModel(
     val tcDappRequest = MutableLiveData<DAppRequestEntity?>()
     val intentLiveData = MutableLiveData<Intent?>()
 
+    private val _contentHidden = MutableLiveData(true)
+    val contentHidden: LiveData<Boolean> = _contentHidden
+
     init {
         viewModelScope.launch {
             userManager.currentUserLevelFlow.collect {
@@ -56,6 +60,11 @@ class MainActivityViewModel(
         viewModelScope.launch {
             tonConnectManager.dappRequestFlow.collect {
                 tcDappRequest.postValue(it)
+            }
+        }
+        viewModelScope.launch {
+            pinComponent.isLockedFlowable.collect {
+                _contentHidden.postValue(it)
             }
         }
     }
@@ -114,6 +123,10 @@ class MainActivityViewModel(
 
     fun intentHandled() {
         intentLiveData.postValue(null)
+    }
+
+    fun onResume() {
+        _contentHidden.postValue(pinComponent.isLocked)
     }
 
     class Factory : ViewModelProvider.Factory {

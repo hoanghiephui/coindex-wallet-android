@@ -317,7 +317,6 @@ private fun MainScreen(
                 }
             }
         }
-        HideContentBox(uiState.contentHidden)
     }
 
     LaunchedEffect(key1 = uiState.showRateAppDialog, block = {
@@ -379,20 +378,6 @@ private fun MainScreen(
     LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
         viewModel.onResume()
     }
-}
-
-@Composable
-private fun HideContentBox(contentHidden: Boolean) {
-    val backgroundModifier = if (contentHidden) {
-        Modifier.background(ComposeAppTheme.colors.tyler)
-    } else {
-        Modifier
-    }
-    Box(
-        Modifier
-            .fillMaxSize()
-            .then(backgroundModifier)
-    )
 }
 
 @Composable

@@ -454,6 +454,14 @@ private fun SettingSections(
                     navController.slideFromRight(R.id.academyFragment)
                 }
             )
+        }, {
+            HsSettingCell(
+                R.string.Settings_CryptoQuiz,
+                R.drawable.ic_question_24,
+                onClick = {
+                    LinkHelper.openLinkInAppBrowser(context, "https://t.me/BeUnstoppable_bot/app")
+                }
+            )
         })
     )
 

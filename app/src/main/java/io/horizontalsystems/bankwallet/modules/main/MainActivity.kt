@@ -2,6 +2,7 @@ package io.horizontalsystems.bankwallet.modules.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -23,13 +24,16 @@ import io.horizontalsystems.core.hideKeyboard
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
-    val viewModel by viewModels<MainActivityViewModel> {
+    private lateinit var hideContent: View
+
+    private val viewModel by viewModels<MainActivityViewModel> {
         MainActivityViewModel.Factory()
     }
 
     override fun onResume() {
         super.onResume()
         validate()
+        viewModel.onResume()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -44,6 +48,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+        hideContent = findViewById(R.id.hideContent)
 
         val navHost =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
@@ -92,6 +97,10 @@ class MainActivity : BaseActivity() {
             }
         }
         Sync.initialize(this, viewModel.isShowNotificationPrice, viewModel.isShowNotificationNews)
+
+        viewModel.contentHidden.observe(this) { hidden ->
+            hideContent.visibility = if (hidden) View.VISIBLE else View.GONE
+        }
 
         viewModel.setIntent(intent)
         handleIntent(intent)
