@@ -19,8 +19,8 @@ android {
         compileSdk compile_sdk_version
         minSdkVersion min_sdk_version
         targetSdkVersion compile_sdk_version
-        versionCode 27
-        versionName "0.2.7"
+        versionCode 131
+        versionName "0.42.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ['de', 'es', 'en', 'fa', 'fr', 'ko', 'pt', 'pt-rBR', 'ru', 'tr', 'zh']
 

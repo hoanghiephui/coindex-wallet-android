@@ -16,13 +16,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -33,6 +38,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +48,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
@@ -159,25 +165,33 @@ fun RestorePhrase(
     )
 
     val coroutineScope = rememberCoroutineScope()
-    Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
-        AppBar(
-            title = if (advanced) stringResource(R.string.Restore_Advanced_Title) else stringResource(R.string.ManageAccounts_ImportWallet),
-            navigationIcon = {
-                HsBackButton(onClick = onBackClick)
-            },
-            menuItems = listOf(
-                MenuItem(
-                    title = TranslatableString.ResString(R.string.Button_Next),
-                    onClick = viewModel::onProceed
+    Scaffold(
+        topBar = {
+            AppBar(
+                title = if (advanced) stringResource(R.string.Restore_Advanced_Title) else stringResource(
+                    R.string.ManageAccounts_ImportWallet
+                ),
+                navigationIcon = {
+                    HsBackButton(onClick = onBackClick)
+                },
+                menuItems = listOf(
+                    MenuItem(
+                        title = TranslatableString.ResString(R.string.Button_Next),
+                        onClick = viewModel::onProceed
+                    )
                 )
             )
-        )
-        Column {
+        },
+        backgroundColor = ComposeAppTheme.colors.tyler,
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+                .imePadding()
+        ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
+                modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 Spacer(Modifier.height(12.dp))
 
@@ -366,8 +380,14 @@ fun RestorePhrase(
                 }
             }
 
-            Column {
-                if (isMnemonicPhraseInputFocused && keyboardState == Keyboard.Opened) {
+            if (isMnemonicPhraseInputFocused && keyboardState == Keyboard.Opened) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        // Add IME (keyboard) padding to push content above keyboard
+                        .windowInsetsPadding(WindowInsets.ime)
+                        .systemBarsPadding()
+                ) {
                     SuggestionsBar(wordSuggestions = uiState.wordSuggestions) { wordItem, suggestion ->
                         HudHelper.vibrate(context)
 
@@ -418,7 +438,6 @@ fun RestorePhrase(
 
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun BottomSection(
     viewModel: RestoreMnemonicViewModel,
@@ -514,7 +533,7 @@ private fun BottomSection(
             )
         }
     }
-    Spacer(Modifier.height(32.dp))
+    Spacer(Modifier.height(62.dp))
 }
 
 @Composable

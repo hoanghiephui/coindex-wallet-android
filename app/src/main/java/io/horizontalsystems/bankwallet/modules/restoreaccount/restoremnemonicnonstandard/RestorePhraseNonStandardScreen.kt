@@ -13,18 +13,23 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -135,21 +140,32 @@ fun RestorePhraseNonStandard(
     }
 
     val coroutineScope = rememberCoroutineScope()
-    Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
-        AppBar(
-            title = stringResource(R.string.Restore_NonStandardRestore),
-            navigationIcon = {
-                HsBackButton(onClick = onBackClick)
-            },
-            menuItems = listOf(
-                MenuItem(
-                    title = TranslatableString.ResString(R.string.Button_Next),
-                    onClick = viewModel::onProceed
+    Scaffold(
+        topBar = {
+            AppBar(
+                title = stringResource(R.string.Restore_NonStandardRestore),
+                navigationIcon = {
+                    HsBackButton(onClick = onBackClick)
+                },
+                menuItems = listOf(
+                    MenuItem(
+                        title = TranslatableString.ResString(R.string.Button_Next),
+                        onClick = viewModel::onProceed
+                    )
                 )
             )
-        )
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        },
+        backgroundColor = ComposeAppTheme.colors.tyler,
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+                .imePadding()
+        ) {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
                 Spacer(Modifier.height(12.dp))
 
                 InfoText(text = stringResource(R.string.Restore_NonStandard_Description))
@@ -304,29 +320,37 @@ fun RestorePhraseNonStandard(
 
                 BottomSection(viewModel, uiState, coroutineScope)
 
-                Spacer(Modifier.height(44.dp))
+                Spacer(Modifier.height(64.dp))
             }
 
             if (isMnemonicPhraseInputFocused && keyboardState == Keyboard.Opened) {
-                SuggestionsBar(
-                    modifier = Modifier.align(Alignment.BottomCenter),
-                    wordSuggestions = uiState.wordSuggestions
-                ) { wordItem, suggestion ->
-                    HudHelper.vibrate(context)
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        // Add IME (keyboard) padding to push content above keyboard
+                        .windowInsetsPadding(WindowInsets.ime)
+                        .systemBarsPadding()
+                ) {
+                    SuggestionsBar(
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        wordSuggestions = uiState.wordSuggestions
+                    ) { wordItem, suggestion ->
+                        HudHelper.vibrate(context)
 
-                    val cursorIndex = wordItem.range.first + suggestion.length + 1
-                    var text = textState.text.replaceRange(wordItem.range, suggestion)
+                        val cursorIndex = wordItem.range.first + suggestion.length + 1
+                        var text = textState.text.replaceRange(wordItem.range, suggestion)
 
-                    if (text.length < cursorIndex) {
-                        text = "$text "
+                        if (text.length < cursorIndex) {
+                            text = "$text "
+                        }
+
+                        textState = TextFieldValue(
+                            text = text,
+                            selection = TextRange(cursorIndex)
+                        )
+
+                        viewModel.onEnterMnemonicPhrase(text, cursorIndex)
                     }
-
-                    textState = TextFieldValue(
-                        text = text,
-                        selection = TextRange(cursorIndex)
-                    )
-
-                    viewModel.onEnterMnemonicPhrase(text, cursorIndex)
                 }
             }
         }
