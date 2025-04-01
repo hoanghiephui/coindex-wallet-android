@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import java.util.Locale
+import androidx.core.content.edit
 
 // https://github.com/zeugma-solutions/locale-helper-android
 
@@ -53,7 +54,7 @@ object LocaleHelper {
         }
 
         //use system locale if it is supported by app, else use fallback locale
-        if (LocaleType.values().map { it.tag }.contains(tag)) {
+        if (LocaleType.entries.map { it.tag }.contains(tag)) {
             val localeFromSupportedTag = Locale.forLanguageTag(tag)
             setLocale(context, localeFromSupportedTag)
             return localeFromSupportedTag
@@ -95,9 +96,9 @@ object LocaleHelper {
     private fun persist(context: Context, locale: Locale?) {
         if (locale == null) return
         getPreferences(context)
-            .edit()
-            .putString(SELECTED_LANGUAGE, locale.toLanguageTag())
-            .apply()
+            .edit {
+                putString(SELECTED_LANGUAGE, locale.toLanguageTag())
+            }
     }
 
 }
