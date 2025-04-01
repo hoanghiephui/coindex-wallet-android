@@ -454,31 +454,7 @@ private fun SettingSections(
                     navController.slideFromRight(R.id.academyFragment)
                 }
             )
-        }, {
-            HsSettingCell(
-                R.string.Settings_CryptoQuiz,
-                R.drawable.ic_question_24,
-                onClick = {
-                    LinkHelper.openLinkInAppBrowser(context, "https://t.me/BeUnstoppable_bot/app")
-                }
-            )
         })
-    )
-
-    VSpacer(32.dp)
-
-    CellUniversalLawrenceSection(
-        listOf {
-            HsSettingCell(
-                R.string.Settings_Donate,
-                R.drawable.ic_heart_24,
-                onClick = {
-                    navController.slideFromRight(R.id.donateTokenSelectFragment)
-
-                    stat(page = StatPage.Settings, event = StatEvent.Open(StatPage.Donate))
-                }
-            )
-        }
     )
 
     VSpacer(32.dp)
