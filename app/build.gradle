@@ -19,8 +19,8 @@ android {
         compileSdk compile_sdk_version
         minSdkVersion min_sdk_version
         targetSdkVersion compile_sdk_version
-        versionCode 131
-        versionName "0.42.2"
+        versionCode 132
+        versionName "0.42.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ['de', 'es', 'en', 'fa', 'fr', 'ko', 'pt', 'pt-rBR', 'ru', 'tr', 'zh']
 
@@ -133,7 +133,8 @@ android {
             resValue "string", "basescanApiKey", "AKEWS351FN9P9E2CFPWRWQVGHYUP7W8SUF"
             resValue "string", "eraZkSyncApiKey", "HG24J44ABUGMYM7P7SD4SNX1BFVN38SI4N"
             resValue "string", "is_release", "false"
-            resValue "string", "guidesUrl", "https://raw.githubusercontent.com/horizontalsystems/Unstoppable-Wallet-Website/refs/tags/v1.4/src/edu.json"
+            resValue "string", "guidesUrl", "https://raw.githubusercontent.com/horizontalsystems/blockchain-crypto-guides/v1.2/index.json"
+            resValue "string", "eduUrl", "https://raw.githubusercontent.com/horizontalsystems/Unstoppable-Wallet-Website/refs/tags/v1.4/src/edu.json"
             resValue "string", "faqUrl", "https://raw.githubusercontent.com/hoanghiephui/Unstoppable-Wallet-Website/compose/src/faq.json"
             resValue "string", "coinsJsonUrl", "https://raw.githubusercontent.com/horizontalsystems/cryptocurrencies/master/coins.json"
             resValue "string", "providerCoinsJsonUrl", "https://raw.githubusercontent.com/horizontalsystems/cryptocurrencies/master/provider.coins.json"
@@ -170,7 +171,8 @@ android {
             resValue "string", "basescanApiKey", "QU4RJVJXQCW812J3234EW9EV815TA6XC55"
             resValue "string", "eraZkSyncApiKey", "HG24J44ABUGMYM7P7SD4SNX1BFVN38SI4N"
             resValue "string", "is_release", "true"
-            resValue "string", "guidesUrl", "https://raw.githubusercontent.com/horizontalsystems/Unstoppable-Wallet-Website/refs/tags/v1.4/src/edu.json"
+            resValue "string", "guidesUrl", "https://raw.githubusercontent.com/horizontalsystems/blockchain-crypto-guides/v1.2/index.json"
+            resValue "string", "eduUrl", "https://raw.githubusercontent.com/horizontalsystems/Unstoppable-Wallet-Website/refs/tags/v1.4/src/edu.json"
             resValue "string", "faqUrl", "https://raw.githubusercontent.com/hoanghiephui/Unstoppable-Wallet-Website/compose/src/faq.json"
             resValue "string", "coinsJsonUrl", "https://raw.githubusercontent.com/horizontalsystems/cryptocurrencies/v0.21/coins.json"
             resValue "string", "providerCoinsJsonUrl", "https://raw.githubusercontent.com/horizontalsystems/cryptocurrencies/v0.21/provider.coins.json"
@@ -338,8 +340,8 @@ dependencies {
 
     // Wallet kits
     implementation 'com.github.horizontalsystems:ton-kit-android:1ffc986'
-    implementation 'com.github.horizontalsystems:bitcoin-kit-android:4d423b7'
-    implementation 'com.github.horizontalsystems:ethereum-kit-android:aae7f27'
+    implementation 'com.github.horizontalsystems:bitcoin-kit-android:4d423b7a'
+    implementation 'com.github.horizontalsystems:ethereum-kit-android:f17004c'
     implementation 'com.github.horizontalsystems:blockchain-fee-rate-kit-android:1d3bd49'
     implementation 'com.github.horizontalsystems:market-kit-android:17c37ea'
     implementation 'com.github.horizontalsystems:solana-kit-android:ce738d8'
