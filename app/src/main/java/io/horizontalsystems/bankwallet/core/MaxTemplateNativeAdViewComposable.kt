@@ -20,7 +20,7 @@ import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.AdNativeUiState
 import io.horizontalsystems.bankwallet.core.BaseViewModel.Companion.SHOW_ADS
 import io.horizontalsystems.bankwallet.modules.coin.overview.ui.Loading
-import io.horizontalsystems.bankwallet.modules.settings.premiumbanner.PremiumBanner
+import io.horizontalsystems.bankwallet.modules.settings.banners.SubscriptionBanner
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 
 /**
@@ -37,7 +37,7 @@ fun MaxTemplateNativeAdViewComposable(
     Crossfade(adViewState, label = "MaxTemplateNativeAdView") { viewState ->
         when (viewState) {
             is AdNativeUiState.LoadError -> {
-                PremiumBanner(
+                SubscriptionBanner(
                     onClick = {
                         navController.slideFromBottom(R.id.buySubscriptionFragment)
                     }
