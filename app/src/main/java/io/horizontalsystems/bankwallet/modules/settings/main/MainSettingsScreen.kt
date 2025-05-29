@@ -58,7 +58,10 @@ import io.horizontalsystems.bankwallet.modules.contacts.ContactsFragment
 import io.horizontalsystems.bankwallet.modules.contacts.Mode
 import io.horizontalsystems.bankwallet.modules.manageaccount.dialogs.BackupRequiredDialog
 import io.horizontalsystems.bankwallet.modules.manageaccounts.ManageAccountsModule
-import io.horizontalsystems.bankwallet.modules.settings.premiumbanner.PremiumBanner
+import io.horizontalsystems.bankwallet.modules.settings.banners.DonateBanner
+import io.horizontalsystems.bankwallet.modules.settings.banners.GameBanner
+import io.horizontalsystems.bankwallet.modules.settings.banners.SubscriptionBanner
+import io.horizontalsystems.bankwallet.modules.settings.main.ui.BannerCarousel
 import io.horizontalsystems.bankwallet.modules.settings.vipsupport.VipSupportBottomSheet
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCAccountTypeNotSupportedDialog
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCManager
@@ -129,7 +132,7 @@ private fun SettingSections(
     val context = LocalContext.current
 
     if (uiState.showPremiumBanner) {
-        PremiumBanner(
+        SubscriptionBanner(
             onClick = {
                 navController.slideFromBottom(R.id.buySubscriptionFragment)
             }
