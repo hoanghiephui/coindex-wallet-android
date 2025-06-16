@@ -108,8 +108,8 @@ android {
         coinhub {
             dimension = "distribution"
             applicationId 'com.blockchain.btc.coinhub'
-            versionCode 172
-            versionName '1.4.6'
+            versionCode 173
+            versionName '1.4.7'
             resValue "string", "companyWebPageLink", "https://bestwallet.money"
             resValue "string", "appWebPageLink", "http://play.google.com/store/apps/details?id=com.blockchain.btc.coinhub"
         }
@@ -436,8 +436,8 @@ dependencies {
 
     api 'com.jaredrummler:android-shell:1.0.0'
     api 'com.offbynull.portmapper:portmapper:2.0.5'
-    implementation("com.applovin:applovin-sdk:13.3.0")
-    implementation 'com.applovin.mediation:bytedance-adapter:7.2.0.3.0'
+    implementation("com.applovin:applovin-sdk:13.3.1")
+    implementation 'com.applovin.mediation:bytedance-adapter:7.2.0.6.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
     implementation("com.google.android.gms:play-services-ads-identifier:18.2.0")
     implementation("com.android.billingclient:billing:7.1.1")

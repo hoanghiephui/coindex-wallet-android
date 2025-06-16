@@ -215,11 +215,6 @@ class MainViewModel(
                 showWhatsNew()
             }
         }
-        viewModelScope.launch {
-            if (!pinComponent.isLocked && donationShowManager.shouldShow()) {
-                showDonationPage()
-            }
-        }
     }
 
     fun onSelect(mainNavItem: MainNavigation) {
