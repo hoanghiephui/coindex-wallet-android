@@ -55,6 +55,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryTogg
 import io.horizontalsystems.bankwallet.ui.compose.components.DescriptionCard
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderSorting
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.ListErrorView
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
@@ -176,10 +177,7 @@ private fun LazyListScope.coinRankList(
     navController: NavController
 ) {
     item {
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = ComposeAppTheme.colors.steel10,
-        )
+        HsDivider()
     }
     items(items) { item ->
         CoinRankCell(
@@ -252,9 +250,6 @@ private fun CoinRankCell(
             }
             HSpacer(16.dp)
         }
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = ComposeAppTheme.colors.steel10,
-        )
+        HsDivider()
     }
 }

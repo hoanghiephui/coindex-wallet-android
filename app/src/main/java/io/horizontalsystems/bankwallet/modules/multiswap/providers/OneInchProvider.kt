@@ -27,7 +27,7 @@ import io.reactivex.Single
 import kotlinx.coroutines.rx2.await
 import java.math.BigDecimal
 
-object OneInchProvider : EvmSwapProvider() {
+object OneInchProvider : IMultiSwapProvider {
     override val id = "oneinch"
     override val title = "1inch"
     override val url = "https://app.1inch.io/"
@@ -64,7 +64,7 @@ object OneInchProvider : EvmSwapProvider() {
         val blockchainType = tokenIn.blockchainType
         val evmBlockchainHelper = EvmBlockchainHelper(blockchainType)
 
-        val settingRecipient = SwapSettingRecipient(settings, blockchainType)
+        val settingRecipient = SwapSettingRecipient(settings, tokenOut)
         val settingSlippage = SwapSettingSlippage(settings, BigDecimal("1"))
 
         val quote = oneInchKit.getQuoteAsync(
@@ -78,7 +78,7 @@ object OneInchProvider : EvmSwapProvider() {
         }.await()
 
         val routerAddress = OneInchKit.routerAddress(evmBlockchainHelper.chain)
-        val allowance = getAllowance(tokenIn, routerAddress)
+        val allowance = EvmSwapHelper.getAllowance(tokenIn, routerAddress)
         val fields = buildList {
             settingRecipient.value?.let {
                 add(DataFieldRecipient(it))
@@ -100,7 +100,7 @@ object OneInchProvider : EvmSwapProvider() {
             tokenIn,
             tokenOut,
             amountIn,
-            actionApprove(allowance, amountIn, routerAddress, tokenIn)
+            EvmSwapHelper.actionApprove(allowance, amountIn, routerAddress, tokenIn)
         )
     }
 
@@ -116,6 +116,7 @@ object OneInchProvider : EvmSwapProvider() {
         amountIn: BigDecimal,
         swapSettings: Map<String, Any?>,
         sendTransactionSettings: SendTransactionSettings?,
+        swapQuote: ISwapQuote,
     ): ISwapFinalQuote {
         check(sendTransactionSettings is SendTransactionSettings.Evm)
         checkNotNull(sendTransactionSettings.gasPriceInfo)
@@ -125,7 +126,7 @@ object OneInchProvider : EvmSwapProvider() {
 
         val gasPrice = sendTransactionSettings.gasPriceInfo.gasPrice
 
-        val settingRecipient = SwapSettingRecipient(swapSettings, blockchainType)
+        val settingRecipient = SwapSettingRecipient(swapSettings, tokenOut)
         val settingSlippage = SwapSettingSlippage(swapSettings, BigDecimal("1"))
         val slippage = settingSlippage.valueOrDefault()
 

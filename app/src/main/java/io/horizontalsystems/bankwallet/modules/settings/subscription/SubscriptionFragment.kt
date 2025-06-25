@@ -29,6 +29,10 @@ import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.slideFromBottom
 import io.horizontalsystems.bankwallet.modules.billing.PLAY_STORE_SUBSCRIPTION_URL
+import io.horizontalsystems.bankwallet.core.stats.StatEvent
+import io.horizontalsystems.bankwallet.core.stats.StatPage
+import io.horizontalsystems.bankwallet.core.stats.StatPremiumTrigger
+import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
@@ -113,6 +117,10 @@ fun SubscriptionScreen(navController: NavController) {
                         borderTop = false,
                         onClick = {
                             navController.slideFromBottom(R.id.buySubscriptionFragment)
+                            stat(
+                                page = StatPage.PurchaseList,
+                                event = StatEvent.OpenPremium(StatPremiumTrigger.GetPremium)
+                            )
                         }
                     ) {
                         body_leah(

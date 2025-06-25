@@ -123,8 +123,6 @@ sealed class CexType : Parcelable {
 
 @Parcelize
 sealed class AccountType : Parcelable {
-    @Parcelize
-    data class Cex(val cexType: CexType) : AccountType()
 
     @Parcelize
     data class EvmAddress(val address: String) : AccountType()
@@ -137,6 +135,9 @@ sealed class AccountType : Parcelable {
 
     @Parcelize
     data class TonAddress(val address: String) : AccountType()
+
+    @Parcelize
+    data class StellarAddress(val address: String) : AccountType()
 
     @Parcelize
     data class BitcoinAddress(val address: String, val blockchainType: BlockchainType, val tokenType: TokenType) : AccountType() {
@@ -169,6 +170,17 @@ sealed class AccountType : Parcelable {
 
         override fun hashCode(): Int {
             return words.toTypedArray().contentHashCode() + passphrase.hashCode()
+        }
+    }
+
+    @Parcelize
+    data class StellarSecretKey(val key: String) : AccountType() {
+        override fun equals(other: Any?): Boolean {
+            return other is StellarSecretKey && key == other.key
+        }
+
+        override fun hashCode(): Int {
+            return key.hashCode()
         }
     }
 
@@ -266,7 +278,9 @@ sealed class AccountType : Parcelable {
             is SolanaAddress -> "Solana Address"
             is TronAddress -> "Tron Address"
             is TonAddress -> "Ton Address"
+            is StellarAddress -> "Stellar Address"
             is EvmPrivateKey -> "EVM Private Key"
+            is StellarSecretKey -> "Stellar Secret Key"
             is HdExtendedKey -> {
                 when (this.hdExtendedKey.derivedType) {
                     HDExtendedKey.DerivedType.Master -> "BIP32 Root Key"
@@ -280,7 +294,6 @@ sealed class AccountType : Parcelable {
                     else -> ""
                 }
             }
-            is Cex -> "Cex"
         }
 
     val supportedDerivations: List<Derivation>
@@ -303,6 +316,7 @@ sealed class AccountType : Parcelable {
             is SolanaAddress -> this.address.shorten()
             is TronAddress -> this.address.shorten()
             is TonAddress -> this.address.shorten()
+            is StellarAddress -> this.address.shorten()
             is BitcoinAddress -> this.address.shorten()
             else -> this.description
         }
@@ -325,6 +339,7 @@ sealed class AccountType : Parcelable {
             is SolanaAddress -> true
             is TronAddress -> true
             is TonAddress -> true
+            is StellarAddress -> true
             is BitcoinAddress -> true
             is HdExtendedKey -> hdExtendedKey.isPublic
             else -> false

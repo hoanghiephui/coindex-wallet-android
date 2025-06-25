@@ -60,6 +60,10 @@ import io.horizontalsystems.bankwallet.modules.metricchart.MetricsType
 import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.CollapsingLayout
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
+import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
+import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
+import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.HSSwipeRefresh
 import io.horizontalsystems.bankwallet.ui.compose.components.ScrollableTabs
 import io.horizontalsystems.bankwallet.ui.compose.components.TabItem
@@ -279,8 +283,8 @@ private fun VDivider() {
     Box(
         Modifier
             .fillMaxHeight()
-            .width(1.dp)
-            .background(color = ComposeAppTheme.colors.steel10)
+            .width(0.5.dp)
+            .background(color = ComposeAppTheme.colors.blade)
     )
 }
 
@@ -371,5 +375,5 @@ private fun onCoinClick(coinUid: String, navController: NavController) {
 
     navController.slideFromRight(R.id.coinFragment, arguments)
 
-    stat(page = StatPage.Markets, section = StatSection.Coins, event = StatEvent.OpenCoin(coinUid))
+    stat(page = StatPage.Markets, event = StatEvent.OpenCoin(coinUid), section = StatSection.Coins)
 }

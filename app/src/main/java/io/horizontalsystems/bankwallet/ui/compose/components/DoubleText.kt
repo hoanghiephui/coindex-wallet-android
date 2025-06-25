@@ -52,7 +52,7 @@ fun DoubleText(
                 ),
             text = body,
             style = ComposeAppTheme.typography.body,
-            color = Color(0xFFBBCDFF),
+            color = if (dimmed) ComposeAppTheme.colors.andy else ComposeAppTheme.colors.grey,
             maxLines = 1
         )
     }

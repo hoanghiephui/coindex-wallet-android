@@ -94,7 +94,10 @@ fun BackupRecoveryPhraseScreen(navController: NavController, account: Account) {
                 onClick = {
                     navController.slideFromBottom(R.id.backupKeyFragment, account)
 
-                    stat(page = StatPage.BackupPromptAfterCreate, event = StatEvent.Open(StatPage.ManualBackup))
+                    stat(
+                        page = StatPage.BackupPromptAfterCreate,
+                        event = StatEvent.Open(StatPage.ManualBackup)
+                    )
                 }
             )
             VSpacer(12.dp)
@@ -104,11 +107,14 @@ fun BackupRecoveryPhraseScreen(navController: NavController, account: Account) {
                     .padding(horizontal = 24.dp),
                 title = stringResource(R.string.BackupRecoveryPhrase_LocalBackup),
                 icon = R.drawable.ic_file_24,
-                iconTint = ComposeAppTheme.colors.claude,
+                iconTint = ComposeAppTheme.colors.blade,
                 onClick = {
                     navController.slideFromBottom(R.id.backupLocalFragment, account)
 
-                    stat(page = StatPage.BackupPromptAfterCreate, event = StatEvent.Open(StatPage.FileBackup))
+                    stat(
+                        page = StatPage.BackupPromptAfterCreate,
+                        event = StatEvent.Open(StatPage.FileBackup)
+                    )
                 }
             )
             VSpacer(12.dp)

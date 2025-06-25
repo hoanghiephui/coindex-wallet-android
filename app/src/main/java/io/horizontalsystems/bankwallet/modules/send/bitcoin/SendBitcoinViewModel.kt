@@ -25,6 +25,7 @@ import io.horizontalsystems.bankwallet.modules.send.SendResult
 import io.horizontalsystems.bankwallet.modules.xrate.XRateService
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bitcoincore.storage.UnspentOutputInfo
+import io.horizontalsystems.bitcoincore.storage.UtxoFilters
 import io.horizontalsystems.hodler.LockTimeInterval
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -262,7 +263,7 @@ class SendBitcoinViewModel(
 
         try {
             sendResult = SendResult.Sending
-
+            logger.info("sending tx")
             val transactionRecord = adapter.send(
                 amountState.amount!!,
                 addressState.validAddress!!.hex,
@@ -272,7 +273,9 @@ class SendBitcoinViewModel(
                 pluginState.pluginData,
                 btcBlockchainManager.transactionSortMode(adapter.blockchainType),
                 localStorage.rbfEnabled,
-                logger
+                null,
+                false,
+                UtxoFilters()
             )
 
             logger.info("success")

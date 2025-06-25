@@ -33,6 +33,7 @@ import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.HFillSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.ScreenMessageWithAction
 import io.horizontalsystems.bankwallet.ui.compose.components.ScrollableTabs
 import io.horizontalsystems.bankwallet.ui.compose.components.TabItem
@@ -164,10 +165,7 @@ fun GuidesScreen(navController: NavController) {
                                         }
                                         if (lastSection) {
                                             item {
-                                                Divider(
-                                                    thickness = 1.dp,
-                                                    color = ComposeAppTheme.colors.steel10
-                                                )
+                                                HsDivider()
                                             }
                                         }
                                     }

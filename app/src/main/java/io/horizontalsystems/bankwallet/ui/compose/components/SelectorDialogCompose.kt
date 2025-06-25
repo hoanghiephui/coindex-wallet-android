@@ -64,7 +64,7 @@ fun <T> SelectorDialogCompose(
                             }
                         )
                 ) {
-                    HorizontalDivider()
+                    HsDivider()
                     val color = if (item.selected) {
                         ComposeAppTheme.colors.jacob
                     } else {

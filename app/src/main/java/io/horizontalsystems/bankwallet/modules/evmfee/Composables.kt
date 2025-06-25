@@ -169,7 +169,7 @@ fun EvmSettingsInput(
     val borderColor = when {
         errors.isNotEmpty() -> ComposeAppTheme.colors.red50
         warnings.isNotEmpty() -> ComposeAppTheme.colors.yellow50
-        else -> ComposeAppTheme.colors.steel20
+        else -> ComposeAppTheme.colors.blade
     }
 
     EvmSettingsInput(
@@ -200,7 +200,7 @@ fun EvmSettingsInput(
     val borderColor = when (caution?.type) {
         HSCaution.Type.Error -> ComposeAppTheme.colors.red50
         HSCaution.Type.Warning -> ComposeAppTheme.colors.yellow50
-        else -> ComposeAppTheme.colors.steel20
+        else -> ComposeAppTheme.colors.blade
     }
 
     EvmSettingsInput(
@@ -260,7 +260,7 @@ private fun NumberInputWithButtons(
             .fillMaxWidth()
             .defaultMinSize(minHeight = 44.dp)
             .clip(RoundedCornerShape(12.dp))
-            .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+            .border(0.5.dp, borderColor, RoundedCornerShape(12.dp))
             .background(ComposeAppTheme.colors.lawrence),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -46,7 +46,7 @@ import timber.log.Timber
 import java.time.Instant
 import java.util.concurrent.Executors
 
-fun stat(page: StatPage, section: StatSection? = null, event: StatEvent) {
+fun stat(page: StatPage, event: StatEvent, section: StatSection? = null) {
     App.statsManager.logStat(page, section, event)
 }
 
@@ -264,16 +264,16 @@ val AccountType.statAccountType: String
             "btc_address"
         }
 
-        is AccountType.Cex -> {
-            "cex"
-        }
-
         is AccountType.EvmAddress -> {
             "evm_address"
         }
 
         is AccountType.EvmPrivateKey -> {
             "evm_private_key"
+        }
+
+        is AccountType.StellarSecretKey -> {
+            "stellar_secret_key"
         }
 
         is AccountType.HdExtendedKey -> {
@@ -294,6 +294,10 @@ val AccountType.statAccountType: String
 
         is AccountType.TonAddress -> {
             "ton_address"
+        }
+
+        is AccountType.StellarAddress -> {
+            "stellar_address"
         }
 
         is AccountType.TronAddress -> {
@@ -367,6 +371,10 @@ val TimePeriod.statPeriod: StatPeriod
         TimePeriod.TimePeriod_3M -> TODO()
         TimePeriod.TimePeriod_6M -> TODO()
         TimePeriod.TimePeriod_1Y -> TODO()
+        TimePeriod.TimePeriod_2Y -> TODO()
+        TimePeriod.TimePeriod_3Y -> TODO()
+        TimePeriod.TimePeriod_4Y -> TODO()
+        TimePeriod.TimePeriod_5Y -> TODO()
     }
 
 val FilterTransactionType.statTab: StatTab

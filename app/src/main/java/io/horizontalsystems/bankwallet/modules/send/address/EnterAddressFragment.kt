@@ -44,11 +44,16 @@ import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.AdType
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
+import io.horizontalsystems.bankwallet.core.adapters.StellarAssetAdapter
 import io.horizontalsystems.bankwallet.core.address.AddressCheckResult
 import io.horizontalsystems.bankwallet.core.address.AddressCheckType
 import io.horizontalsystems.bankwallet.core.paidAction
 import io.horizontalsystems.bankwallet.core.requireInput
 import io.horizontalsystems.bankwallet.core.slideFromRight
+import io.horizontalsystems.bankwallet.core.stats.StatEvent
+import io.horizontalsystems.bankwallet.core.stats.StatPage
+import io.horizontalsystems.bankwallet.core.stats.StatPremiumTrigger
+import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.entities.Wallet
 import io.horizontalsystems.bankwallet.modules.address.AddressParserModule
 import io.horizontalsystems.bankwallet.modules.address.AddressParserViewModel
@@ -60,6 +65,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.FormsInputAddress
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.TextImportantError
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
@@ -100,14 +106,15 @@ class EnterAddressFragment : BaseComposeFragment() {
 fun EnterAddressScreen(navController: NavController, input: EnterAddressFragment.Input) {
     val viewModel = viewModel<EnterAddressViewModel>(
         factory = EnterAddressViewModel.Factory(
-            wallet = input.wallet,
+            token = input.wallet.token,
             address = input.address,
-            amount = input.amount
+            addressCheckerSkippable = true
         )
     )
     val wallet = input.wallet
+    val amount = input.amount
     val paymentAddressViewModel = viewModel<AddressParserViewModel>(
-        factory = AddressParserModule.Factory(wallet.token, input.amount)
+        factory = AddressParserModule.Factory(wallet.token, amount)
     )
     val (adState, reloadAd) = rememberAdNativeView(
         BuildConfig.HOME_MARKET_NATIVE,
@@ -164,16 +171,20 @@ fun EnterAddressScreen(navController: NavController, input: EnterAddressFragment
                     ) {
                         viewModel.onEnterAddress(it)
                     }
-                } else {
+                } else if (uiState.addressCheckEnabled || uiState.addressValidationError != null) {
                     AddressCheck(
                         uiState.addressValidationInProgress,
                         uiState.addressValidationError,
                         uiState.checkResults,
                     ) { checkType ->
-                        if(uiState.checkResults.any { it.value.checkResult == AddressCheckResult.NotAllowed }) {
+                        if (uiState.checkResults.any { it.value.checkResult == AddressCheckResult.NotAllowed }) {
                             navController.paidAction(AddressBlacklist) {
                                 viewModel.onEnterAddress(uiState.value)
                             }
+                            stat(
+                                page = StatPage.Send,
+                                event = StatEvent.OpenPremium(StatPremiumTrigger.AddressChecker)
+                            )
                         } else {
                             checkTypeInfoBottomSheet = checkType
                             coroutineScope.launch {
@@ -205,7 +216,7 @@ fun EnterAddressScreen(navController: NavController, input: EnterAddressFragment
                                     title = input.title,
                                     address = it,
                                     riskyAddress = uiState.checkResults.any { result -> result.value.checkResult == AddressCheckResult.Detected },
-                                    amount = uiState.amount
+                                    amount = amount
                                 )
                             )
                         }
@@ -238,7 +249,22 @@ fun AddressCheck(
     onClick: (type: AddressCheckType) -> Unit
 ) {
     VSpacer(16.dp)
-    if (addressValidationError == null) {
+    if (addressValidationInProgress) {
+        //show nothing
+    } else if (addressValidationError != null) {
+        val errorMessage = addressValidationError.getErrorMessage()
+        if (errorMessage != null) {
+            TextImportantError(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                icon = R.drawable.ic_attention_20,
+                title = stringResource(R.string.SwapSettings_Error_InvalidAddress),
+                text = errorMessage
+            )
+            VSpacer(32.dp)
+        }
+    }
+
+    if (checkResults.isNotEmpty()) {
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
@@ -247,7 +273,7 @@ fun AddressCheck(
                 .clip(RoundedCornerShape(12.dp))
                 .border(
                     0.5.dp,
-                    ComposeAppTheme.colors.steel20,
+                    ComposeAppTheme.colors.blade,
                     RoundedCornerShape(12.dp)
                 )
         ) {
@@ -263,40 +289,31 @@ fun AddressCheck(
         }
     }
 
-    Errors(addressValidationError, checkResults)
+    checkResults.forEach { (addressCheckType, addressCheckData) ->
+        if (addressCheckData.checkResult == AddressCheckResult.Detected) {
+            TextImportantError(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                icon = R.drawable.ic_attention_20,
+                title = stringResource(addressCheckType.detectedErrorTitle),
+                text = stringResource(addressCheckType.detectedErrorDescription)
+            )
+            VSpacer(16.dp)
+        }
+    }
+
+    if (checkResults.any { it.value.checkResult == AddressCheckResult.Detected }) {
+        VSpacer(32.dp)
+    }
 }
 
 @Composable
-private fun Errors(
-    addressValidationError: Throwable?,
-    checkResults: Map<AddressCheckType, AddressCheckData>,
-) {
-    if (addressValidationError != null) {
-        TextImportantError(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            icon = R.drawable.ic_attention_20,
-            title = stringResource(R.string.SwapSettings_Error_InvalidAddress),
-            text = addressValidationError.message
-                ?: stringResource(R.string.SwapSettings_Error_InvalidAddress)
-        )
-        VSpacer(32.dp)
-    } else {
-        checkResults.forEach { (addressCheckType, addressCheckData) ->
-            if (addressCheckData.checkResult == AddressCheckResult.Detected) {
-                TextImportantError(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    icon = R.drawable.ic_attention_20,
-                    title = stringResource(addressCheckType.detectedErrorTitle),
-                    text = stringResource(addressCheckType.detectedErrorDescription)
-                )
-                VSpacer(16.dp)
-            }
-        }
-
-        if (checkResults.any { it.value.checkResult == AddressCheckResult.Detected }) {
-            VSpacer(32.dp)
-        }
+private fun Throwable.getErrorMessage() = when (this) {
+    is StellarAssetAdapter.NoTrustlineError -> {
+        stringResource(R.string.Error_AssetNotEnabled, code)
     }
+
+    is AddressValidationError -> this.message
+    else -> null
 }
 
 @Composable
@@ -365,7 +382,7 @@ fun CheckLocked() {
     Icon(
         painter = painterResource(R.drawable.ic_lock_20),
         contentDescription = null,
-        tint = ComposeAppTheme.colors.grey50,
+        tint = ComposeAppTheme.colors.andy,
     )
 }
 
@@ -384,7 +401,7 @@ fun AddressSuggestions(
                 .clip(RoundedCornerShape(12.dp))
                 .border(
                     0.5.dp,
-                    ComposeAppTheme.colors.steel20,
+                    ComposeAppTheme.colors.blade,
                     RoundedCornerShape(12.dp)
                 )
                 .clickable {
@@ -404,7 +421,7 @@ fun AddressSuggestions(
                 .clip(RoundedCornerShape(12.dp))
                 .border(
                     0.5.dp,
-                    ComposeAppTheme.colors.steel20,
+                    ComposeAppTheme.colors.blade,
                     RoundedCornerShape(12.dp)
                 )
                 .clickable {
@@ -425,17 +442,13 @@ fun AddressSuggestions(
                 .clip(RoundedCornerShape(12.dp))
                 .border(
                     0.5.dp,
-                    ComposeAppTheme.colors.steel20,
+                    ComposeAppTheme.colors.blade,
                     RoundedCornerShape(12.dp)
                 )
         ) {
             contacts.forEachIndexed { index, contact ->
                 if (index != 0) {
-                    HorizontalDivider(
-                        modifier = Modifier.fillMaxWidth(),
-                        thickness = 0.5.dp,
-                        color = ComposeAppTheme.colors.steel20
-                    )
+                    HsDivider(modifier = Modifier.fillMaxWidth())
                 }
                 Column(
                     modifier = Modifier

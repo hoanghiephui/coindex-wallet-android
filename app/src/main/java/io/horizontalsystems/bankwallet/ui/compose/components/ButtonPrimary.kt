@@ -47,9 +47,9 @@ fun ButtonPrimaryDefaultWithIcon(
         onClick = onClick,
         buttonColors = ButtonPrimaryDefaults.textButtonColors(
             backgroundColor = ComposeAppTheme.colors.leah,
-            contentColor = ComposeAppTheme.colors.claude,
-            disabledBackgroundColor = ComposeAppTheme.colors.steel20,
-            disabledContentColor = ComposeAppTheme.colors.grey50,
+            contentColor = ComposeAppTheme.colors.blade,
+            disabledBackgroundColor = ComposeAppTheme.colors.blade,
+            disabledContentColor = ComposeAppTheme.colors.andy,
         ),
         content = {
             if (iconTint != null) {
@@ -87,9 +87,9 @@ fun ButtonPrimaryDefault(
         onClick = onClick,
         buttonColors = ButtonPrimaryDefaults.textButtonColors(
             backgroundColor = ComposeAppTheme.colors.leah,
-            contentColor = ComposeAppTheme.colors.claude,
-            disabledBackgroundColor = ComposeAppTheme.colors.steel20,
-            disabledContentColor = ComposeAppTheme.colors.grey50,
+            contentColor = ComposeAppTheme.colors.blade,
+            disabledBackgroundColor = ComposeAppTheme.colors.blade,
+            disabledContentColor = ComposeAppTheme.colors.andy,
         ),
         content = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         enabled = enabled
@@ -107,7 +107,7 @@ fun ButtonPrimaryTransparent(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val contentColor = when {
-        !enabled -> ComposeAppTheme.colors.grey50
+        !enabled -> ComposeAppTheme.colors.andy
         isPressed -> ComposeAppTheme.colors.grey
         else -> ComposeAppTheme.colors.leah
     }
@@ -161,8 +161,8 @@ fun ButtonPrimaryYellow(
         buttonColors = ButtonPrimaryDefaults.textButtonColors(
             backgroundColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.surface,
-            disabledBackgroundColor = ComposeAppTheme.colors.steel20,
-            disabledContentColor = ComposeAppTheme.colors.grey50,
+            disabledBackgroundColor = ComposeAppTheme.colors.blade,
+            disabledContentColor = ComposeAppTheme.colors.andy,
         ),
         content = {
             if (loadingIndicator) {
@@ -199,8 +199,8 @@ fun ButtonPrimaryYellowWithIcon(
         buttonColors = ButtonPrimaryDefaults.textButtonColors(
             backgroundColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.surface,
-            disabledBackgroundColor = ComposeAppTheme.colors.steel20,
-            disabledContentColor = ComposeAppTheme.colors.grey50,
+            disabledBackgroundColor = ComposeAppTheme.colors.blade,
+            disabledContentColor = ComposeAppTheme.colors.andy,
         ),
         content = {
             if (iconTint != null) {
@@ -238,9 +238,9 @@ fun ButtonPrimaryRed(
         onClick = onClick,
         buttonColors = ButtonPrimaryDefaults.textButtonColors(
             backgroundColor = ComposeAppTheme.colors.lucian,
-            contentColor = ComposeAppTheme.colors.claude,
-            disabledBackgroundColor = ComposeAppTheme.colors.steel20,
-            disabledContentColor = ComposeAppTheme.colors.grey50,
+            contentColor = ComposeAppTheme.colors.lawrence,
+            disabledBackgroundColor = ComposeAppTheme.colors.blade,
+            disabledContentColor = ComposeAppTheme.colors.andy,
         ),
         content = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         enabled = enabled
@@ -262,8 +262,8 @@ fun ButtonPrimaryYellowWithSpinner(
         buttonColors = ButtonPrimaryDefaults.textButtonColors(
             backgroundColor = ComposeAppTheme.colors.yellowD,
             contentColor = ComposeAppTheme.colors.light,
-            disabledBackgroundColor = ComposeAppTheme.colors.steel20,
-            disabledContentColor = ComposeAppTheme.colors.grey50,
+            disabledBackgroundColor = ComposeAppTheme.colors.blade,
+            disabledContentColor = ComposeAppTheme.colors.andy,
         ),
         content = {
             if (showSpinner) {

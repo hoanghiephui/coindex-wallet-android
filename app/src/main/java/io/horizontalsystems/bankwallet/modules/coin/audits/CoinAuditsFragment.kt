@@ -30,6 +30,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.CellFooter
 import io.horizontalsystems.bankwallet.ui.compose.components.CellMultilineLawrenceSection
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsImage
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
@@ -121,10 +122,7 @@ private fun CoinAuditsScreen(
 
 @Composable
 fun CoinAuditHeader(name: String, logoUrl: String) {
-    HorizontalDivider(
-        thickness = 1.dp,
-        color = ComposeAppTheme.colors.steel10,
-    )
+    HsDivider()
     VSpacer(height = 14.dp)
     Row(
         verticalAlignment = Alignment.CenterVertically,

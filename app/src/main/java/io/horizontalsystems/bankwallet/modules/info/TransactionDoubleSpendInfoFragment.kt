@@ -34,6 +34,7 @@ import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryDefault
 import io.horizontalsystems.bankwallet.ui.compose.components.CellSingleLineLawrence
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.TextImportantWarning
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
@@ -111,11 +112,7 @@ fun ConflictingTransactions(transactionHash: String, conflictingHash: String) {
             .clip(RoundedCornerShape(12.dp))
     ) {
         TransactionHashCell(R.string.Info_DoubleSpend_ThisTx, transactionHash)
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 1.dp,
-            color = ComposeAppTheme.colors.steel10
-        )
+        HsDivider(modifier = Modifier.fillMaxWidth())
         TransactionHashCell(R.string.Info_DoubleSpend_ConflictingTx, conflictingHash)
     }
 }

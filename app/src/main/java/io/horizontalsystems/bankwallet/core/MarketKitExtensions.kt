@@ -53,7 +53,10 @@ val Token.swappable: Boolean
         BlockchainType.ZkSync,
         BlockchainType.Gnosis,
         BlockchainType.Fantom,
-        BlockchainType.ArbitrumOne -> true
+        BlockchainType.ArbitrumOne,
+        BlockchainType.Bitcoin,
+        BlockchainType.BitcoinCash,
+        BlockchainType.Litecoin -> true
         else -> false
     }
 
@@ -72,17 +75,6 @@ val Token.protocolInfo: String
         is TokenType.Spl,
         is TokenType.Jetton -> protocolType ?: ""
         else -> ""
-    }
-
-val Token.typeInfo: String
-    get() = when (val type = type) {
-        is TokenType.Derived,
-        is TokenType.AddressTyped,
-        TokenType.Native -> Translator.getString(R.string.CoinPlatforms_Native)
-        is TokenType.Eip20 -> type.address.shorten()
-        is TokenType.Spl -> type.address.shorten()
-        is TokenType.Jetton -> type.address.shorten()
-        is TokenType.Unsupported -> ""
     }
 
 val Token.copyableTypeInfo: String?
@@ -161,6 +153,9 @@ val TokenQuery.isSupported: Boolean
         BlockchainType.Ton -> {
             tokenType is TokenType.Native || tokenType is TokenType.Jetton
         }
+        BlockchainType.Stellar -> {
+            tokenType is TokenType.Native || tokenType is TokenType.Asset
+        }
         is BlockchainType.Unsupported -> false
     }
 
@@ -185,12 +180,14 @@ val Blockchain.description: String
         BlockchainType.Fantom -> "FTM, ERC20 tokens"
         BlockchainType.Tron -> "TRX, TRC20 tokens"
         BlockchainType.Ton -> "TON"
+        BlockchainType.Stellar -> "XLM, Stellar assets"
         else -> ""
     }
 
 fun Blockchain.eip20TokenUrl(address: String) = eip3091url?.replace("\$ref", address)
 
 fun Blockchain.jettonUrl(address: String) = "https://tonviewer.com/$address"
+fun Blockchain.assetUrl(code: String, issuer: String) = "https://stellarchain.io/assets/$code-$issuer"
 
 val BlockchainType.imageUrl: String
     get() = "https://cdn.blocksdecoded.com/blockchain-icons/32px/$uid@3x.png"
@@ -206,23 +203,24 @@ private val blockchainOrderMap: Map<BlockchainType, Int> by lazy {
     listOf(
         BlockchainType.Bitcoin,
         BlockchainType.Ethereum,
-        BlockchainType.BinanceSmartChain,
         BlockchainType.Tron,
-        BlockchainType.Ton,
+        BlockchainType.BinanceSmartChain,
         BlockchainType.Polygon,
+        BlockchainType.Stellar,
         BlockchainType.ArbitrumOne,
         BlockchainType.Optimism,
         BlockchainType.Base,
         BlockchainType.Avalanche,
         BlockchainType.Solana,
-        BlockchainType.Gnosis,
-        BlockchainType.ZkSync,
         BlockchainType.Zcash,
-        BlockchainType.BitcoinCash,
+        BlockchainType.ZkSync,
+        BlockchainType.Ton,
+        BlockchainType.Gnosis,
         BlockchainType.Litecoin,
+        BlockchainType.BitcoinCash,
         BlockchainType.Dash,
-        BlockchainType.ECash,
         BlockchainType.Fantom,
+        BlockchainType.ECash,
     ).forEachIndexed { index, blockchainType ->
         map[blockchainType] = index
     }
@@ -246,6 +244,7 @@ val BlockchainType.tokenIconPlaceholder: Int
         BlockchainType.Fantom -> R.drawable.fantom_erc20
         BlockchainType.Tron -> R.drawable.tron_trc20
         BlockchainType.Ton -> R.drawable.the_open_network_jetton
+        BlockchainType.Stellar -> R.drawable.stellar_asset
         else -> R.drawable.coin_placeholder
     }
 
@@ -270,6 +269,7 @@ val BlockchainType.title: String
     BlockchainType.Fantom -> "Fantom"
     BlockchainType.Tron -> "Tron"
     BlockchainType.Ton -> "Ton"
+    BlockchainType.Stellar -> "Stellar"
     is BlockchainType.Unsupported -> this.uid
 }
 
@@ -353,7 +353,11 @@ fun BlockchainType.supports(accountType: AccountType): Boolean {
         is AccountType.TonAddress ->
             this == BlockchainType.Ton
 
-        is AccountType.Cex -> false
+        is AccountType.StellarAddress ->
+            this == BlockchainType.Stellar
+
+        is AccountType.StellarSecretKey ->
+            this == BlockchainType.Stellar
     }
 }
 
@@ -586,6 +590,7 @@ val BlockchainType.Companion.supported: List<BlockchainType>
         BlockchainType.ECash,
         BlockchainType.Tron,
         BlockchainType.Ton,
+        BlockchainType.Stellar,
     )
 
 val CoinPrice.diff: BigDecimal?

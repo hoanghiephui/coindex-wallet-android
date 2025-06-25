@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +40,7 @@ import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.TabItem
@@ -147,10 +147,7 @@ fun IssueList(
         }
         itemsIndexed(issues) { index, issue ->
             if (index > 0) {
-                Divider(
-                    thickness = 1.dp,
-                    color = ComposeAppTheme.colors.steel10,
-                )
+                HsDivider()
             }
             DetectorCell(
                 issueViewItem = issue,
@@ -269,10 +266,7 @@ fun DetectorCell(
             Column {
                 issues.forEachIndexed { index, text ->
                     if (index > 0) {
-                        Divider(
-                            thickness = 1.dp,
-                            color = ComposeAppTheme.colors.steel10,
-                        )
+                        HsDivider()
                     }
                     InfoText(
                         text = text.description,

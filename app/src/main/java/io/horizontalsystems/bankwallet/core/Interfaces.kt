@@ -13,7 +13,6 @@ import io.horizontalsystems.bankwallet.entities.Account
 import io.horizontalsystems.bankwallet.entities.AccountOrigin
 import io.horizontalsystems.bankwallet.entities.AccountType
 import io.horizontalsystems.bankwallet.entities.AppVersion
-import io.horizontalsystems.bankwallet.entities.CexType
 import io.horizontalsystems.bankwallet.entities.EnabledWallet
 import io.horizontalsystems.bankwallet.entities.LastBlockInfo
 import io.horizontalsystems.bankwallet.entities.LaunchPage
@@ -31,6 +30,7 @@ import io.horizontalsystems.bankwallet.modules.market.MarketModule
 import io.horizontalsystems.bankwallet.modules.market.TimeDuration
 import io.horizontalsystems.bankwallet.modules.market.Value
 import io.horizontalsystems.bankwallet.modules.market.favorites.WatchlistSorting
+import io.horizontalsystems.bankwallet.modules.roi.PerformanceCoin
 import io.horizontalsystems.bankwallet.modules.settings.appearance.AppIcon
 import io.horizontalsystems.bankwallet.modules.settings.appearance.PriceChangeInterval
 import io.horizontalsystems.bankwallet.modules.settings.privacy.tor.TorStatus
@@ -40,12 +40,15 @@ import io.horizontalsystems.bankwallet.modules.theme.ThemeType
 import io.horizontalsystems.bankwallet.modules.transactions.FilterTransactionType
 import io.horizontalsystems.bitcoincore.core.IPluginData
 import io.horizontalsystems.bitcoincore.storage.UnspentOutputInfo
+import io.horizontalsystems.bitcoincore.storage.UtxoFilters
 import io.horizontalsystems.ethereumkit.models.Address
 import io.horizontalsystems.ethereumkit.models.TransactionData
 import io.horizontalsystems.marketkit.models.BlockchainType
+import io.horizontalsystems.marketkit.models.HsTimePeriod
 import io.horizontalsystems.marketkit.models.Token
 import io.horizontalsystems.marketkit.models.TokenQuery
 import io.horizontalsystems.solanakit.models.FullTransaction
+import io.horizontalsystems.stellarkit.room.StellarAsset
 import io.horizontalsystems.tonkit.FriendlyAddress
 import io.horizontalsystems.tronkit.transaction.Fee
 import io.reactivex.Flowable
@@ -64,14 +67,16 @@ interface IAdapterManager {
     val adaptersReadyObservable: Flowable<Map<Wallet, IAdapter>>
     fun startAdapterManager()
     suspend fun refresh()
-    fun getAdapterForWallet(wallet: Wallet): IAdapter?
-    fun getAdapterForToken(token: Token): IAdapter?
+    fun <T> getAdapterForWallet(wallet: Wallet): T?
+    fun <T> getAdapterForToken(token: Token): T?
     fun getBalanceAdapterForWallet(wallet: Wallet): IBalanceAdapter?
     fun getReceiveAdapterForWallet(wallet: Wallet): IReceiveAdapter?
     fun refreshByWallet(wallet: Wallet)
 }
 
 interface ILocalStorage {
+    var selectedPeriods: List<HsTimePeriod>
+    var roiPerformanceCoins: List<PerformanceCoin>
     var marketSearchRecentCoinUids: List<String>
     var zcashAccountIds: Set<String>
     var autoLockInterval: AutoLockInterval
@@ -105,7 +110,6 @@ interface ILocalStorage {
     var currentTheme: ThemeType
     var balanceViewType: BalanceViewType?
     var changelogShownForAppVersion: String?
-    var donateAppVersion: String?
     var ignoreRootedDeviceWarning: Boolean
     var launchPage: LaunchPage?
     var appIcon: AppIcon?
@@ -119,6 +123,8 @@ interface ILocalStorage {
     val marketsTabEnabledFlow: StateFlow<Boolean>
     var balanceTabButtonsEnabled: Boolean
     val balanceTabButtonsEnabledFlow: StateFlow<Boolean>
+    var amountRoundingEnabled: Boolean
+    val amountRoundingEnabledFlow: StateFlow<Boolean>
     var nonRecommendedAccountAlertDismissedAccounts: Set<String>
     var personalSupportEnabled: Boolean
     var hideSuspiciousTransactions: Boolean
@@ -127,6 +133,7 @@ interface ILocalStorage {
     var rbfEnabled: Boolean
     var statsLastSyncTime: Long
     var uiStatsEnabled: Boolean?
+    var recipientAddressCheckEnabled: Boolean
 
     val utxoExpertModeEnabledFlow: StateFlow<Boolean>
     val marketSignalsStateChangedFlow: SharedFlow<Boolean>
@@ -135,6 +142,7 @@ interface ILocalStorage {
 
     var priceChangeInterval: PriceChangeInterval
     val priceChangeIntervalFlow: StateFlow<PriceChangeInterval>
+    var donateUsLastShownDate: Long?
     var isShowNotificationPrice: Boolean
     var isShowNotificationNews: Boolean
 
@@ -192,7 +200,6 @@ interface IAccountFactory {
     fun watchAccount(name: String, type: AccountType): Account
     fun getNextWatchAccountName(): String
     fun getNextAccountName(): String
-    fun getNextCexAccountName(cexType: CexType): String
 }
 
 interface IWalletStorage {
@@ -292,14 +299,18 @@ interface IBalanceAdapter {
     fun sendAllowed() = balanceState is AdapterState.Synced
 }
 
-data class BalanceData(
+open class BalanceData(
     val available: BigDecimal,
     val timeLocked: BigDecimal = BigDecimal.ZERO,
     val notRelayed: BigDecimal = BigDecimal.ZERO,
     val pending: BigDecimal = BigDecimal.ZERO,
+    val minimumBalance: BigDecimal = BigDecimal.ZERO,
+    val stellarAssets: List<StellarAsset.Asset> = listOf()
 ) {
-    val total get() = available + timeLocked + notRelayed + pending
+    val total get() = available + timeLocked + notRelayed + pending + minimumBalance
 }
+
+class ZcashBalanceData(available: BigDecimal, pending: BigDecimal, val unshielded: BigDecimal): BalanceData(available, pending = pending)
 
 interface IReceiveAdapter {
     val receiveAddress: String
@@ -330,17 +341,23 @@ interface ISendBitcoinAdapter {
         address: String?,
         memo: String?,
         unspentOutputs: List<UnspentOutputInfo>?,
-        pluginData: Map<Byte, IPluginData>?
+        pluginData: Map<Byte, IPluginData>?,
+        dustThreshold: Int?,
+        changeToFirstInput: Boolean,
+        utxoFilters: UtxoFilters
     ): BigDecimal
 
-    fun minimumSendAmount(address: String?): BigDecimal?
+    fun minimumSendAmount(address: String?, dustThreshold: Int?): BigDecimal?
     fun bitcoinFeeInfo(
         amount: BigDecimal,
         feeRate: Int,
         address: String?,
         memo: String?,
         unspentOutputs: List<UnspentOutputInfo>?,
-        pluginData: Map<Byte, IPluginData>?
+        pluginData: Map<Byte, IPluginData>?,
+        dustThreshold: Int?,
+        changeToFirstInput: Boolean,
+        filters: UtxoFilters
     ): BitcoinFeeInfo?
 
     fun validate(address: String, pluginData: Map<Byte, IPluginData>?)
@@ -353,7 +370,9 @@ interface ISendBitcoinAdapter {
         pluginData: Map<Byte, IPluginData>?,
         transactionSorting: TransactionDataSortMode?,
         rbfEnabled: Boolean,
-        logger: AppLogger
+        dustThreshold: Int?,
+        changeToFirstInput: Boolean,
+        utxoFilters: UtxoFilters
     ): BitcoinTransactionRecord?
 }
 
@@ -364,21 +383,12 @@ interface ISendEthereumAdapter {
     fun getTransactionData(amount: BigDecimal, address: Address): TransactionData
 }
 
-interface ISendBinanceAdapter {
-    val availableBalance: BigDecimal
-    val availableBinanceBalance: BigDecimal
-    val fee: BigDecimal
-
-    fun validate(address: String)
-    fun send(amount: BigDecimal, address: String, memo: String?, logger: AppLogger): Single<Unit>
-}
-
 interface ISendZcashAdapter {
     val availableBalance: BigDecimal
     val fee: BigDecimal
 
     suspend fun validate(address: String): ZcashAdapter.ZCashAddressType
-    suspend fun send(amount: BigDecimal, address: String, memo: String, logger: AppLogger): Long
+    suspend fun send(amount: BigDecimal, address: String, memo: String, logger: AppLogger)
 }
 
 interface IAdapter {
@@ -398,6 +408,14 @@ interface ISendTonAdapter {
     val availableBalance: BigDecimal
     suspend fun send(amount: BigDecimal, address: FriendlyAddress, memo: String?)
     suspend fun estimateFee(amount: BigDecimal, address: FriendlyAddress, memo: String?) : BigDecimal
+}
+
+interface ISendStellarAdapter {
+    val maxSendableBalance: BigDecimal
+    val fee: BigDecimal
+    fun validate(address: String)
+    suspend fun getMinimumSendAmount(address: String) : BigDecimal?
+    suspend fun send(amount: BigDecimal, address: String, memo: String?)
 }
 
 interface ISendTronAdapter {

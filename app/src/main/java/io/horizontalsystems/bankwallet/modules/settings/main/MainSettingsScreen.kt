@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -53,15 +52,13 @@ import io.horizontalsystems.bankwallet.core.slideFromBottom
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
+import io.horizontalsystems.bankwallet.core.stats.StatPremiumTrigger
 import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.modules.contacts.ContactsFragment
 import io.horizontalsystems.bankwallet.modules.contacts.Mode
 import io.horizontalsystems.bankwallet.modules.manageaccount.dialogs.BackupRequiredDialog
 import io.horizontalsystems.bankwallet.modules.manageaccounts.ManageAccountsModule
-import io.horizontalsystems.bankwallet.modules.settings.banners.DonateBanner
-import io.horizontalsystems.bankwallet.modules.settings.banners.GameBanner
 import io.horizontalsystems.bankwallet.modules.settings.banners.SubscriptionBanner
-import io.horizontalsystems.bankwallet.modules.settings.main.ui.BannerCarousel
 import io.horizontalsystems.bankwallet.modules.settings.vipsupport.VipSupportBottomSheet
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCAccountTypeNotSupportedDialog
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCManager
@@ -70,6 +67,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.BadgeText
 import io.horizontalsystems.bankwallet.ui.compose.components.CellSingleLineLawrenceSection
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.PremiumHeader
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
@@ -79,6 +77,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.cell.SectionPremium
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_grey
 import io.horizontalsystems.bankwallet.ui.helpers.LinkHelper
 import io.horizontalsystems.bankwallet.widgets.MarketWidgetReceiver
+import io.horizontalsystems.subscriptions.core.AddressBlacklist
 import io.horizontalsystems.subscriptions.core.VIPSupport
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,7 +140,8 @@ private fun SettingSections(
     }
 
     CellUniversalLawrenceSection(
-        listOf({
+        listOf(
+            {
             HsSettingCell(
                 R.string.SettingsSecurity_ManageKeys,
                 R.drawable.ic_wallet_20,
@@ -152,7 +152,10 @@ private fun SettingSections(
                         ManageAccountsModule.Mode.Manage
                     )
 
-                    stat(page = StatPage.Settings, event = StatEvent.Open(StatPage.ManageWallets))
+                    stat(
+                        page = StatPage.Settings,
+                        event = StatEvent.Open(StatPage.ManageWallets)
+                    )
                 }
             )
         }, {
@@ -166,6 +169,27 @@ private fun SettingSections(
                         page = StatPage.Settings,
                         event = StatEvent.Open(StatPage.BlockchainSettings)
                     )
+                }
+            )
+        }, {
+            HsSettingCell(
+                R.string.Settings_SecurityCenter,
+                R.drawable.ic_security,
+                showAlert = uiState.securityCenterShowAlert,
+                onClick = {
+                    navController.slideFromRight(R.id.securitySettingsFragment)
+
+                    stat(page = StatPage.Settings, event = StatEvent.Open(StatPage.Security))
+                }
+            )
+        }, {
+            HsSettingCell(
+                R.string.Settings_Privacy,
+                R.drawable.ic_eye_20,
+                onClick = {
+                    navController.slideFromRight(R.id.privacySettingsFragment)
+
+                    stat(page = StatPage.AboutApp, event = StatEvent.Open(StatPage.Privacy))
                 }
             )
         }, {
@@ -211,7 +235,8 @@ private fun SettingSections(
                     }
                 }
             )
-//        }, {
+        },
+//            {
 //            HsSettingCell(
 //                title = R.string.Settings_TonConnect,
 //                icon = R.drawable.ic_ton_connect_24,
@@ -226,25 +251,28 @@ private fun SettingSections(
 //                    )
 //                }
 //            )
-        }, {
-            HsSettingCell(
-                R.string.BackupManager_Title,
-                R.drawable.ic_file_24,
-                onClick = {
-                    navController.slideFromRight(R.id.backupManagerFragment)
+            {
+                HsSettingCell(
+                    R.string.BackupManager_Title,
+                    R.drawable.ic_file_24,
+                    onClick = {
+                        navController.slideFromRight(R.id.backupManagerFragment)
 
-                    stat(page = StatPage.Settings, event = StatEvent.Open(StatPage.BackupManager))
-                }
-            )
-        }, {
-            HsSettingCell(
-                R.string.Notification_Title,
-                R.drawable.outline_notifications_active_24 ,
-                onClick = {
-                    navController.slideFromRight(R.id.notificationSetting)
-                }
-            )
-        })
+                        stat(
+                            page = StatPage.Settings,
+                            event = StatEvent.Open(StatPage.BackupManager)
+                        )
+                    }
+                )
+            }, {
+                HsSettingCell(
+                    R.string.Notification_Title,
+                    R.drawable.outline_notifications_active_24,
+                    onClick = {
+                        navController.slideFromRight(R.id.notificationSetting)
+                    }
+                )
+            })
     )
 
     VSpacer(24.dp)
@@ -275,45 +303,8 @@ private fun SettingSections(
         buildList {
             add {
                 HsSettingCell(
-                    R.string.Settings_SecurityCenter,
-                    R.drawable.ic_security,
-                    showAlert = uiState.securityCenterShowAlert,
-                    onClick = {
-                        navController.slideFromRight(R.id.securitySettingsFragment)
-
-                        stat(page = StatPage.Settings, event = StatEvent.Open(StatPage.Security))
-                    }
-                )
-            }
-            add {
-                HsSettingCell(
-                    R.string.Settings_Privacy,
-                    R.drawable.ic_eye_20,
-                    onClick = {
-                        navController.slideFromRight(R.id.privacySettingsFragment)
-
-                        stat(page = StatPage.AboutApp, event = StatEvent.Open(StatPage.Privacy))
-                    }
-                )
-            }
-            add {
-                HsSettingCell(
-                    R.string.Contacts,
-                    R.drawable.ic_user_20,
-                    onClick = {
-                        navController.slideFromRight(
-                            R.id.contactsFragment,
-                            ContactsFragment.Input(Mode.Full)
-                        )
-
-                        stat(page = StatPage.Settings, event = StatEvent.Open(StatPage.Contacts))
-                    }
-                )
-            }
-            add {
-                HsSettingCell(
-                    R.string.Settings_Appearance,
-                    R.drawable.ic_brush_20,
+                    R.string.Settings_AppSettings,
+                    R.drawable.ic_unstoppable_icon_20,
                     onClick = {
                         navController.slideFromRight(R.id.appearanceFragment)
 
@@ -335,33 +326,76 @@ private fun SettingSections(
             }
             add {
                 HsSettingCell(
-                    R.string.Settings_BaseCurrency,
-                    R.drawable.ic_currency,
-                    value = uiState.baseCurrencyCode,
+                    R.string.Contacts,
+                    R.drawable.ic_user_20,
                     onClick = {
-                        navController.slideFromRight(R.id.baseCurrencySettingsFragment)
+                        navController.slideFromRight(
+                            R.id.contactsFragment,
+                            ContactsFragment.Input(Mode.Full)
+                        )
 
                         stat(
                             page = StatPage.Settings,
-                            event = StatEvent.Open(StatPage.BaseCurrency)
+                            event = StatEvent.Open(StatPage.Contacts)
                         )
                     }
                 )
             }
             add {
                 HsSettingCell(
-                    R.string.Settings_Language,
-                    R.drawable.ic_language,
-                    value = uiState.currentLanguage,
+                    R.string.BackupManager_Title,
+                    R.drawable.ic_file_24,
                     onClick = {
-                        navController.slideFromRight(R.id.languageSettingsFragment)
+                        navController.slideFromRight(R.id.backupManagerFragment)
 
-                        stat(page = StatPage.Settings, event = StatEvent.Open(StatPage.Language))
+                        stat(
+                            page = StatPage.Settings,
+                            event = StatEvent.Open(StatPage.BackupManager)
+                        )
                     }
                 )
             }
         }
     )
+
+    VSpacer(24.dp)
+
+    PremiumHeader()
+
+    SectionPremiumUniversalLawrence {
+        if (!BuildConfig.FDROID_BUILD) {
+            HsSettingCell(
+                title = R.string.Settings_VipSupport,
+                icon = R.drawable.ic_support_yellow_24,
+                iconTint = ComposeAppTheme.colors.jacob,
+                onClick = {
+                    navController.paidAction(VIPSupport) {
+                        openVipSupport.invoke()
+                    }
+                    stat(
+                        page = StatPage.Settings,
+                        event = StatEvent.OpenPremium(StatPremiumTrigger.VipSupport)
+                    )
+                }
+            )
+            HsDivider()
+        }
+        HsSettingCell(
+            title = R.string.SettingsAddressChecker_Title,
+            icon = R.drawable.ic_radar_24,
+            iconTint = ComposeAppTheme.colors.jacob,
+            onClick = {
+                navController.paidAction(AddressBlacklist) {
+                    navController.slideFromRight(R.id.addressCheckerFragment)
+                }
+                stat(
+                    page = StatPage.Settings,
+                    event = StatEvent.OpenPremium(StatPremiumTrigger.AddressChecker)
+                )
+            }
+        )
+    }
+
 
     VSpacer(32.dp)
 
@@ -369,7 +403,7 @@ private fun SettingSections(
         listOf({
             HsSettingCell(
                 R.string.SettingsAboutApp_Title,
-                R.drawable.ic_about_app_20,
+                R.drawable.ic_info_20,
                 showAlert = uiState.aboutAppShowAlert,
                 onClick = {
                     navController.slideFromRight(R.id.aboutAppFragment)
@@ -380,7 +414,7 @@ private fun SettingSections(
         }, {
             HsSettingCell(
                 R.string.Settings_RateUs,
-                R.drawable.ic_star_20,
+                R.drawable.ic_rateus_24,
                 onClick = {
                     RateAppManager.openPlayMarket(context)
 
@@ -390,11 +424,27 @@ private fun SettingSections(
         }, {
             HsSettingCell(
                 R.string.Settings_ShareThisWallet,
-                R.drawable.ic_share_20,
+                R.drawable.ic_share_24,
                 onClick = {
                     shareAppLink(uiState.appWebPageLink, context)
 
                     stat(page = StatPage.Settings, event = StatEvent.Open(StatPage.TellFriends))
+                }
+            )
+        }, {
+            HsSettingCell(
+                R.string.Settings_Faq,
+                R.drawable.ic_faq_20,
+                onClick = {
+                    navController.slideFromRight(R.id.faqListFragment)
+                }
+            )
+        }, {
+            HsSettingCell(
+                R.string.Guides_Title,
+                R.drawable.ic_academy_20,
+                onClick = {
+                    navController.slideFromRight(R.id.academyFragment)
                 }
             )
         })
@@ -532,12 +582,10 @@ private fun SettingsFooter(appVersion: String, companyWebPage: String) {
                 appVersion
             ).uppercase()
         )
-        HorizontalDivider(
+        HsDivider(
             modifier = Modifier
                 .width(100.dp)
-                .padding(top = 8.dp, bottom = 4.5.dp),
-            thickness = 0.5.dp,
-            color = ComposeAppTheme.colors.steel20
+                .padding(top = 8.dp, bottom = 4.5.dp)
         )
         Text(
             text = stringResource(R.string.Settings_InfoSubtitle),

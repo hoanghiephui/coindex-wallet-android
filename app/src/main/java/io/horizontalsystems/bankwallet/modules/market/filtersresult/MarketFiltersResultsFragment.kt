@@ -32,6 +32,7 @@ import io.horizontalsystems.bankwallet.core.slideFromBottomForResult
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
+import io.horizontalsystems.bankwallet.core.stats.StatPremiumTrigger
 import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.entities.ViewState
 import io.horizontalsystems.bankwallet.modules.coin.CoinFragment
@@ -167,6 +168,11 @@ private fun SearchResultsScreen(
                                                             }
                                                         }
                                                     }
+                                                    stat(
+                                                        page = StatPage.AdvancedSearchResults,
+                                                        event = StatEvent.OpenPremium(
+                                                            StatPremiumTrigger.TradingSignal)
+                                                    )
                                                 } else {
                                                     viewModel.hideSignals()
                                                 }
@@ -185,7 +191,7 @@ private fun SearchResultsScreen(
 
             if (openSortingSelector) {
                 AlertGroup(
-                    title = R.string.Market_Sort_PopupTitle,
+                    title = stringResource(R.string.Market_Sort_PopupTitle),
                     select = uiState.selectSortingField,
                     onSelect = { selected ->
                         viewModel.onSelectSortingField(selected)
@@ -210,8 +216,8 @@ fun SignalButton(turnedOn: Boolean, onToggle: (Boolean) -> Unit) {
         ButtonPrimaryDefaults.textButtonColors(
             backgroundColor = ComposeAppTheme.colors.yellowD,
             contentColor = ComposeAppTheme.colors.dark,
-            disabledBackgroundColor = ComposeAppTheme.colors.steel20,
-            disabledContentColor = ComposeAppTheme.colors.grey50,
+            disabledBackgroundColor = ComposeAppTheme.colors.blade,
+            disabledContentColor = ComposeAppTheme.colors.andy,
         )
     } else {
         SecondaryButtonDefaults.buttonColors()

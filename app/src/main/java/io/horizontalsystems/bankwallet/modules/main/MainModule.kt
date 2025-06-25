@@ -9,7 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.App
+import io.horizontalsystems.bankwallet.core.managers.ActionCompletedDelegate
 import io.horizontalsystems.bankwallet.entities.Account
+import io.horizontalsystems.bankwallet.modules.balance.OpenSendTokenSelect
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCManager
 import kotlinx.parcelize.Parcelize
 
@@ -30,6 +32,7 @@ object MainModule {
                 App.wcSessionManager,
                 App.wcManager,
                 App.networkManager,
+                ActionCompletedDelegate
             ) as T
         }
     }
@@ -50,8 +53,14 @@ object MainModule {
     fun startAsNewTask(context: Activity) {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        context.startActivity(intent)
-        context.overridePendingTransition(0, 0)
+
+        val options = androidx.core.app.ActivityOptionsCompat.makeCustomAnimation(
+            context,
+            0,  // No enter animation
+            0   // No exit animation
+        )
+
+        context.startActivity(intent, options.toBundle())
     }
 
     sealed class BadgeType {
@@ -91,6 +100,7 @@ object MainModule {
         val activeWallet: Account?,
         val torEnabled: Boolean,
         val wcSupportState: WCManager.SupportState?,
+        val openSend: OpenSendTokenSelect?,
         val isShowBalance: Boolean,
         val isLoadBalance: Boolean
     )

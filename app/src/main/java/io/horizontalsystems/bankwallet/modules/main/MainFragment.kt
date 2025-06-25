@@ -9,9 +9,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -79,6 +77,7 @@ import io.horizontalsystems.bankwallet.modules.rooteddevice.RootedDeviceModule
 import io.horizontalsystems.bankwallet.modules.rooteddevice.RootedDeviceScreen
 import io.horizontalsystems.bankwallet.modules.rooteddevice.RootedDeviceViewModel
 import io.horizontalsystems.bankwallet.modules.search.SearchScreen
+import io.horizontalsystems.bankwallet.modules.sendtokenselect.SendTokenSelectFragment
 import io.horizontalsystems.bankwallet.modules.settings.main.SettingsScreen
 import io.horizontalsystems.bankwallet.modules.tor.TorStatusView
 import io.horizontalsystems.bankwallet.modules.transactions.TransactionsModule
@@ -374,6 +373,19 @@ private fun MainScreen(
         }
     }
     NotificationPermissionEffect()
+
+    uiState.openSend?.let { openSend ->
+        fragmentNavController.slideFromRight(
+            R.id.sendTokenSelectFragment,
+            SendTokenSelectFragment.Input(
+                openSend.blockchainTypes,
+                openSend.tokenTypes,
+                openSend.address,
+                openSend.amount
+            )
+        )
+        viewModel.onSendOpened()
+    }
 
     LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
         viewModel.onResume()

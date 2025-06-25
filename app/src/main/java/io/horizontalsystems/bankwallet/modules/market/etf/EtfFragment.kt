@@ -209,13 +209,16 @@ fun EtfPage(
     }
     if (openPeriodSelector) {
         AlertGroup(
-            title = R.string.CoinPage_Period,
+            title = stringResource(R.string.CoinPage_Period),
             select = Select(uiState.timeDuration, viewModel.timeDurations),
             onSelect = { selected ->
                 viewModel.onSelectTimeDuration(selected)
                 openPeriodSelector = false
 
-                stat(page = StatPage.GlobalMetricsEtf, event = StatEvent.SwitchPeriod(selected.statPeriod))
+                stat(
+                    page = StatPage.GlobalMetricsEtf,
+                    event = StatEvent.SwitchPeriod(selected.statPeriod)
+                )
             },
             onDismiss = {
                 openPeriodSelector = false
@@ -224,13 +227,16 @@ fun EtfPage(
     }
     if (openSortingSelector) {
         AlertGroup(
-            title = R.string.Market_Sort_PopupTitle,
+            title = stringResource(R.string.Market_Sort_PopupTitle),
             select = Select(uiState.sortBy, viewModel.sortByOptions),
             onSelect = { selected ->
                 viewModel.onSelectSortBy(selected)
                 openSortingSelector = false
 
-                stat(page = StatPage.GlobalMetricsEtf, event = StatEvent.SwitchSortType(selected.statSortType))
+                stat(
+                    page = StatPage.GlobalMetricsEtf,
+                    event = StatEvent.SwitchSortType(selected.statSortType)
+                )
             },
             onDismiss = {
                 openSortingSelector = false
@@ -344,12 +350,12 @@ fun ChartEtf(loading: Boolean, etfPoints: List<EtfPoint>, currency: Currency) {
                             .padding(horizontal = 8.dp)
                     ) {
                         val color = if (isSelected) {
-                            ComposeAppTheme.colors.grey50
+                            ComposeAppTheme.colors.andy
                         } else {
                             ComposeAppTheme.colors.remus
                         }
                         val colorNegative = if (isSelected) {
-                            ComposeAppTheme.colors.grey50
+                            ComposeAppTheme.colors.andy
                         } else {
                             ComposeAppTheme.colors.lucian
                         }
@@ -363,7 +369,7 @@ fun ChartEtf(loading: Boolean, etfPoints: List<EtfPoint>, currency: Currency) {
                         GraphicLine(
                             modifier = Modifier.matchParentSize(),
                             data = dataTotalInflow,
-                            color = ComposeAppTheme.colors.grey50,
+                            color = ComposeAppTheme.colors.andy,
                             selectedItemKey = selectedKey
                         )
                         GraphicPointer(
@@ -464,7 +470,7 @@ private fun ChartLabelBottom(labelBottom: String) {
                 val pathEffect =
                     PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
                 drawLine(
-                    color = colors.steel10,
+                    color = colors.blade,
                     start = Offset(0f, 0f),
                     end = Offset(size.width, 0f),
                     pathEffect = pathEffect
@@ -490,7 +496,7 @@ private fun ChartLabelTop(
             .drawBehind {
                 val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
                 drawLine(
-                    color = colors.steel10,
+                    color = colors.blade,
                     start = Offset(0f, size.height),
                     end = Offset(size.width, size.height),
                     pathEffect = pathEffect

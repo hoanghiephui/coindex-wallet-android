@@ -34,6 +34,7 @@ import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.core.stats.statAccountType
 import io.horizontalsystems.bankwallet.modules.manageaccounts.ManageAccountsModule
+import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.CellSingleLineLawrenceSection
@@ -109,7 +110,10 @@ private fun CreateAccountIntroScreen(
             onFinish.invoke()
             viewModel.onSuccessMessageShown()
 
-            stat(page = StatPage.NewWallet, event = StatEvent.CreateWallet(accountType.statAccountType))
+            stat(
+                page = StatPage.NewWallet,
+                event = StatEvent.CreateWallet(accountType.statAccountType)
+            )
         }
     }
 
@@ -120,8 +124,8 @@ private fun CreateAccountIntroScreen(
                     menuItems = listOf(
                         MenuItem(
                             title = TranslatableString.ResString(R.string.Button_Create),
-                            onClick = viewModel::createAccount
-                        )
+                            onClick = viewModel::createAccount,
+                        tint = ComposeAppTheme.colors.jacob)
                     ),
                     navigationIcon = {
                         HsBackButton(onClick = onBackClick)
@@ -147,7 +151,10 @@ private fun CreateAccountIntroScreen(
                         .clickable {
                             openCreateAdvancedScreen.invoke()
 
-                            stat(page = StatPage.NewWallet, event = StatEvent.Open(StatPage.NewWalletAdvanced))
+                            stat(
+                                page = StatPage.NewWallet,
+                                event = StatEvent.Open(StatPage.NewWalletAdvanced)
+                            )
                         }
                         .padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,

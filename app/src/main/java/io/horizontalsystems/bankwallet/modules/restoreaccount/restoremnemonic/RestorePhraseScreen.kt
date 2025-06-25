@@ -156,7 +156,7 @@ fun RestorePhrase(
     val borderColor = if (uiState.error != null) {
         ComposeAppTheme.colors.red50
     } else {
-        ComposeAppTheme.colors.steel20
+        ComposeAppTheme.colors.blade
     }
     val (adState, _) = rememberAdNativeView(
         BuildConfig.HOME_MARKET_NATIVE,
@@ -177,7 +177,8 @@ fun RestorePhrase(
                 menuItems = listOf(
                     MenuItem(
                         title = TranslatableString.ResString(R.string.Button_Next),
-                        onClick = viewModel::onProceed
+                        onClick = viewModel::onProceed,
+                        tint = ComposeAppTheme.colors.jacob
                     )
                 )
             )
@@ -216,7 +217,7 @@ fun RestorePhrase(
                         .padding(horizontal = 16.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
-                        .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+                        .border(0.5.dp, borderColor, RoundedCornerShape(12.dp))
                         .background(ComposeAppTheme.colors.lawrence),
                 ) {
 
@@ -296,7 +297,10 @@ fun RestorePhrase(
                                     textState = textState.copy(text = "", selection = TextRange(0))
                                     viewModel.onEnterMnemonicPhrase("", "".length)
 
-                                    stat(page = statPage, event = StatEvent.Clear(StatEntity.RecoveryPhrase))
+                                    stat(
+                                        page = statPage,
+                                        event = StatEvent.Clear(StatEntity.RecoveryPhrase)
+                                    )
                                 }
                             )
                         } else {
@@ -308,7 +312,10 @@ fun RestorePhrase(
                                         QRScannerActivity.getScanQrIntent(context)
                                     )
 
-                                    stat(page = statPage, event = StatEvent.ScanQr(StatEntity.RecoveryPhrase))
+                                    stat(
+                                        page = statPage,
+                                        event = StatEvent.ScanQr(StatEntity.RecoveryPhrase)
+                                    )
                                 }
                             )
 
@@ -328,7 +335,10 @@ fun RestorePhrase(
                                         )
                                     }
 
-                                    stat(page = statPage, event = StatEvent.Paste(StatEntity.RecoveryPhrase))
+                                    stat(
+                                        page = statPage,
+                                        event = StatEvent.Paste(StatEntity.RecoveryPhrase)
+                                    )
                                 },
                             )
                         }
@@ -337,9 +347,8 @@ fun RestorePhrase(
                     Spacer(modifier = Modifier.height(4.dp))
                 }
 
-                Spacer(Modifier.height(8.dp))
-
                 uiState.error?.let { errorText ->
+                    VSpacer(8.dp)
                     caption_lucian(
                         modifier = Modifier.padding(horizontal = 32.dp),
                         text = errorText
@@ -347,7 +356,7 @@ fun RestorePhrase(
                 }
                 VSpacer(height = 8.dp)
                 MaxTemplateNativeAdViewComposable(adState, AdType.SMALL, navController)
-                Spacer(Modifier.height(32.dp))
+                VSpacer(32.dp)
 
                 if (advanced) {
                     BottomSection(
@@ -357,6 +366,26 @@ fun RestorePhrase(
                         coroutineScope
                     )
                 } else {
+                    CellUniversalLawrenceSection(
+                        listOf(
+                            {
+                                PassphraseCell(
+                                    enabled = uiState.passphraseEnabled,
+                                    onCheckedChange = viewModel::onTogglePassphrase
+                                )
+                            }
+                        )
+                    )
+                    if (uiState.passphraseEnabled) {
+                        VSpacer(16.dp)
+                        PassPhraseBlock(
+                            error = uiState.passphraseError,
+                            onEnterPassphrase = {
+                                viewModel.onEnterPassphrase(it)
+                            }
+                        )
+                    }
+                    VSpacer(32.dp)
                     CellSingleLineLawrenceSection {
                         Row(
                             modifier = Modifier
@@ -448,7 +477,6 @@ private fun BottomSection(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var showLanguageSelectorDialog by remember { mutableStateOf(false) }
-    var hidePassphrase by remember { mutableStateOf(true) }
 
     if (showLanguageSelectorDialog) {
         SelectorDialogCompose(
@@ -494,22 +522,12 @@ private fun BottomSection(
     )
 
     if (uiState.passphraseEnabled) {
-        Spacer(modifier = Modifier.height(24.dp))
-        FormsInputPassword(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            hint = stringResource(R.string.Passphrase),
-            state = uiState.passphraseError?.let { DataState.Error(Exception(it)) },
-            onValueChange = viewModel::onEnterPassphrase,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            hide = hidePassphrase,
-            onToggleHide = {
-                hidePassphrase = !hidePassphrase
+        VSpacer(24.dp)
+        PassPhraseBlock(
+            error = uiState.passphraseError,
+            onEnterPassphrase = {
+                viewModel.onEnterPassphrase(it)
             }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        TextImportantWarning(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = stringResource(R.string.Restore_PassphraseDescription)
         )
     }
 
@@ -535,6 +553,30 @@ private fun BottomSection(
         }
     }
     Spacer(Modifier.height(62.dp))
+}
+
+@Composable
+private fun PassPhraseBlock(
+    error: String? = null,
+    onEnterPassphrase: (String) -> Unit = {}
+) {
+    var hidePassphrase by remember { mutableStateOf(true) }
+    FormsInputPassword(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        hint = stringResource(R.string.Passphrase),
+        state = error?.let { DataState.Error(Exception(it)) },
+        onValueChange = onEnterPassphrase,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        hide = hidePassphrase,
+        onToggleHide = {
+            hidePassphrase = !hidePassphrase
+        }
+    )
+    Spacer(modifier = Modifier.height(16.dp))
+    TextImportantWarning(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        text = stringResource(R.string.Restore_PassphraseDescription)
+    )
 }
 
 @Composable

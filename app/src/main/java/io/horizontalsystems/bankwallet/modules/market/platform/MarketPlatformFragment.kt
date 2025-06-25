@@ -39,7 +39,9 @@ import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
+import io.horizontalsystems.bankwallet.core.stats.StatSection
 import io.horizontalsystems.bankwallet.core.stats.stat
+import io.horizontalsystems.bankwallet.core.stats.statPeriod
 import io.horizontalsystems.bankwallet.core.stats.statSortType
 import io.horizontalsystems.bankwallet.entities.ViewState
 import io.horizontalsystems.bankwallet.modules.chart.ChartViewModel
@@ -121,6 +123,8 @@ private fun PlatformScreen(
     val infoModalBottomSheetState =
         androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isInfoBottomSheetVisible by remember { mutableStateOf(false) }
+    var openPeriodSelector by rememberSaveable { mutableStateOf(false) }
+
     val (adState, reloadAd) = rememberAdNativeView(
         BuildConfig.HOME_MARKET_NATIVE,
         adPlacements = "PlatformScreen",
@@ -214,6 +218,13 @@ private fun PlatformScreen(
                                                         openSortingSelector = true
                                                     }
                                                 )
+                                                HSpacer(width = 12.dp)
+                                                OptionController(
+                                                    uiState.timePeriod.titleResId,
+                                                    onOptionClick = {
+                                                        openPeriodSelector = true
+                                                    }
+                                                )
                                             }
                                         }
                                     },
@@ -235,9 +246,25 @@ private fun PlatformScreen(
             }
         }
     }
+    if (openPeriodSelector) {
+        AlertGroup(
+            stringResource(R.string.CoinPage_Period),
+            Select(uiState.timePeriod, viewModel.periods),
+            { selected ->
+                viewModel.onTimePeriodSelect(selected)
+                openPeriodSelector = false
+                stat(
+                    page = StatPage.Markets,
+                    event = StatEvent.SwitchPeriod(selected.statPeriod),
+                    section = StatSection.Platforms
+                )
+            },
+            { openPeriodSelector = false }
+        )
+    }
     if (openSortingSelector) {
         AlertGroup(
-            R.string.Market_Sort_PopupTitle,
+            stringResource(R.string.Market_Sort_PopupTitle),
             Select(uiState.sortingField, viewModel.sortingFields),
             { selected ->
                 scrollToTopAfterUpdate = true

@@ -21,8 +21,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,10 +59,12 @@ import io.horizontalsystems.bankwallet.modules.balance.BackupRequiredError
 import io.horizontalsystems.bankwallet.modules.balance.BalanceViewItem
 import io.horizontalsystems.bankwallet.modules.balance.BalanceViewModel
 import io.horizontalsystems.bankwallet.modules.balance.DeemedValue
+import io.horizontalsystems.bankwallet.modules.balance.ZcashLockedValue
 import io.horizontalsystems.bankwallet.modules.coin.CoinFragment
-import io.horizontalsystems.bankwallet.modules.evmfee.FeeSettingsInfoDialog
 import io.horizontalsystems.bankwallet.modules.manageaccount.dialogs.BackupRequiredDialog
+import io.horizontalsystems.bankwallet.modules.receive.ReceiveFragment
 import io.horizontalsystems.bankwallet.modules.send.address.EnterAddressFragment
+import io.horizontalsystems.bankwallet.modules.send.zcash.shield.ShieldZcashFragment
 import io.horizontalsystems.bankwallet.modules.syncerror.SyncErrorDialog
 import io.horizontalsystems.bankwallet.modules.transactions.TransactionViewItem
 import io.horizontalsystems.bankwallet.modules.transactions.TransactionsViewModel
@@ -77,10 +85,13 @@ import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.TextImportantWarning
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
+import io.horizontalsystems.bankwallet.ui.compose.components.body_bran
 import io.horizontalsystems.bankwallet.ui.compose.components.body_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
+import io.horizontalsystems.bankwallet.ui.extensions.BottomSheetHeader
 import io.horizontalsystems.bankwallet.ui.extensions.RotatingCircleProgressView
 import io.horizontalsystems.core.helpers.HudHelper
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -241,7 +252,7 @@ private fun TokenBalanceHeader(
         } else {
             Text(
                 text = if (balanceViewItem.secondaryValue.visible) balanceViewItem.secondaryValue.value else "*****",
-                color = if (balanceViewItem.secondaryValue.dimmed) ComposeAppTheme.colors.grey50 else ComposeAppTheme.colors.grey,
+                color = if (balanceViewItem.secondaryValue.dimmed) ComposeAppTheme.colors.andy else ComposeAppTheme.colors.grey,
                 style = ComposeAppTheme.typography.body,
                 maxLines = 1,
             )
@@ -261,22 +272,123 @@ private fun TokenBalanceHeader(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LockedBalanceSection(balanceViewItem: BalanceViewItem, navController: NavController) {
+    val infoModalBottomSheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var bottomSheetContent by remember { mutableStateOf<BottomSheetContent?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+
     if (balanceViewItem.lockedValues.isNotEmpty()) {
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
-                .border(1.dp, ComposeAppTheme.colors.steel20, RoundedCornerShape(12.dp))
+                .border(0.5.dp, ComposeAppTheme.colors.blade, RoundedCornerShape(12.dp))
         ) {
             balanceViewItem.lockedValues.forEach { lockedValue ->
+                val infoTitle = lockedValue.infoTitle.getString()
+                val infoText = lockedValue.info.getString()
+                val actionButtonTitle: String?
+                val onClickActionButton: (() -> Unit)?
+
+                if (lockedValue is ZcashLockedValue) {
+                    actionButtonTitle = stringResource(R.string.Balance_Zcash_UnshieldedBalance_Shield)
+                    onClickActionButton = {
+                        coroutineScope.launch {
+                            bottomSheetContent = null
+                            infoModalBottomSheetState.hide()
+                        }
+
+                        navController.slideFromRight(
+                            R.id.shieldZcash,
+                            ShieldZcashFragment.Input(balanceViewItem.wallet, R.id.tokenBalanceFragment)
+                        )
+                    }
+                } else {
+                    actionButtonTitle = null
+                    onClickActionButton = null
+                }
+
                 LockedBalanceCell(
                     title = lockedValue.title.getString(),
-                    infoTitle = lockedValue.infoTitle.getString(),
-                    infoText = lockedValue.info.getString(),
-                    lockedAmount = lockedValue.coinValue,
-                    navController = navController
+                    lockedAmount = lockedValue.coinValue
+                ) {
+                    bottomSheetContent = BottomSheetContent(
+                        icon = R.drawable.ic_info_24,
+                        title = infoTitle,
+                        description = infoText,
+                        actionButtonTitle = actionButtonTitle,
+                        onClickActionButton = onClickActionButton
+                    )
+                    coroutineScope.launch {
+                        infoModalBottomSheetState.show()
+                    }
+                }
+            }
+        }
+        bottomSheetContent?.let { info ->
+            InfoBottomSheet(
+                content = info,
+                bottomSheetState = infoModalBottomSheetState,
+                hideBottomSheet = {
+                    coroutineScope.launch {
+                        infoModalBottomSheetState.hide()
+                    }
+                    bottomSheetContent = null
+                }
+            )
+        }
+    }
+}
+
+data class BottomSheetContent(
+    val icon: Int,
+    val title: String,
+    val description: String,
+    val actionButtonTitle: String? = null,
+    val onClickActionButton: (() -> Unit)? = null
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun InfoBottomSheet(
+    content: BottomSheetContent,
+    hideBottomSheet: () -> Unit,
+    bottomSheetState: SheetState
+) {
+    ModalBottomSheet(
+        onDismissRequest = hideBottomSheet,
+        sheetState = bottomSheetState,
+        containerColor = ComposeAppTheme.colors.transparent
+    ) {
+        BottomSheetHeader(
+            iconPainter = painterResource(content.icon),
+            title = content.title,
+            titleColor = ComposeAppTheme.colors.leah,
+            iconTint = ColorFilter.tint(ComposeAppTheme.colors.grey),
+            onCloseClick = hideBottomSheet
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(vertical = 12.dp, horizontal = 24.dp)
+                    .fillMaxWidth()
+            ) {
+                body_bran(
+                    text = content.description,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
                 )
+                VSpacer(56.dp)
+                content.actionButtonTitle?.let {
+                    ButtonPrimaryYellow(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = content.actionButtonTitle,
+                        onClick = content.onClickActionButton ?: {}
+                    )
+                    VSpacer(32.dp)
+                }
+
             }
         }
     }
@@ -285,10 +397,8 @@ private fun LockedBalanceSection(balanceViewItem: BalanceViewItem, navController
 @Composable
 private fun LockedBalanceCell(
     title: String,
-    infoTitle: String,
-    infoText: String,
     lockedAmount: DeemedValue<String>,
-    navController: NavController
+    onClickInfo: () -> Unit
 ) {
 
     RowUniversal(
@@ -303,12 +413,7 @@ private fun LockedBalanceCell(
         HSpacer(8.dp)
         HsIconButton(
             modifier = Modifier.size(20.dp),
-            onClick = {
-                navController.slideFromBottom(
-                    R.id.feeSettingsInfoDialog,
-                    FeeSettingsInfoDialog.Input(infoTitle, infoText)
-                )
-            }
+            onClick = onClickInfo
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_info_20),
@@ -320,8 +425,8 @@ private fun LockedBalanceCell(
         Text(
             modifier = Modifier.padding(start = 6.dp),
             text = if (lockedAmount.visible) lockedAmount.value else "*****",
-            color = if (lockedAmount.dimmed) ComposeAppTheme.colors.grey50 else ComposeAppTheme.colors.leah,
-            style = ComposeAppTheme.typography.subhead2,
+            color = if (lockedAmount.dimmed) ComposeAppTheme.colors.andy else ComposeAppTheme.colors.leah,
+            style = ComposeAppTheme.typography.subheadR,
             maxLines = 1,
         )
     }
@@ -409,7 +514,7 @@ private fun ButtonsRow(
     val onClickReceive = {
         try {
             val wallet = viewModel.getWalletForReceive()
-            navController.slideFromRight(R.id.receiveFragment, wallet)
+            navController.slideFromRight(R.id.receiveFragment, ReceiveFragment.Input(wallet))
 
             stat(page = StatPage.TokenPage, event = StatEvent.OpenReceive(wallet.token))
         } catch (e: BackupRequiredError) {

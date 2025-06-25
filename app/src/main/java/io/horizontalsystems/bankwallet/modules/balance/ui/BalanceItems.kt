@@ -76,11 +76,15 @@ import io.horizontalsystems.bankwallet.modules.sendtokenselect.SendTokenSelectFr
 import io.horizontalsystems.bankwallet.ui.CollapsingLayout
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.HSSwipeRefresh
+import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryCircle
+import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryDefault
+import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryCircle
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryTransparent
 import io.horizontalsystems.bankwallet.ui.compose.components.DoubleText
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderSorting
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.SelectorDialogCompose
 import io.horizontalsystems.bankwallet.ui.compose.components.SelectorItem
@@ -143,7 +147,7 @@ fun Note(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+            .border(0.5.dp, borderColor, RoundedCornerShape(12.dp))
             .background(backgroundColor)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -160,7 +164,7 @@ fun Note(
                 modifier = Modifier.weight(1f),
                 text = title,
                 color = textColor,
-                style = ComposeAppTheme.typography.subhead1
+                style = ComposeAppTheme.typography.subhead
             )
             onClose?.let {
                 HsIconButton(
@@ -261,59 +265,74 @@ fun BalanceItems(
             },
             collapsedContent = { modifier ->
                 if (uiState.balanceTabButtonsEnabled && !accountViewItem.isWatchAccount) {
-                    BalanceAction(
-                        modifier = modifier,
-                        isSwapEnabled = viewModel.isSwapEnabled,
-                        onClickSend = {
-                            navController.slideFromRight(R.id.sendTokenSelectFragment)
+                    Row(
+                        modifier = Modifier.padding(horizontal = 24.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ButtonPrimaryYellow(
+                            modifier = Modifier.weight(1f),
+                            title = stringResource(R.string.Balance_Send),
+                            onClick = {
+                                navController.slideFromRight(R.id.sendTokenSelectFragment)
 
-                            stat(
-                                page = StatPage.Balance,
-                                event = StatEvent.Open(StatPage.SendTokenList)
-                            )
-                        },
-                        onClickSwap = {
-                            navController.slideFromRight(R.id.multiswap)
-
-                            stat(
-                                page = StatPage.Balance,
-                                event = StatEvent.Open(StatPage.Swap)
-                            )
-                        },
-                        onClickReceive = {
-                            when (val receiveAllowedState =
-                                viewModel.getReceiveAllowedState()) {
-                                ReceiveAllowedState.Allowed -> {
-                                    navController.slideFromRight(R.id.receiveFragment)
-
-                                    stat(
-                                        page = StatPage.Balance,
-                                        event = StatEvent.Open(StatPage.ReceiveTokenList)
-                                    )
-                                }
-
-                                is ReceiveAllowedState.BackupRequired -> {
-                                    val account = receiveAllowedState.account
-                                    val text = Translator.getString(
-                                        R.string.Balance_Receive_BackupRequired_Description,
-                                        account.name
-                                    )
-                                    navController.slideFromBottom(
-                                        R.id.backupRequiredDialog,
-                                        BackupRequiredDialog.Input(account, text)
-                                    )
-
-                                    stat(
-                                        page = StatPage.Balance,
-                                        event = StatEvent.Open(StatPage.BackupRequired)
-                                    )
-                                }
-
-                                null -> Unit
+                                stat(
+                                    page = StatPage.Balance,
+                                    event = StatEvent.Open(StatPage.SendTokenList)
+                                )
                             }
-                        },
-                        onClickSwitchWallet = onClickSwitchWallet
-                    )
+                        )
+                        HSpacer(8.dp)
+                        ButtonPrimaryDefault(
+                            modifier = Modifier.weight(1f),
+                            title = stringResource(R.string.Balance_Receive),
+                            onClick = {
+                                when (val receiveAllowedState = viewModel.getReceiveAllowedState()) {
+                                    ReceiveAllowedState.Allowed -> {
+                                        navController.slideFromRight(R.id.receiveChooseCoinFragment)
+
+                                        stat(
+                                            page = StatPage.Balance,
+                                            event = StatEvent.Open(StatPage.ReceiveTokenList)
+                                        )
+                                    }
+
+                                    is ReceiveAllowedState.BackupRequired -> {
+                                        val account = receiveAllowedState.account
+                                        val text = Translator.getString(
+                                            R.string.Balance_Receive_BackupRequired_Description,
+                                            account.name
+                                        )
+                                        navController.slideFromBottom(
+                                            R.id.backupRequiredDialog,
+                                            BackupRequiredDialog.Input(account, text)
+                                        )
+
+                                        stat(
+                                            page = StatPage.Balance,
+                                            event = StatEvent.Open(StatPage.BackupRequired)
+                                        )
+                                    }
+
+                                    null -> Unit
+                                }
+                            }
+                        )
+                        if (viewModel.isSwapEnabled) {
+                            HSpacer(8.dp)
+                            ButtonPrimaryCircle(
+                                icon = R.drawable.ic_swap_24,
+                                contentDescription = stringResource(R.string.Swap),
+                                onClick = {
+                                    navController.slideFromRight(R.id.multiswap)
+
+                                    stat(
+                                        page = StatPage.Balance,
+                                        event = StatEvent.Open(StatPage.Swap)
+                                    )
+                                }
+                            )
+                        }
+                    }
                 }
             }
         ) { modifier ->
@@ -551,7 +570,7 @@ fun TotalBalanceRow(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .padding(top = 16.dp),
-                style = ComposeAppTheme.typography.subhead1,
+                style = ComposeAppTheme.typography.subhead,
                 color = Color(0xFFBBCDFF)
             )
 

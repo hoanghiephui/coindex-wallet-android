@@ -4,6 +4,9 @@ import android.app.Activity
 import androidx.lifecycle.viewModelScope
 import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.core.ViewModelUiState
+import io.horizontalsystems.bankwallet.core.stats.StatEvent
+import io.horizontalsystems.bankwallet.core.stats.StatPage
+import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.subscriptions.core.BasePlan
 import io.horizontalsystems.subscriptions.core.HSPurchase
 import io.horizontalsystems.subscriptions.core.UserSubscriptionManager
@@ -54,6 +57,8 @@ class BuySubscriptionChoosePlanViewModel : ViewModelUiState<BuySubscriptionChoos
                     UserSubscriptionManager.launchPurchaseFlow(subscriptionId, offerToken, activity)
 
                 purchase = hsPurchase
+
+                stat(page = StatPage.PurchaseSelector, event = StatEvent.Subscribe)
             } catch (e: Throwable) {
                 error = e
             }

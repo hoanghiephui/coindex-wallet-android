@@ -35,7 +35,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_lucian
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_remus
-import io.horizontalsystems.bankwallet.ui.compose.components.title2_leah
+import io.horizontalsystems.bankwallet.ui.compose.components.title3_leah
 
 @Composable
 fun StartSetupWalletScreen(
@@ -63,7 +63,7 @@ fun StartSetupWalletScreen(
                     contentDescription = null
                 )
             }
-            title2_leah(
+            title3_leah(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp), text = "Wallet Setup"

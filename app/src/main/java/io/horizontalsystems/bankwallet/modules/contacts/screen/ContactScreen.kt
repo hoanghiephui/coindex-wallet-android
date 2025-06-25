@@ -172,6 +172,7 @@ fun ContactScreen(
                         MenuItem(
                             title = TranslatableString.ResString(R.string.Button_Save),
                             enabled = uiState.saveEnabled,
+                            tint = ComposeAppTheme.colors.jacob,
                             onClick = viewModel::onSave
                         )
                     )

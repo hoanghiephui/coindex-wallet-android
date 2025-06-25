@@ -138,7 +138,7 @@ fun RestorePhraseNonStandard(
     val borderColor = if (uiState.error != null) {
         ComposeAppTheme.colors.red50
     } else {
-        ComposeAppTheme.colors.steel20
+        ComposeAppTheme.colors.blade
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -152,7 +152,8 @@ fun RestorePhraseNonStandard(
                 menuItems = listOf(
                     MenuItem(
                         title = TranslatableString.ResString(R.string.Button_Next),
-                        onClick = viewModel::onProceed
+                        onClick = viewModel::onProceed,
+                        tint = ComposeAppTheme.colors.jacob
                     )
                 )
             )
@@ -189,7 +190,7 @@ fun RestorePhraseNonStandard(
                         .padding(horizontal = 16.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
-                        .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+                        .border(0.5.dp, borderColor, RoundedCornerShape(12.dp))
                         .background(ComposeAppTheme.colors.lawrence),
                 ) {
 
@@ -269,7 +270,10 @@ fun RestorePhraseNonStandard(
                                     textState = textState.copy(text = "", selection = TextRange(0))
                                     viewModel.onEnterMnemonicPhrase("", "".length)
 
-                                    stat(page = StatPage.ImportWalletNonStandard, event = StatEvent.Clear(StatEntity.RecoveryPhrase))
+                                    stat(
+                                        page = StatPage.ImportWalletNonStandard,
+                                        event = StatEvent.Clear(StatEntity.RecoveryPhrase)
+                                    )
                                 }
                             )
                         } else {
@@ -281,7 +285,10 @@ fun RestorePhraseNonStandard(
                                         QRScannerActivity.getScanQrIntent(context)
                                     )
 
-                                    stat(page = StatPage.ImportWalletNonStandard, event = StatEvent.ScanQr(StatEntity.RecoveryPhrase))
+                                    stat(
+                                        page = StatPage.ImportWalletNonStandard,
+                                        event = StatEvent.ScanQr(StatEntity.RecoveryPhrase)
+                                    )
                                 }
                             )
 
@@ -300,7 +307,10 @@ fun RestorePhraseNonStandard(
                                             textInClipboard.length
                                         )
 
-                                        stat(page = StatPage.ImportWalletNonStandard, event = StatEvent.Paste(StatEntity.RecoveryPhrase))
+                                        stat(
+                                            page = StatPage.ImportWalletNonStandard,
+                                            event = StatEvent.Paste(StatEntity.RecoveryPhrase)
+                                        )
                                     }
                                 },
                             )
@@ -364,7 +374,10 @@ fun RestorePhraseNonStandard(
         openSelectCoinsScreen.invoke()
         viewModel.onSelectCoinsShown()
 
-        stat(page = StatPage.ImportWalletNonStandard, event = StatEvent.Open(StatPage.RestoreSelect))
+        stat(
+            page = StatPage.ImportWalletNonStandard,
+            event = StatEvent.Open(StatPage.RestoreSelect)
+        )
     }
 
     if (showCustomKeyboardDialog) {

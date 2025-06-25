@@ -81,7 +81,7 @@ fun SubscriptionBannerView(
                 Column {
                     Text(
                         text = stringResource(R.string.SettingsBanner_PremiumBannerDescription),
-                        style = ComposeAppTheme.typography.subhead1,
+                        style = ComposeAppTheme.typography.subhead,
                         color = Bright,
                     )
                     if (hasFreeTrial) {
@@ -118,12 +118,7 @@ class SubscriptionBannerViewModel : ViewModelUiState<SubscriptionBannerUiState>(
 
     init {
         viewModelScope.launch {
-            val subscriptions = UserSubscriptionManager.getSubscriptions()
-            val plans = subscriptions.flatMap { subscription ->
-                UserSubscriptionManager.getBasePlans(subscription.id)
-            }
-            hasFreeTrial = plans.any { it.hasFreeTrial }
-
+            hasFreeTrial = UserSubscriptionManager.hasFreeTrial()
             emitState()
         }
     }

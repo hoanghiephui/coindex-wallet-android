@@ -54,9 +54,9 @@ import com.journeyapps.barcodescanner.ScanOptions
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseActivity
 import io.horizontalsystems.bankwallet.core.utils.ModuleField
+import io.horizontalsystems.bankwallet.ui.compose.Bright
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.Dark
-import io.horizontalsystems.bankwallet.ui.compose.SteelLight
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimary
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryDefaults
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryTransparent
@@ -188,10 +188,10 @@ private fun QRScannerScreen(
                         )
                     },
                     buttonColors = ButtonPrimaryDefaults.textButtonColors(
-                        backgroundColor = SteelLight,
+                        backgroundColor = Bright,
                         contentColor = ComposeAppTheme.colors.dark,
-                        disabledBackgroundColor = ComposeAppTheme.colors.steel20,
-                        disabledContentColor = ComposeAppTheme.colors.grey50,
+                        disabledBackgroundColor = ComposeAppTheme.colors.blade,
+                        disabledContentColor = ComposeAppTheme.colors.andy,
                     ),
                     onClick = onCloseClick
                 )
@@ -252,7 +252,7 @@ private fun TextPrimaryButton(
 
     Surface(
         color = ComposeAppTheme.colors.transparent,
-        contentColor = SteelLight,
+        contentColor = Bright,
     ) {
         Row(
             Modifier

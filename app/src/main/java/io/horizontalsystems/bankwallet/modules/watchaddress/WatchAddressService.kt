@@ -27,9 +27,9 @@ class WatchAddressService(
     fun tokens(accountType: AccountType): List<Token> {
         val tokenQueries = buildList {
             when (accountType) {
-                is AccountType.Cex,
                 is AccountType.Mnemonic,
-                is AccountType.EvmPrivateKey -> Unit // N/A
+                is AccountType.EvmPrivateKey,
+                is AccountType.StellarSecretKey -> Unit // N/A
                 is AccountType.SolanaAddress -> {
                     if (BlockchainType.Solana.supports(accountType)) {
                         add(TokenQuery(BlockchainType.Solana, TokenType.Native))
@@ -57,6 +57,12 @@ class WatchAddressService(
                 is AccountType.TonAddress -> {
                     if (BlockchainType.Ton.supports(accountType)) {
                         add(TokenQuery(BlockchainType.Ton, TokenType.Native))
+                    }
+                }
+
+                is AccountType.StellarAddress -> {
+                    if (BlockchainType.Stellar.supports(accountType)) {
+                        add(TokenQuery(BlockchainType.Stellar, TokenType.Native))
                     }
                 }
 

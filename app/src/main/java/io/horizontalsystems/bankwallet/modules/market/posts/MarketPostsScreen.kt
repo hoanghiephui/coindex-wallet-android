@@ -59,7 +59,7 @@ fun MarketPostsScreen(
     onSetRefreshCallback {
         viewModel.refresh()
         reloadAd()
-        stat(page = StatPage.Markets, section = StatSection.News, event = StatEvent.Refresh)
+        stat(page = StatPage.Markets, event = StatEvent.Refresh, section = StatSection.News)
     }
 
     Crossfade(
@@ -101,9 +101,10 @@ fun MarketPostsScreen(
 
                             stat(
                                 page = StatPage.Markets,
-                                section = StatSection.News,
+
                                 event = StatEvent.Open(StatPage.ExternalNews)
-                            )
+                            ,
+                                    section = StatSection.News)
                         }
                     }
                     item {

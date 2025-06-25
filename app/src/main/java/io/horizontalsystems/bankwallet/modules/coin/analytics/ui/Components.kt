@@ -39,13 +39,14 @@ import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.ChartBars
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.StackBarSlice
 import io.horizontalsystems.bankwallet.ui.compose.components.StackedBarChart
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.headline1_bran
-import io.horizontalsystems.bankwallet.ui.compose.components.microSB_claude
+import io.horizontalsystems.bankwallet.ui.compose.components.microSB_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
@@ -101,7 +102,7 @@ private fun PremiumBadge() {
             )
             .padding(horizontal = 6.dp, vertical = 2.dp)
     ) {
-        microSB_claude(
+        microSB_leah(
             text = stringResource(R.string.Premium_Title),
         )
     }
@@ -138,11 +139,7 @@ fun AnalyticsFooterCell(
     onActionClick: (CoinAnalyticsModule.ActionType) -> Unit
 ) {
     if (showTopDivider) {
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = ComposeAppTheme.colors.steel10,
-            modifier = Modifier.fillMaxWidth()
-        )
+        HsDivider(modifier = Modifier.fillMaxWidth())
     }
     RowUniversal(
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -247,7 +244,7 @@ private fun RatingCell(rating: OverallScore) {
     }
     Text(
         text = stringResource(rating.title).uppercase(),
-        style = ComposeAppTheme.typography.subhead1,
+        style = ComposeAppTheme.typography.subhead,
         color = color,
     )
     HSpacer(8.dp)
@@ -281,11 +278,7 @@ fun AnalyticsContainer(
 
     VSpacer(12.dp)
     sectionTitle?.let {
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = ComposeAppTheme.colors.steel10,
-            modifier = Modifier.fillMaxWidth()
-        )
+        HsDivider(modifier = Modifier.fillMaxWidth())
         RowUniversal(content = it)
     }
     Card(
@@ -297,11 +290,7 @@ fun AnalyticsContainer(
         titleRow?.invoke()
         content.invoke()
         if (showFooterDivider) {
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = ComposeAppTheme.colors.steel10,
-                modifier = Modifier.fillMaxWidth()
-            )
+            HsDivider(modifier = Modifier.fillMaxWidth())
         }
         Column(
             content = bottomRows

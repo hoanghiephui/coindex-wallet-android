@@ -178,7 +178,8 @@ object APIClient {
             .client(client)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(
-                GsonConverterFactory.create(GsonBuilder().setStrictness(Strictness.LENIENT).create())
+                GsonConverterFactory
+                    .create(GsonBuilder().setStrictness(Strictness.LENIENT).create())
             )
             .build()
     }

@@ -1,7 +1,10 @@
 package io.horizontalsystems.bankwallet.modules.send.address
 
 import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.core.App
+import io.horizontalsystems.bankwallet.core.IAdapterManager
 import io.horizontalsystems.bankwallet.core.ISendBitcoinAdapter
+import io.horizontalsystems.bankwallet.core.ISendStellarAdapter
 import io.horizontalsystems.bankwallet.core.ISendTronAdapter
 import io.horizontalsystems.bankwallet.core.ISendZcashAdapter
 import io.horizontalsystems.bankwallet.core.adapters.zcash.ZcashAdapter.ZcashError
@@ -18,9 +21,14 @@ interface EnterAddressValidator {
 }
 
 class BitcoinAddressValidator(
-    private val adapter: ISendBitcoinAdapter
+    private val token: Token,
+    private val adapterManager: IAdapterManager
 ) : EnterAddressValidator {
+    private val sendAdapter by lazy { adapterManager.getAdapterForToken<ISendBitcoinAdapter>(token) }
+
     override suspend fun validate(address: Address) {
+        val adapter = sendAdapter ?: throw AddressValidationError.NoAdapter()
+
         adapter.validate(address.hex, null)
     }
 }
@@ -44,11 +52,22 @@ class TonAddressValidator : EnterAddressValidator {
     }
 }
 
-class TronAddressValidator(
-    private val adapter: ISendTronAdapter,
-    private val token: Token
-) : EnterAddressValidator {
+class StellarAddressValidator(private val token: Token) : EnterAddressValidator {
+    private val sendAdapter by lazy { App.adapterManager.getAdapterForToken<ISendStellarAdapter>(token) }
     override suspend fun validate(address: Address) {
+        val adapter = sendAdapter ?: throw AddressValidationError.NoAdapter()
+        adapter.validate(address.hex)
+    }
+}
+
+class TronAddressValidator(
+    private val token: Token,
+    private val adapterManager: IAdapterManager
+) : EnterAddressValidator {
+    private val sendAdapter by lazy { adapterManager.getAdapterForToken<ISendTronAdapter>(token) }
+    override suspend fun validate(address: Address) {
+        val adapter = sendAdapter ?: throw AddressValidationError.NoAdapter()
+
         val validAddress = io.horizontalsystems.tronkit.models.Address.fromBase58(address.hex)
         if (token.type == TokenType.Native && adapter.isOwnAddress(validAddress)) {
             throw AddressValidationError.SendToSelfForbidden(
@@ -59,9 +78,14 @@ class TronAddressValidator(
 }
 
 class ZcashAddressValidator(
-    private val adapter: ISendZcashAdapter
+    private val token: Token,
+    private val adapterManager: IAdapterManager,
 ) : EnterAddressValidator {
+    private val sendAdapter by lazy { adapterManager.getAdapterForToken<ISendZcashAdapter>(token) }
+
     override suspend fun validate(address: Address) {
+        val adapter = sendAdapter ?: throw AddressValidationError.NoAdapter()
+
         try {
             adapter.validate(address.hex)
         } catch (e: ZcashError.SendToSelfNotAllowed) {
@@ -73,5 +97,8 @@ class ZcashAddressValidator(
 }
 
 sealed class AddressValidationError : Throwable() {
+    class NoAdapter : AddressValidationError() {
+        override val message = "Send adapter is not found"
+    }
     class SendToSelfForbidden(override val message: String) : AddressValidationError()
 }

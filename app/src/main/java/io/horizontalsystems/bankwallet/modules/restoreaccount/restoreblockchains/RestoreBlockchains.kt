@@ -48,9 +48,11 @@ import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.CellMultilineClear
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsSwitch
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
+import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.extensions.BottomSheetSelectorMultiple
@@ -168,7 +170,8 @@ fun ManageWalletsScreen(
                         MenuItem(
                             title = TranslatableString.ResString(R.string.Button_Restore),
                             onClick = { viewModel.onRestore() },
-                            enabled = doneButtonEnabled
+                            enabled = doneButtonEnabled,
+                            tint = ComposeAppTheme.colors.jacob
                         )
                     ),
                 )
@@ -181,9 +184,7 @@ fun ManageWalletsScreen(
             ) {
                 item {
                     Spacer(modifier = Modifier.height(12.dp))
-                    HorizontalDivider(
-                        color = ComposeAppTheme.colors.steel10,
-                    )
+                    HsDivider()
                 }
                 coinItems?.let {
                     items(it) { viewItem ->
@@ -234,6 +235,10 @@ fun ManageWalletsScreen(
                             }
                         }
                     }
+                }
+
+                item {
+                    VSpacer(height = 32.dp)
                 }
             }
         }

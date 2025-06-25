@@ -64,7 +64,7 @@ fun FormsInput(
     prefix: String? = null,
     textColor: Color = ComposeAppTheme.colors.leah,
     textStyle: TextStyle = ComposeAppTheme.typography.body,
-    hintColor: Color = ComposeAppTheme.colors.grey50,
+    hintColor: Color = ComposeAppTheme.colors.andy,
     hintStyle: TextStyle = ComposeAppTheme.typography.body,
     singleLine: Boolean = false,
     state: DataState<Any>? = null,
@@ -88,7 +88,7 @@ fun FormsInput(
                 ComposeAppTheme.colors.red50
             }
         }
-        else -> ComposeAppTheme.colors.steel20
+        else -> ComposeAppTheme.colors.blade
     }
 
     val cautionColor = if (state?.errorOrNull is FormsInputStateWarning) {
@@ -103,7 +103,7 @@ fun FormsInput(
                 .fillMaxWidth()
                 .defaultMinSize(minHeight = 44.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+                .border(0.5.dp, borderColor, RoundedCornerShape(12.dp))
                 .background(ComposeAppTheme.colors.lawrence),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -256,7 +256,7 @@ fun FormsInputPassword(
     hint: String,
     textColor: Color = ComposeAppTheme.colors.leah,
     textStyle: TextStyle = ComposeAppTheme.typography.body,
-    hintColor: Color = ComposeAppTheme.colors.grey50,
+    hintColor: Color = ComposeAppTheme.colors.andy,
     hintStyle: TextStyle = ComposeAppTheme.typography.body,
     singleLine: Boolean = true,
     state: DataState<Any>? = null,
@@ -275,7 +275,7 @@ fun FormsInputPassword(
                 ComposeAppTheme.colors.red50
             }
         }
-        else -> ComposeAppTheme.colors.steel20
+        else -> ComposeAppTheme.colors.blade
     }
 
     val cautionColor = if (state?.errorOrNull is FormsInputStateWarning) {
@@ -290,7 +290,7 @@ fun FormsInputPassword(
                 .fillMaxWidth()
                 .defaultMinSize(minHeight = 44.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+                .border(0.5.dp, borderColor, RoundedCornerShape(12.dp))
                 .background(ComposeAppTheme.colors.lawrence),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -382,7 +382,7 @@ fun FormsInputMultiline(
     hint: String,
     textColor: Color = ComposeAppTheme.colors.leah,
     textStyle: TextStyle = ComposeAppTheme.typography.body,
-    hintColor: Color = ComposeAppTheme.colors.grey50,
+    hintColor: Color = ComposeAppTheme.colors.andy,
     hintStyle: TextStyle = ComposeAppTheme.typography.body,
     state: DataState<Any>? = null,
     pasteEnabled: Boolean = true,
@@ -407,7 +407,7 @@ fun FormsInputMultiline(
                 ComposeAppTheme.colors.red50
             }
         }
-        else -> ComposeAppTheme.colors.steel20
+        else -> ComposeAppTheme.colors.blade
     }
 
     val cautionColor = if (state?.errorOrNull is FormsInputStateWarning) {
@@ -421,7 +421,7 @@ fun FormsInputMultiline(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+                .border(0.5.dp, borderColor, RoundedCornerShape(12.dp))
                 .background(ComposeAppTheme.colors.lawrence),
         ) {
             var textState by rememberSaveable(initial, stateSaver = TextFieldValue.Saver) {

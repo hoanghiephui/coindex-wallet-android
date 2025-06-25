@@ -25,7 +25,8 @@ class AdapterManager(
     private val evmBlockchainManager: EvmBlockchainManager,
     private val solanaKitManager: SolanaKitManager,
     private val tronKitManager: TronKitManager,
-    private val tonKitManager: TonKitManager
+    private val tonKitManager: TonKitManager,
+    private val stellarKitManager: StellarKitManager
 ) : IAdapterManager {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
@@ -101,6 +102,7 @@ class AdapterManager(
         solanaKitManager.solanaKitWrapper?.solanaKit?.refresh()
         tronKitManager.tronKitWrapper?.tronKit?.refresh()
         tonKitManager.tonKitWrapper?.tonKit?.refresh()
+        stellarKitManager.stellarKitWrapper?.stellarKit?.refresh()
     }
 
     @Synchronized
@@ -141,15 +143,9 @@ class AdapterManager(
         }
     }
 
-    override fun getAdapterForWallet(wallet: Wallet): IAdapter? {
-        return adaptersMap[wallet]
-    }
-
-    override fun getAdapterForToken(token: Token): IAdapter? {
+    override fun <T> getAdapterForToken(token: Token): T? {
         return walletManager.activeWallets.firstOrNull { it.token == token }
-            ?.let { wallet ->
-                adaptersMap[wallet]
-            }
+            ?.let { getAdapterForWallet(it) }
     }
 
     override fun getBalanceAdapterForWallet(wallet: Wallet): IBalanceAdapter? {
@@ -160,4 +156,8 @@ class AdapterManager(
         return adaptersMap[wallet]?.let { it as? IReceiveAdapter }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    override fun <T> getAdapterForWallet(wallet: Wallet): T? {
+        return adaptersMap[wallet] as? T
+    }
 }

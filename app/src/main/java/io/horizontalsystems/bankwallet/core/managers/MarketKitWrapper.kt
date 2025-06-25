@@ -56,6 +56,8 @@ class MarketKitWrapper(
     val fullCoinsUpdatedObservable: Observable<Unit>
         get() = marketKit.fullCoinsUpdatedObservable
 
+    fun topFullCoins(limit: Int = 20) = marketKit.topFullCoins(limit)
+
     fun fullCoins(filter: String, limit: Int = 20) = marketKit.fullCoins(filter, limit)
 
     fun fullCoins(coinUids: List<String>) = marketKit.fullCoins(coinUids)
@@ -87,8 +89,13 @@ class MarketKitWrapper(
 
     fun marketInfosSingle(categoryUid: String, currencyCode: String) = marketKit.marketInfosSingle(categoryUid, currencyCode)
 
-    fun marketInfoOverviewSingle(coinUid: String, currencyCode: String, language: String) =
-        marketKit.marketInfoOverviewSingle(coinUid, currencyCode, language)
+    fun marketInfoOverviewSingle(
+        coinUid: String,
+        currencyCode: String,
+        language: String,
+        roiUids: List<String>,
+        roiPeriods: List<HsTimePeriod>
+    ) = marketKit.marketInfoOverviewSingle(coinUid, currencyCode, language, roiUids, roiPeriods)
 
     fun analyticsSingle(coinUid: String, currencyCode: String) =
         requestWithAuthToken { marketKit.analyticsSingle(it, coinUid, currencyCode) }

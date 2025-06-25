@@ -2,7 +2,6 @@ package io.horizontalsystems.bankwallet.modules.managewallets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -47,6 +46,9 @@ import io.horizontalsystems.bankwallet.modules.zcashconfigure.ZcashConfigure
 import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
+import io.horizontalsystems.bankwallet.ui.compose.components.Badge
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsSwitch
 import io.horizontalsystems.bankwallet.ui.compose.components.ListEmptyView
@@ -118,10 +120,13 @@ private fun ManageWalletsScreen(
         menuItems = listOf(
             MenuItem(
                 title = TranslatableString.ResString(R.string.ManageCoins_AddToken),
-                icon = R.drawable.ic_add_yellow,
+                icon = R.drawable.ic_add_24,
                 onClick = {
                     navController.slideFromRight(R.id.addTokenFragment)
-                    stat(page = StatPage.CoinManager, event = StatEvent.Open(StatPage.AddToken))
+                    stat(
+                                page = StatPage.CoinManager,
+                                event = StatEvent.Open(StatPage.AddToken)
+                            )
                 },
                 tint = MaterialTheme.colorScheme.onSurface
             )
@@ -152,10 +157,7 @@ private fun Content(
                 }
                 item {
                     Spacer(modifier = Modifier.height(12.dp))
-                    HorizontalDivider(
-                        thickness = 1.dp,
-                        color = ComposeAppTheme.colors.steel10,
-                    )
+                    HsDivider()
                 }
                 items(
                     items = items,
@@ -221,24 +223,10 @@ private fun CoinCell(
                         maxLines = 1,
                     )
                     viewItem.label?.let { labelText ->
-                        Box(
-                            modifier = Modifier
-                                .padding(start = 6.dp)
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(ComposeAppTheme.colors.jeremy)
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(
-                                    start = 4.dp,
-                                    end = 4.dp,
-                                    bottom = 1.dp
-                                ),
-                                text = labelText,
-                                color = ComposeAppTheme.colors.bran,
-                                style = ComposeAppTheme.typography.microSB,
-                                maxLines = 1,
-                            )
-                        }
+                        Badge(
+                            text = labelText,
+                            modifier = Modifier.padding(start = 6.dp)
+                        )
                     }
                 }
                 subhead2_grey(
@@ -263,10 +251,7 @@ private fun CoinCell(
                 onCheckedChange = { onItemClick.invoke() },
             )
         }
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = ComposeAppTheme.colors.steel10,
-        )
+        HsDivider()
     }
 }
 

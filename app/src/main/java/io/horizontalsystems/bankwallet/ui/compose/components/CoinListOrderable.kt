@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
@@ -122,7 +121,7 @@ fun CoinListOrderable(
                     ) {
                         Icon(
                             painter = painterResource(id = if (item.favorited) R.drawable.ic_heart_broke_24 else R.drawable.ic_heart_24),
-                            tint = ComposeAppTheme.colors.claude,
+                            tint = ComposeAppTheme.colors.blade,
                             contentDescription = stringResource(if (item.favorited) R.string.CoinPage_Unfavorite else R.string.CoinPage_Favorite),
                         )
                     }
@@ -158,11 +157,7 @@ fun CoinListOrderable(
                             )
                         }
                     )
-                    Divider(
-                        thickness = 1.dp,
-                        color = ComposeAppTheme.colors.steel10,
-                        modifier = Modifier.align(Alignment.BottomCenter)
-                    )
+                    HsDivider(modifier = Modifier.align(Alignment.BottomCenter))
                 }
             }
         }

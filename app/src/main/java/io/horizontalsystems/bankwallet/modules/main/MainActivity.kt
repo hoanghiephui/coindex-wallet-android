@@ -13,9 +13,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.core.BaseActivity
 import io.horizontalsystems.bankwallet.core.slideFromBottom
+import io.horizontalsystems.bankwallet.core.slideFromBottomForResult
 import io.horizontalsystems.bankwallet.modules.intro.IntroActivity
 import io.horizontalsystems.bankwallet.modules.keystore.KeyStoreActivity
 import io.horizontalsystems.bankwallet.modules.lockscreen.LockScreenActivity
+import io.horizontalsystems.bankwallet.modules.tonconnect.TonConnectNewFragment
 import io.horizontalsystems.bankwallet.ui.helpers.LinkHelper
 import io.horizontalsystems.bankwallet.worker.NewsNotificationWorker.Companion.INTENT_NEWS_NOTIFICATION
 import io.horizontalsystems.bankwallet.worker.Sync
@@ -92,7 +94,19 @@ class MainActivity : BaseActivity() {
 
         viewModel.tcDappRequest.observe(this) { request ->
             if (request != null) {
-                navController.slideFromBottom(R.id.tcNewFragment, request)
+                navController.slideFromBottomForResult<TonConnectNewFragment.Result>(
+                    R.id.tcNewFragment,
+                    request.dAppRequest
+                ) { result ->
+                    if (request.closeAppOnResult) {
+                        if (result.approved) {
+                            //Need delay to get connected before closing activity
+                            closeAfterDelay()
+                        } else {
+                            finish()
+                        }
+                    }
+                }
                 viewModel.onTcDappRequestHandled()
             }
         }
@@ -104,6 +118,13 @@ class MainActivity : BaseActivity() {
 
         viewModel.setIntent(intent)
         handleIntent(intent)
+    }
+
+    private fun closeAfterDelay() {
+        val handler = android.os.Handler(android.os.Looper.getMainLooper())
+        handler.postDelayed({
+            finish()
+        }, 1000)
     }
 
     fun validate(

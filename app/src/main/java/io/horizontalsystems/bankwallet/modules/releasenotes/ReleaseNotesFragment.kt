@@ -34,6 +34,7 @@ import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.caption_jacob
@@ -109,10 +110,7 @@ fun ReleaseNotesScreen(
                 onUrlClick = {}
             )
 
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = ComposeAppTheme.colors.steel10,
-            )
+            HsDivider()
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

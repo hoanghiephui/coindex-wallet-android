@@ -57,6 +57,7 @@ import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderStick
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsImage
@@ -137,8 +138,9 @@ fun MarketSearchScreen(viewModel: MarketSearchViewModel, navController: NavContr
                     )
                     stat(
                         page = StatPage.MarketSearch,
-                        section = section.statSection,
-                        event = StatEvent.OpenCoin(coin.uid)
+
+                        event = StatEvent.OpenCoin(coin.uid),
+                    section = section.statSection
                     )
                 }
             ) { favorited, coinUid ->
@@ -190,44 +192,43 @@ fun MarketSearchResults(
             }
         ) {
             itemSections.forEach { (section, coinItems) ->
-                section.title.ifPresent {
-                    stickyHeader {
-                        HeaderStick(
-                            borderTop = true,
-                            text = stringResource(id = section.title.get())
-                        )
-                    }
-                }
-                items(coinItems) { item ->
-                    val coin = item.fullCoin.coin
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Max)
-                    ) {
-                        Box(modifier = Modifier.background(backgroundColor)) {
-                            MarketCoin(
-                                coinUid = coin.uid,
-                                coinCode = coin.code,
-                                coinName = coin.name,
-                                coinIconUrl = coin.imageUrl,
-                                alternativeCoinIconUrl = coin.alternativeImageUrl,
-                                coinIconPlaceholder = item.fullCoin.iconPlaceholder,
-                                favourited = item.favourited,
-                                onFavoriteClick = onFavoriteClick,
-                                onClick = { onCoinClick(coin, section) },
+                if (coinItems.isNotEmpty()) {
+                    section.title.ifPresent {
+                        stickyHeader {
+                            HeaderStick(
+                                borderTop = true,
+                                text = stringResource(id = section.title.get())
                             )
+                        }
+                    }
+                    items(coinItems) { item ->
+                        val coin = item.fullCoin.coin
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(IntrinsicSize.Max)
+                        ) {
+                            Box(modifier = Modifier.background(backgroundColor)) {
+                                MarketCoin(
+                                    coinUid = coin.uid,
+                                    coinCode = coin.code,
+                                    coinName = coin.name,
+                                    coinIconUrl = coin.imageUrl,
+                                    alternativeCoinIconUrl = coin.alternativeImageUrl,
+                                    coinIconPlaceholder = item.fullCoin.iconPlaceholder,
+                                    favourited = item.favourited,
+                                    onFavoriteClick = onFavoriteClick,
+                                    onClick = { onCoinClick(coin, section) },
+                                )
+                            }
                         }
                     }
                 }
             }
 
             item {
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    color = ComposeAppTheme.colors.steel10,
-                )
+                HsDivider()
             }
         }
     }

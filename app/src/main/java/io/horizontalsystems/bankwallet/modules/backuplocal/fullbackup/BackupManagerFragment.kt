@@ -73,12 +73,12 @@ class BackupManagerFragment : BaseComposeFragment() {
                 onCreateBackup = {
                     navController.authorizedAction {
                         navController.slideFromRight(R.id.backupLocalFragment)
-                        stat(page = StatPage.BackupManager, event = StatEvent.Open(StatPage.ExportFullToFiles))
-                    }
+                        stat(page = StatPage.BackupManager, event = StatEvent.Open(StatPage.ExportFullToFiles)
+                    )
                 }
-            )
-        }
-    }
+            }
+        )
+    }}
 
     override val logScreen: String
         get() = "BackupManagerFragment"

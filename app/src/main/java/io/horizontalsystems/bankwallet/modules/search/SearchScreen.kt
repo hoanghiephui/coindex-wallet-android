@@ -295,7 +295,7 @@ private fun LazyListScope.discovery(
                                 viewItem = item,
                                 onClick = {
                                     navController.slideFromBottom(
-                                        R.id.marketCategoryFragment,
+                                        R.id.marketSectorFragment,
                                         item.coinCategory
                                     )
                                 },

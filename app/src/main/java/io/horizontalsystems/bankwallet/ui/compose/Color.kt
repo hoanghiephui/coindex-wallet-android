@@ -2,36 +2,40 @@ package io.horizontalsystems.bankwallet.ui.compose
 
 import androidx.compose.ui.graphics.Color
 
-val Darkest = Color(0xFF0F1014)
-val Dark = Color(0xFF13151A)
-val Light = Color(0xFFF0F0F0)
-val LightGrey = Color(0xFFC8C7CC)
-val SteelLight = Color(0xFFE1E1E5)
-val SteelDark = Color(0xFF252933)
-val Steel10 = Color(0x1a6E7899)
-val Steel20 = Color(0x336E7899)
+//new colors
+val Dark = Color(0xFF151515)
+val Carbon = Color(0xFF232323)
+val Smoke = Color(0xFF4B4B4B)
+val Steel = Color(0xFFB3B3B3)
 val Bright = Color(0xFFEDEDED)
-val Grey = Color(0xFF808085)
-val Grey50 = Color(0x80808085)
-val Yellow50 = Color(0x80FFA800)
-val Yellow20 = Color(0x33FFA800)
-val Green20 = Color(0x3305C46B)
-val Black50 = Color(0x80000000)
-val White50 = Color(0x80FFFFFF)
+val White = Color(0xFFFFFFFF)
+val Black = Color(0xFF000000)
+val Light = Color(0xFFDFDFDF)
 
 val YellowD = Color(0xFF0055df)
 val YellowL = Color(0xFF3C76FF)
 val GreenD = Color(0xFF05C46B)
 val GreenL = Color(0xFF04AD5F)
-val Green50 = Color(0x8013D670)
 val RedD = Color(0xFFF43A4F)
 val RedL = Color(0xFFFF3D43)
+val Orange = Color(0xFFFE4A11)
+val Sunset = Color(0xFFFF2C00)
+
+val Yellow50 = Color(0x80FFB700)
+val Yellow20 = Color(0x33FFB700)
+val Green50 = Color(0x800AC18E)
+val Green20 = Color(0x330AC18E)
+val Red50 = Color(0x80FF1539)
+val Red20 = Color(0x33FF1539)
+
+//old colors
+val LightGrey = Color(0xFFC8C7CC)
+val Grey = Color(0xFF808085)
+
+val Black50 = Color(0x80000000)
+val White50 = Color(0x80FFFFFF)
 val LagunaD = Color(0xFF4A98E9)
 val LagunaL = Color(0xFF4692DA)
-val Red50 = Color(0x80FF4820)
-val Red20 = Color(0x33FF4820)
-val PurpleD = Color(0x33BF5AF2)
-val PurpleL = Color(0xFFB054DE)
 
 
 internal val Blue10 = Color(0xFF001F28)

@@ -70,7 +70,7 @@ fun <T> Tabs(tabs: List<TabItem<T>>, onClick: (T) -> Unit) {
                 },
                 content = {
                     ProvideTextStyle(
-                        ComposeAppTheme.typography.subhead1
+                        ComposeAppTheme.typography.subhead
                     ) {
                         Text(
                             text = tab.title,
@@ -111,7 +111,7 @@ fun <T> ScrollableTabs(
                 },
                 content = {
                     ProvideTextStyle(
-                        ComposeAppTheme.typography.subhead1
+                        ComposeAppTheme.typography.subhead
                     ) {
                         Text(
                             text = tab.title,

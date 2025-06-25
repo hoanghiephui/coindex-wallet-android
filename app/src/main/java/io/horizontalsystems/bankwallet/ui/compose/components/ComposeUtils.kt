@@ -14,9 +14,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
+import coil.imageLoader
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.core.alternativeImageUrl
@@ -105,34 +108,51 @@ fun HsImage(
     modifier: Modifier,
     colorFilter: ColorFilter? = null
 ) {
-    val fallbackPainter = painterResource(placeholder ?: R.drawable.coin_placeholder)
-    var currentUrl by remember { mutableStateOf(url) }
-    var loadFailed by remember { mutableStateOf(false) }
+    val fallback = placeholder ?: R.drawable.coin_placeholder
 
-    val painter = rememberAsyncImagePainter(
-        model = currentUrl,
-        onError = {
-            if (!loadFailed && alternativeUrl != null) {
-                // Khi URL đầu tiên lỗi, thử chuyển sang alternativeUrl
-                currentUrl = alternativeUrl
-                loadFailed = true
-            } else {
-                // Khi cả URL và alternativeUrl đều lỗi, dùng fallback
-                currentUrl = null
-            }
-        }
-    )
+    val isAlternativeCached = alternativeUrl != null && isImageCached(alternativeUrl)
+    val imageUrl = if (isAlternativeCached) alternativeUrl else url
 
-    Image(
-        painter = if (currentUrl == null) fallbackPainter else painter,
-        contentDescription = null,
-        modifier = modifier,
-        colorFilter = colorFilter,
-        contentScale = ContentScale.FillBounds
-    )
+    when {
+        imageUrl != null -> Image(
+            painter = rememberAsyncImagePainter(
+                model = imageUrl,
+                error = alternativeUrl?.let {
+                    rememberAsyncImagePainter(
+                        model = alternativeUrl,
+                        error = painterResource(fallback)
+                    )
+                } ?: painterResource(fallback)
+            ),
+            contentDescription = null,
+            modifier = modifier,
+            colorFilter = colorFilter,
+            contentScale = ContentScale.FillBounds
+        )
+
+        else -> Image(
+            painter = painterResource(fallback),
+            contentDescription = null,
+            modifier = modifier,
+            colorFilter = colorFilter
+        )
+    }
 }
 
 
+
+@Composable
+@OptIn(ExperimentalCoilApi::class)
+private fun isImageCached(url: String): Boolean {
+    val context = LocalContext.current
+    val snapshot = context.imageLoader.diskCache?.openSnapshot(url) ?: return false
+
+    return try {
+        snapshot.data.toFile().exists()
+    } catch (t: Throwable) {
+        false
+    }
+}
 
 @Composable
 fun NftIcon(

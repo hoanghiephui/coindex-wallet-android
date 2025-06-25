@@ -88,7 +88,10 @@ fun AppStatusScreen(
                                     clipboardManager.setText(AnnotatedString(it))
                                     HudHelper.showSuccessMessage(localView, R.string.Hud_Text_Copied)
 
-                            stat(page = StatPage.AppStatus, event= StatEvent.Copy(StatEntity.Status))
+                            stat(
+                                    page = StatPage.AppStatus,
+                                    event= StatEvent.Copy(StatEntity.Status)
+                                )
                             }}
                         )
                         HSpacer(8.dp)
@@ -101,7 +104,10 @@ fun AppStatusScreen(
                                         .setType("text/plain")
                                         .setText(it)
                                         .startChooser()
-                                    stat(page = StatPage.AppStatus, event= StatEvent.Share(StatEntity.Status))
+                                    stat(
+                                    page = StatPage.AppStatus,
+                                    event= StatEvent.Share(StatEntity.Status)
+                                )
                                 }
                             }
                         )

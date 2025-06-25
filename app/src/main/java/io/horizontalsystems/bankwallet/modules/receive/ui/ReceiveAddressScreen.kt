@@ -1,5 +1,6 @@
 package io.horizontalsystems.bankwallet.modules.receive.ui
 
+import android.content.Intent
 import android.graphics.drawable.AdaptiveIconDrawable
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.Crossfade
@@ -21,13 +22,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -38,9 +39,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
@@ -59,7 +60,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+import com.wallet.blockchain.bitcoin.R
 import io.github.alexzhirkevich.qrose.options.QrBallShape
 import io.github.alexzhirkevich.qrose.options.QrErrorCorrectionLevel
 import io.github.alexzhirkevich.qrose.options.QrFrameShape
@@ -68,12 +70,10 @@ import io.github.alexzhirkevich.qrose.options.QrLogoShape
 import io.github.alexzhirkevich.qrose.options.QrPixelShape
 import io.github.alexzhirkevich.qrose.options.roundCorners
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
-import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.AdNativeUiState
 import io.horizontalsystems.bankwallet.analytics.TrackScreenViewEvent
 import io.horizontalsystems.bankwallet.core.AdType
 import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
-import io.horizontalsystems.bankwallet.core.UsedAddress
 import io.horizontalsystems.bankwallet.core.stats.StatEntity
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
@@ -90,8 +90,10 @@ import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryCircle
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsTextButton
+import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.ListErrorView
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
@@ -109,6 +111,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.title3_leah
 import io.horizontalsystems.bankwallet.ui.extensions.BottomSheetHeader
 import io.horizontalsystems.bankwallet.ui.helpers.TextHelper
 import io.horizontalsystems.core.helpers.HudHelper
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
@@ -117,23 +120,37 @@ import java.math.BigDecimal
 @Composable
 fun ReceiveAddressScreen(
     title: String,
-    uiState: ReceiveModule.UiState,
+    uiState: ReceiveModule.AbstractUiState,
     setAmount: (BigDecimal?) -> Unit,
     onErrorClick: () -> Unit = {},
-    onShareClick: (String) -> Unit,
-    showUsedAddresses: (List<UsedAddress>, List<UsedAddress>) -> Unit,
+    slot1: @Composable () -> Unit = {},
     onBackPress: () -> Unit,
     closeModule: () -> Unit,
     nativeAd: AdNativeUiState,
-    navController: NavHostController,
+    navController: NavController,
 ) {
     val localView = LocalView.current
     val openAmountDialog = remember { mutableStateOf(false) }
-    val modalBottomSheetState =
+    val tronAlertSheetState =
         androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    var isPlanSelectBottomSheetVisible by remember { mutableStateOf(false) }
+    val tronInfoSheetState =
+        androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
+    var isTronAlertVisible by remember { mutableStateOf(false) }
+    var isTronInfoVisible by remember { mutableStateOf(false) }
+
+    if (uiState is ReceiveModule.UiState) {
+        LaunchedEffect(uiState.showTronAlert) {
+            if (uiState.showTronAlert) {
+                isTronAlertVisible = true
+                scope.launch {
+                    delay(2000)
+                    tronAlertSheetState.show()
+                }
+            }
+        }
+    }
+
     Scaffold(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.background,
@@ -146,7 +163,8 @@ fun ReceiveAddressScreen(
                 menuItems = listOf(
                     MenuItem(
                         title = TranslatableString.ResString(R.string.Button_Done),
-                        onClick = closeModule
+                        onClick = closeModule,
+                        tint = ComposeAppTheme.colors.jacob
                     )
                 )
             )
@@ -169,6 +187,7 @@ fun ReceiveAddressScreen(
                         }
 
                         ViewState.Success -> {
+                            TrackScreenViewEvent(screenName = "ReceiveAddressScreen: ${uiState.blockchainName}")
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
@@ -179,6 +198,12 @@ fun ReceiveAddressScreen(
                                 VSpacer(12.dp)
                                 uiState.alertText?.let {
                                     WarningTextView(it)
+                                }
+                                if (uiState.watchAccount) {
+                                    TextImportantWarning(
+                                        modifier = Modifier.padding(horizontal = 16.dp),
+                                        text = stringResource(R.string.Balance_Receive_WatchAddressAlert),
+                                    )
                                 }
                                 VSpacer(12.dp)
                                 Column(
@@ -221,69 +246,66 @@ fun ReceiveAddressScreen(
                                             text = uiState.address,
                                             textAlign = TextAlign.Center,
                                         )
-                                        VSpacer(12.dp)
-                                        subhead2_grey(
-                                            modifier = Modifier.padding(horizontal = 32.dp),
-                                            text = uiState.networkName,
-                                            textAlign = TextAlign.Center,
-                                        )
+                                        val testNetBadge =
+                                            if (!uiState.mainNet) " (TestNet)" else ""
+                                        uiState.blockchainName?.let { blockchainName ->
+                                            VSpacer(12.dp)
+                                            subhead2_grey(
+                                                modifier = Modifier.padding(horizontal = 32.dp),
+                                                text = stringResource(R.string.Balance_Network) + ": " + blockchainName + testNetBadge,
+                                                textAlign = TextAlign.Center,
+                                            )
+                                        }
+                                        uiState.addressFormat?.let { addressFormat ->
+                                            VSpacer(12.dp)
+                                            subhead2_grey(
+                                                modifier = Modifier.padding(horizontal = 32.dp),
+                                                text = stringResource(R.string.Balance_Format) + ": " + addressFormat + testNetBadge,
+                                                textAlign = TextAlign.Center,
+                                            )
+                                        }
                                         VSpacer(24.dp)
                                     }
-                                    if (uiState.additionalItems.isNotEmpty()) {
+                                    val additionalItems = buildList {
+                                        addAll(uiState.additionalItems)
+                                        uiState.amount?.let {
+                                            add(ReceiveModule.AdditionalData.Amount(it.toString()))
+                                        }
+                                    }
+
+                                    if (additionalItems.isNotEmpty()) {
                                         AdditionalDataSection(
-                                            items = uiState.additionalItems,
+                                            items = additionalItems,
                                             onClearAmount = {
                                                 setAmount(null)
 
-                                                stat(page = StatPage.Receive, event = StatEvent.RemoveAmount)
+                                                stat(
+                                                    page = StatPage.Receive,
+                                                    event = StatEvent.RemoveAmount
+                                                )
                                             },
                                             showAccountNotActiveWarningDialog = {
-                                                scope.launch {
-                                                    isPlanSelectBottomSheetVisible = true
-                                                    modalBottomSheetState.show()
-                                                }
+                                                isTronInfoVisible = true
                                             }
                                         )
                                     }
 
-                                    if (uiState.usedAddresses.isNotEmpty()) {
-                                        HorizontalDivider(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            thickness = 1.dp,
-                                            color = ComposeAppTheme.colors.steel10
-                                        )
-                                        RowUniversal(
-                                            modifier = Modifier.height(48.dp),
-                                            onClick = {
-                                                showUsedAddresses.invoke(uiState.usedAddresses, uiState.usedChangeAddresses)
-                                            }
-                                        ) {
-                                            subhead2_grey(
-                                                modifier = Modifier
-                                                    .padding(start = 16.dp)
-                                                    .weight(1f),
-                                                text = stringResource(R.string.Balance_Receive_UsedAddresses),
-                                            )
-
-                                            Icon(
-                                                modifier = Modifier.padding(end = 16.dp),
-                                                painter = painterResource(id = R.drawable.ic_arrow_right),
-                                                contentDescription = null,
-                                                tint = ComposeAppTheme.colors.grey
-                                            )
-                                        }
-                                    }
+                                    slot1.invoke()
                                 }
-                                VSpacer(12.dp)
-                                MaxTemplateNativeAdViewComposable(nativeAd, AdType.SMALL, navController)
+
+                                MaxTemplateNativeAdViewComposable(
+                                    nativeAd,
+                                    AdType.SMALL,
+                                    navController
+                                )
                                 VSpacer(45.dp)
 
                                 ActionButtonsRow(
                                     uri = uiState.uri,
                                     watchAccount = uiState.watchAccount,
                                     openAmountDialog = openAmountDialog,
-                                    onShareClick = onShareClick,
-                                )
+
+                                    )
 
                                 VSpacer(32.dp)
                             }
@@ -305,24 +327,27 @@ fun ReceiveAddressScreen(
             }
         }
     }
-    TrackScreenViewEvent(screenName = "ReceiveAddressScreen: ${uiState.networkName}")
-    if (isPlanSelectBottomSheetVisible) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                isPlanSelectBottomSheetVisible = false
+    if (isTronInfoVisible) {
+        TronInfoBottomSheet(
+            title = stringResource(R.string.Tron_AddressNotActive_Title),
+            text = stringResource(R.string.Tron_AddressNotActive_Info),
+            hideBottomSheet = {
+                scope.launch { tronInfoSheetState.hide() }
+                isTronInfoVisible = false
             },
-            sheetState = modalBottomSheetState,
-            containerColor = ComposeAppTheme.colors.transparent
-        ) {
-            BottomSheetWarning(
-                title = stringResource(R.string.Tron_AddressNotActive_Title),
-                text = stringResource(R.string.Tron_AddressNotActive_Info),
-                onActionButtonClick = onBackPress,
-                onCloseClick = {
-                    scope.launch { modalBottomSheetState.hide() }
-                }
-            )
-        }
+            bottomSheetState = tronInfoSheetState
+        )
+    }
+    if (isTronAlertVisible) {
+        TronAlertBottomSheet(
+            title = stringResource(R.string.Tron_AddressNotActive_Title),
+            text = stringResource(R.string.Tron_AddressNotActive_Info),
+            hideBottomSheet = {
+                scope.launch { tronAlertSheetState.hide() }
+                isTronAlertVisible = false
+            },
+            bottomSheetState = tronAlertSheetState,
+        )
     }
 }
 
@@ -370,13 +395,6 @@ private fun WarningTextView(
                 text = alertText.content,
             )
         }
-
-        is ReceiveModule.AlertText.Normal -> {
-            TextImportantWarning(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                text = alertText.content,
-            )
-        }
     }
 }
 
@@ -385,9 +403,9 @@ private fun ActionButtonsRow(
     uri: String,
     watchAccount: Boolean,
     openAmountDialog: MutableState<Boolean>,
-    onShareClick: (String) -> Unit,
 ) {
     val localView = LocalView.current
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -405,19 +423,7 @@ private fun ActionButtonsRow(
                 },
             )
         }
-        ReceiveActionButton(
-            modifier = itemModifier,
-            icon = R.drawable.ic_share_24px,
-            buttonText = stringResource(R.string.Button_Share),
-            onClick = {
-                onShareClick.invoke(uri)
 
-                stat(page = StatPage.Receive, event = StatEvent.Share(StatEntity.ReceiveAddress))
-            },
-        )
-        if (watchAccount) {
-            HSpacer(64.dp)
-        }
         ReceiveActionButton(
             modifier = itemModifier,
             icon = R.drawable.ic_copy_24px,
@@ -427,6 +433,25 @@ private fun ActionButtonsRow(
                 HudHelper.showSuccessMessage(localView, R.string.Hud_Text_Copied)
 
                 stat(page = StatPage.Receive, event = StatEvent.Copy(StatEntity.ReceiveAddress))
+            },
+        )
+
+        if (watchAccount) {
+            HSpacer(64.dp)
+        }
+
+        ReceiveActionButton(
+            modifier = itemModifier,
+            icon = R.drawable.ic_share_24px,
+            buttonText = stringResource(R.string.Button_Share),
+            onClick = {
+                context.startActivity(Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, uri)
+                    type = "text/plain"
+                })
+
+                stat(page = StatPage.Receive, event = StatEvent.Share(StatEntity.ReceiveAddress))
             },
         )
     }
@@ -441,11 +466,7 @@ private fun AdditionalDataSection(
     val localView = LocalView.current
 
     items.forEach { item ->
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 1.dp,
-            color = ComposeAppTheme.colors.steel20
-        )
+        HsDivider(modifier = Modifier.fillMaxWidth())
         RowUniversal(
             modifier = Modifier.height(48.dp),
         ) {
@@ -549,7 +570,8 @@ fun AmountInputDialog(
     onDismissRequest: () -> Unit,
     onAmountConfirm: (BigDecimal?) -> Unit
 ) {
-    val textState = remember { mutableStateOf(TextFieldValue(text = initialAmount?.toString() ?: "")) }
+    val textState =
+        remember { mutableStateOf(TextFieldValue(text = initialAmount?.toString() ?: "")) }
     val focusRequester = remember { FocusRequester() }
     Dialog(onDismissRequest = onDismissRequest) {
         Column(
@@ -597,11 +619,7 @@ fun AmountInputDialog(
                 )
             }
 
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 24.dp),
-                thickness = 1.dp,
-                color = ComposeAppTheme.colors.jacob
-            )
+            HsDivider(modifier = Modifier.padding(horizontal = 24.dp))
 
             Row(
                 modifier = Modifier
@@ -625,33 +643,66 @@ fun AmountInputDialog(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun BottomSheetWarning(
+private fun TronAlertBottomSheet(
     title: String,
     text: String,
-    onActionButtonClick: () -> Unit,
-    onCloseClick: () -> Unit,
+    hideBottomSheet: () -> Unit,
+    bottomSheetState: SheetState,
 ) {
-    BottomSheetHeader(
-        iconPainter = painterResource(R.drawable.ic_attention_24),
-        iconTint = ColorFilter.tint(ComposeAppTheme.colors.jacob),
-        title = title,
-        onCloseClick = onCloseClick
+    ModalBottomSheet(
+        onDismissRequest = hideBottomSheet,
+        sheetState = bottomSheetState,
+        containerColor = ComposeAppTheme.colors.transparent
     ) {
-        TextImportantWarning(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            text = text
-        )
+        BottomSheetHeader(
+            iconPainter = painterResource(R.drawable.ic_attention_24),
+            iconTint = ColorFilter.tint(ComposeAppTheme.colors.jacob),
+            title = title,
+            onCloseClick = hideBottomSheet
+        ) {
+            TextImportantWarning(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                text = text
+            )
 
-        VSpacer(12.dp)
-        ButtonPrimaryYellow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            title = stringResource(R.string.Button_Understand),
-            onClick = onActionButtonClick
-        )
-        Spacer(Modifier.height(32.dp))
+            VSpacer(12.dp)
+            ButtonPrimaryYellow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                title = stringResource(R.string.Button_Understand),
+                onClick = hideBottomSheet
+            )
+            Spacer(Modifier.height(32.dp))
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TronInfoBottomSheet(
+    title: String,
+    text: String,
+    hideBottomSheet: () -> Unit,
+    bottomSheetState: SheetState,
+) {
+    ModalBottomSheet(
+        onDismissRequest = hideBottomSheet,
+        sheetState = bottomSheetState,
+        containerColor = ComposeAppTheme.colors.transparent
+    ) {
+        BottomSheetHeader(
+            iconPainter = painterResource(R.drawable.ic_info_24),
+            iconTint = ColorFilter.tint(ComposeAppTheme.colors.grey),
+            title = title,
+            onCloseClick = hideBottomSheet
+        ) {
+            InfoText(text)
+
+            Spacer(Modifier.height(64.dp))
+        }
     }
 }
 

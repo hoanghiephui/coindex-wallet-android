@@ -40,11 +40,7 @@ fun HeaderStick(
             .background(ComposeAppTheme.colors.tyler)
     ) {
         if (borderTop) {
-            HorizontalDivider(
-                modifier = Modifier.align(Alignment.TopCenter),
-                thickness = 1.dp,
-                color = ComposeAppTheme.colors.steel10
-            )
+            HsDivider(modifier = Modifier.align(Alignment.TopCenter))
         }
 
         Row(
@@ -110,19 +106,11 @@ fun HeaderSorting(
             .background(background)
     ) {
         if (borderTop) {
-            HorizontalDivider(
-                modifier = Modifier.align(Alignment.TopCenter),
-                thickness = 1.dp,
-                color = ComposeAppTheme.colors.steel10
-            )
+            HsDivider(modifier = Modifier.align(Alignment.TopCenter))
         }
 
         if (borderBottom) {
-            HorizontalDivider(
-                modifier = Modifier.align(Alignment.BottomCenter),
-                thickness = 1.dp,
-                color = ComposeAppTheme.colors.steel10
-            )
+            HsDivider(modifier = Modifier.align(Alignment.BottomCenter))
         }
 
         Row(

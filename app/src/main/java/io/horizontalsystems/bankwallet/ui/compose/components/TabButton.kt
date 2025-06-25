@@ -87,7 +87,6 @@ fun TabBox(
     shape: Shape = RoundedCornerShape(14.dp),
     enabled: Boolean = true,
     colors: DefaultTabColors = TabDefaults.textButtonColors(),
-    contentPadding: PaddingValues = TabDefaults.ContentPadding,
     content: @Composable RowScope.() -> Unit,
     onSelect: () -> Unit,
 ) {
@@ -458,7 +457,7 @@ object TabDefaults {
         contentColor: Color = ComposeAppTheme.colors.leah,
         selectedBackgroundColor: Color = ComposeAppTheme.colors.yellowD,
         selectedContentColor: Color = ComposeAppTheme.colors.light,
-        disabledContentColor: Color = ComposeAppTheme.colors.grey50,
+        disabledContentColor: Color = ComposeAppTheme.colors.andy,
     ): DefaultTabColors = DefaultTabColors(
         backgroundColor = backgroundColor,
         contentColor = contentColor,

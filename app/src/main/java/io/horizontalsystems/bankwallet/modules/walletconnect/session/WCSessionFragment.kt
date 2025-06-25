@@ -107,7 +107,7 @@ fun WCSessionPage(
                     icon = R.drawable.ic_close,
                     onClick = { navController.popBackStack() },
                     enabled = uiState.closeEnabled,
-                    tint = if (uiState.closeEnabled) ComposeAppTheme.colors.jacob else ComposeAppTheme.colors.grey50
+                    tint = if (uiState.closeEnabled) ComposeAppTheme.colors.jacob else ComposeAppTheme.colors.andy
                 )
             )
         )
@@ -263,7 +263,7 @@ fun RequestCell(
             )
             Text(
                 text = viewItem.subtitle,
-                style = ComposeAppTheme.typography.subhead2,
+                style = ComposeAppTheme.typography.subheadR,
                 color = ComposeAppTheme.colors.grey,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

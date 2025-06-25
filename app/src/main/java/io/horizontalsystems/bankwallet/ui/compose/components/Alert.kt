@@ -1,6 +1,5 @@
 package io.horizontalsystems.bankwallet.ui.compose.components
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -23,10 +22,10 @@ import io.horizontalsystems.bankwallet.ui.compose.WithTranslatableTitle
 
 @Composable
 fun <T : WithTranslatableTitle> AlertGroup(
-    @StringRes title: Int,
+    title: String,
     select: Select<T>,
     onSelect: (T) -> Unit,
-    onDismiss: (() -> Unit)
+    onDismiss: () -> Unit
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Card(
@@ -51,14 +50,14 @@ fun <T : WithTranslatableTitle> AlertGroup(
 }
 
 @Composable
-fun AlertHeader(@StringRes title: Int) {
+fun AlertHeader(text: String) {
     Box(
         modifier = Modifier
             .height(55.dp)
             .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-        subhead1_grey(stringResource(title))
+        subhead1_grey(text)
     }
 }
 
@@ -74,9 +73,7 @@ fun AlertItem(
             .clickable { onClick.invoke() },
         contentAlignment = Alignment.Center
     ) {
-        HorizontalDivider(
-            modifier = Modifier.align(Alignment.TopCenter)
-        )
+        HsDivider(modifier = Modifier.align(Alignment.TopCenter))
 
         content.invoke()
     }

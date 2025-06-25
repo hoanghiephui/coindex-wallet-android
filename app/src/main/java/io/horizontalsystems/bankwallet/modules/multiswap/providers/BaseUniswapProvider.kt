@@ -24,7 +24,7 @@ import io.horizontalsystems.uniswapkit.models.TradeOptions
 import kotlinx.coroutines.rx2.await
 import java.math.BigDecimal
 
-abstract class BaseUniswapProvider : EvmSwapProvider() {
+abstract class BaseUniswapProvider : IMultiSwapProvider {
     private val uniswapKit by lazy { UniswapKit.getInstance() }
 
     final override suspend fun fetchQuote(
@@ -36,7 +36,7 @@ abstract class BaseUniswapProvider : EvmSwapProvider() {
         val bestTrade = fetchBestTrade(tokenIn, tokenOut, amountIn, settings)
 
         val routerAddress = uniswapKit.routerAddress(bestTrade.chain)
-        val allowance = getAllowance(tokenIn, routerAddress)
+        val allowance = EvmSwapHelper.getAllowance(tokenIn, routerAddress)
 
         val fields = buildList {
             bestTrade.settingRecipient.value?.let {
@@ -57,7 +57,7 @@ abstract class BaseUniswapProvider : EvmSwapProvider() {
             tokenIn,
             tokenOut,
             amountIn,
-            actionApprove(allowance, amountIn, routerAddress, tokenIn)
+            EvmSwapHelper.actionApprove(allowance, amountIn, routerAddress, tokenIn)
         )
     }
 
@@ -67,6 +67,7 @@ abstract class BaseUniswapProvider : EvmSwapProvider() {
         amountIn: BigDecimal,
         swapSettings: Map<String, Any?>,
         sendTransactionSettings: SendTransactionSettings?,
+        swapQuote: ISwapQuote,
     ): ISwapFinalQuote {
         check(sendTransactionSettings is SendTransactionSettings.Evm)
 
@@ -129,7 +130,7 @@ abstract class BaseUniswapProvider : EvmSwapProvider() {
         val chain = evmBlockchainHelper.chain
         val rpcSourceHttp = evmBlockchainHelper.getRpcSourceHttp()
 
-        val settingRecipient = SwapSettingRecipient(settings, blockchainType)
+        val settingRecipient = SwapSettingRecipient(settings, tokenOut)
         val settingSlippage = SwapSettingSlippage(settings, TradeOptions.defaultAllowedSlippage)
         val settingDeadline = SwapSettingDeadline(settings, TradeOptions.defaultTtl)
 

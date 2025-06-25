@@ -18,6 +18,7 @@ import io.horizontalsystems.bankwallet.modules.main.MainModule
 import io.horizontalsystems.bankwallet.modules.market.MarketModule
 import io.horizontalsystems.bankwallet.modules.market.TimeDuration
 import io.horizontalsystems.bankwallet.modules.market.favorites.WatchlistSorting
+import io.horizontalsystems.bankwallet.modules.roi.PerformanceCoin
 import io.horizontalsystems.bankwallet.modules.settings.appearance.AppIcon
 import io.horizontalsystems.bankwallet.modules.settings.appearance.PriceChangeInterval
 import io.horizontalsystems.bankwallet.modules.settings.security.autolock.AutoLockInterval
@@ -25,6 +26,7 @@ import io.horizontalsystems.bankwallet.modules.theme.ThemeType
 import io.horizontalsystems.core.ILockoutStorage
 import io.horizontalsystems.core.IPinSettingsStorage
 import io.horizontalsystems.core.IThirdKeyboard
+import io.horizontalsystems.marketkit.models.HsTimePeriod
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
@@ -222,6 +224,28 @@ class LocalStorageManager(
             preferences.edit { putString(APP_VERSIONS, versionsString) }
         }
 
+    override var selectedPeriods: List<HsTimePeriod>
+        get() {
+            val jsonStr = preferences.getString("selectedPeriods", null) ?: return listOf()
+            val type = object : TypeToken<ArrayList<HsTimePeriod>>() {}.type
+            return gson.fromJson(jsonStr, type)
+        }
+        set(value) {
+            val jsonStr = gson.toJson(value)
+            preferences.edit().putString("selectedPeriods", jsonStr).apply()
+        }
+
+    override var roiPerformanceCoins: List<PerformanceCoin>
+        get() {
+            val jsonStr = preferences.getString("roiPerformanceCoins", null) ?: return listOf()
+            val type = object : TypeToken<ArrayList<PerformanceCoin>>() {}.type
+            return gson.fromJson(jsonStr, type)
+        }
+        set(value) {
+            val jsonStr = gson.toJson(value)
+            preferences.edit().putString("roiPerformanceCoins", jsonStr).apply()
+        }
+
     override var isAlertNotificationOn: Boolean
         get() = preferences.getBoolean(ALERT_NOTIFICATION_ENABLED, true)
         set(enabled) {
@@ -412,12 +436,6 @@ class LocalStorageManager(
             preferences.edit { putString(CHANGELOG_SHOWN_FOR_APP_VERSION, value) }
         }
 
-    override var donateAppVersion: String?
-        get() = preferences.getString("donate_app_version", null)
-        set(value) {
-            preferences.edit().putString("donate_app_version", value).apply()
-        }
-
     override var ignoreRootedDeviceWarning: Boolean
         get() = preferences.getBoolean(IGNORE_ROOTED_DEVICE_WARNING, false)
         set(value) {
@@ -507,7 +525,15 @@ class LocalStorageManager(
             balanceTabButtonsEnabledFlow.update { value }
         }
 
+    override var amountRoundingEnabled: Boolean
+        get() = preferences.getBoolean("amountRoundingEnabled", true)
+        set(value) {
+            preferences.edit().putBoolean("amountRoundingEnabled", value).apply()
+            amountRoundingEnabledFlow.update { value }
+        }
+
     override val balanceTabButtonsEnabledFlow = MutableStateFlow(balanceTabButtonsEnabled)
+    override val amountRoundingEnabledFlow = MutableStateFlow(amountRoundingEnabled)
 
     override var personalSupportEnabled: Boolean
         get() = preferences.getBoolean(PERSONAL_SUPPORT_ENABLED, false)
@@ -561,6 +587,12 @@ class LocalStorageManager(
             preferences.edit { putString(APP_AUTO_LOCK_INTERVAL, value.raw) }
         }
 
+    override var recipientAddressCheckEnabled: Boolean
+        get() = preferences.getBoolean("recipientAddressCheckEnabled", true)
+        set(value) {
+            preferences.edit().putBoolean("recipientAddressCheckEnabled", value).apply()
+        }
+
     override var utxoExpertModeEnabled: Boolean
         get() = preferences.getBoolean(UTXO_EXPERT_MODE, false)
         set(value) {
@@ -608,6 +640,20 @@ class LocalStorageManager(
                 editor.remove(UI_STATS_ENABLED).apply()
             } else {
                 editor.putBoolean(UI_STATS_ENABLED, value).apply()
+            }
+        }
+
+    override var donateUsLastShownDate: Long?
+        get() {
+            val timestamp = preferences.getLong("donate_us_last_shown_time", 0L)
+            return when (timestamp) {
+                0L -> null
+                else -> timestamp
+            }
+        }
+        set(value) {
+            value?.let {
+                preferences.edit().putLong("donate_us_last_shown_time", it).apply()
             }
         }
 

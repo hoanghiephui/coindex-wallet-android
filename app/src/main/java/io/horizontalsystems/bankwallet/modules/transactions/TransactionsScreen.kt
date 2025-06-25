@@ -307,9 +307,9 @@ fun TransactionCell(item: TransactionViewItem, position: SectionItemPosition, on
         }
 
         val borderModifier = if (position != SectionItemPosition.Single) {
-            Modifier.sectionItemBorder(1.dp, ComposeAppTheme.colors.steel20, 12.dp, position)
+            Modifier.sectionItemBorder(0.5.dp, ComposeAppTheme.colors.blade, 12.dp, position)
         } else {
-            Modifier.border(1.dp, ComposeAppTheme.colors.steel20, RoundedCornerShape(12.dp))
+            Modifier.border(0.5.dp, ComposeAppTheme.colors.blade, RoundedCornerShape(12.dp))
         }
 
         RowUniversal(
@@ -398,7 +398,14 @@ fun TransactionCell(item: TransactionViewItem, position: SectionItemPosition, on
                         )
                     }
 
-                    is TransactionViewItem.Icon.ImageResource -> {}
+                    is TransactionViewItem.Icon.ImageResource -> {
+                        Icon(
+                            modifier = Modifier.size(32.dp),
+                            painter = painterResource(icon.resourceId),
+                            tint = ComposeAppTheme.colors.leah,
+                            contentDescription = null
+                        )
+                    }
                 }
             }
             Column(
@@ -457,7 +464,7 @@ fun TransactionCell(item: TransactionViewItem, position: SectionItemPosition, on
                     item.secondaryValue?.let { coloredValue ->
                         Text(
                             text = if (item.showAmount) coloredValue.value else "*****",
-                            style = ComposeAppTheme.typography.subhead2,
+                            style = ComposeAppTheme.typography.subheadR,
                             color = coloredValue.color.compose(),
                             maxLines = 1,
                         )

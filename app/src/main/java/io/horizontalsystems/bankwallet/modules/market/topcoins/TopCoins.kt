@@ -76,7 +76,7 @@ fun TopCoins(
     onSetRefreshCallback {
         viewModel.refresh()
         reloadAd()
-        stat(page = StatPage.Markets, section = StatSection.Coins, event = StatEvent.Refresh)
+        stat(page = StatPage.Markets, event = StatEvent.Refresh, section = StatSection.Coins)
     }
 
     Crossfade(
@@ -109,9 +109,11 @@ fun TopCoins(
 
                         stat(
                             page = StatPage.Markets,
-                            section = StatSection.Coins,
+
                             event = StatEvent.AddToWatchlist(uid)
-                        )
+                        ,
+                                section = StatSection.Coins
+                            )
 
                     },
                     onRemoveFavorite = { uid ->
@@ -119,9 +121,10 @@ fun TopCoins(
 
                         stat(
                             page = StatPage.Markets,
-                            section = StatSection.Coins,
+
                             event = StatEvent.RemoveFromWatchlist(uid)
-                        )
+                        ,
+                                section = StatSection.Coins)
                     },
                     onCoinClick = onCoinClick,
                     preItems = {
@@ -177,7 +180,7 @@ fun TopCoins(
 
     if (openSortingSelector) {
         AlertGroup(
-            title = R.string.Market_Sort_PopupTitle,
+            title = stringResource(R.string.Market_Sort_PopupTitle),
             select = Select(uiState.sortingField, uiState.sortingFields),
             onSelect = { selected ->
                 viewModel.onSelectSortingField(selected)
@@ -185,8 +188,10 @@ fun TopCoins(
 
                 stat(
                     page = StatPage.Markets,
-                    section = StatSection.Coins,
+
                     event = StatEvent.SwitchSortType(selected.statSortType)
+                ,
+                    section = StatSection.Coins
                 )
             },
             onDismiss = {
@@ -196,7 +201,7 @@ fun TopCoins(
     }
     if (openTopSelector) {
         AlertGroup(
-            title = R.string.Market_Tab_Coins,
+            title = stringResource(R.string.Market_Tab_Coins),
             select = Select(uiState.topMarket, uiState.topMarkets),
             onSelect = {
                 viewModel.onSelectTopMarket(it)
@@ -204,8 +209,10 @@ fun TopCoins(
 
                 stat(
                     page = StatPage.Markets,
-                    section = StatSection.Coins,
+
                     event = StatEvent.SwitchMarketTop(it.statMarketTop)
+                ,
+                    section = StatSection.Coins
                 )
             },
             onDismiss = {
@@ -215,7 +222,7 @@ fun TopCoins(
     }
     if (openPeriodSelector) {
         AlertGroup(
-            title = R.string.CoinPage_Period,
+            title = stringResource(R.string.CoinPage_Period),
             select = Select(uiState.period, uiState.periods),
             onSelect = { selected ->
                 viewModel.onSelectPeriod(selected)
@@ -223,8 +230,10 @@ fun TopCoins(
 
                 stat(
                     page = StatPage.Markets,
-                    section = StatSection.Coins,
+
                     event = StatEvent.SwitchPeriod(selected.statPeriod)
+                ,
+                    section = StatSection.Coins
                 )
             },
             onDismiss = {

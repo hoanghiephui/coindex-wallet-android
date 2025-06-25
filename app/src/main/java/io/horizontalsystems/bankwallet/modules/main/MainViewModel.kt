@@ -18,25 +18,29 @@ import io.horizontalsystems.bankwallet.core.INetworkManager
 import io.horizontalsystems.bankwallet.core.IRateAppManager
 import io.horizontalsystems.bankwallet.core.ITermsManager
 import io.horizontalsystems.bankwallet.core.ViewModelUiState
+import io.horizontalsystems.bankwallet.core.managers.ActionCompletedDelegate
 import io.horizontalsystems.bankwallet.core.managers.ActiveAccountState
 import io.horizontalsystems.bankwallet.core.managers.DonationShowManager
 import io.horizontalsystems.bankwallet.core.managers.ReleaseNotesManager
+import io.horizontalsystems.bankwallet.core.managers.WalletEventType
 import io.horizontalsystems.bankwallet.core.providers.Translator
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.stat
+import io.horizontalsystems.bankwallet.core.utils.AddressUriParser
 import io.horizontalsystems.bankwallet.entities.Account
-import io.horizontalsystems.bankwallet.entities.AccountType
+import io.horizontalsystems.bankwallet.entities.AddressUri
 import io.horizontalsystems.bankwallet.entities.LaunchPage
+import io.horizontalsystems.bankwallet.modules.balance.OpenSendTokenSelect
 import io.horizontalsystems.bankwallet.modules.coin.CoinFragment
 import io.horizontalsystems.bankwallet.modules.main.MainModule.MainNavigation
 import io.horizontalsystems.bankwallet.modules.main.MainModule.NavigationViewItem
 import io.horizontalsystems.bankwallet.modules.market.topplatforms.Platform
-import io.horizontalsystems.bankwallet.modules.tonconnect.TonConnectMainFragment
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCManager
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCSessionManager
 import io.horizontalsystems.bankwallet.modules.walletconnect.list.WCListFragment
 import io.horizontalsystems.core.IPinComponent
+import io.horizontalsystems.marketkit.models.TokenType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -55,7 +59,8 @@ class MainViewModel(
     private val localStorage: ILocalStorage,
     wcSessionManager: WCSessionManager,
     private val wcManager: WCManager,
-    private val networkManager: INetworkManager
+    private val networkManager: INetworkManager,
+    private val actionCompletedDelegate: ActionCompletedDelegate
 ) : ViewModelUiState<MainModule.UiState>() {
 
     private var wcPendingRequestsCount = 0
@@ -104,6 +109,7 @@ class MainViewModel(
     private var activeWallet = accountManager.activeAccount
     private var wcSupportState: WCManager.SupportState? = null
     private var torEnabled = localStorage.torEnabled
+    private var openSendTokenSelect: OpenSendTokenSelect? = null
     private var isShowBalance = false
     private var isLoadBalance by mutableStateOf(true)
 
@@ -165,6 +171,15 @@ class MainViewModel(
             }
         }
 
+        viewModelScope.launch {
+            actionCompletedDelegate.walletEvents.collect { event ->
+                //ContactAddedToRecent event triggered after successful send transaction
+                if (event == WalletEventType.ContactAddedToRecent && donationShowManager.shouldShow()) {
+                    showDonationPage()
+                }
+            }
+        }
+
         updateSettingsBadge()
         updateTransactionsTabEnabled()
     }
@@ -179,12 +194,12 @@ class MainViewModel(
         activeWallet = activeWallet,
         wcSupportState = wcSupportState,
         torEnabled = torEnabled,
+        openSend = openSendTokenSelect,
         isShowBalance = isShowBalance,
         isLoadBalance = isLoadBalance
     )
 
-    private fun isTransactionsTabEnabled(): Boolean =
-        !accountManager.isAccountsEmpty && accountManager.activeAccount?.type !is AccountType.Cex
+    private fun isTransactionsTabEnabled(): Boolean = !accountManager.isAccountsEmpty
 
 
     fun whatsNewShown() {
@@ -193,7 +208,7 @@ class MainViewModel(
     }
 
     fun donationShown() {
-        donationShowManager.updateDonateAppVersion()
+        donationShowManager.updateDonatePageShownDate()
         showDonationPage = false
         emitState()
     }
@@ -333,7 +348,10 @@ class MainViewModel(
                             val platform = Platform(uid, title)
                             deeplinkPage = DeeplinkPage(R.id.marketPlatformFragment, platform)
 
-                            stat(page = StatPage.Widget, event = StatEvent.Open(StatPage.TopPlatform))
+                            stat(
+                                page = StatPage.Widget,
+                                event = StatEvent.Open(StatPage.TopPlatform)
+                            )
                         }
                     }
                     deeplinkString.contains("plus") -> {
@@ -348,15 +366,6 @@ class MainViewModel(
                 wcSupportState = wcManager.getWalletConnectSupportState()
                 if (wcSupportState == WCManager.SupportState.Supported) {
                     deeplinkPage = DeeplinkPage(R.id.wcListFragment, WCListFragment.Input(deeplinkString))
-                    tab = MainNavigation.Settings
-                }
-            }
-
-            deeplinkString.startsWith("coindex.money:") ||
-            deeplinkString.startsWith("tc:") -> {
-                val v = deepLink.getQueryParameter("v")?.toIntOrNull()
-                if (v != null) {
-                    deeplinkPage = DeeplinkPage(R.id.tcListFragment, TonConnectMainFragment.Input(deeplinkString))
                     tab = MainNavigation.Settings
                 }
             }
@@ -443,11 +452,53 @@ class MainViewModel(
     }
 
     fun handleDeepLink(uri: Uri) {
+        val deeplinkString = uri.toString()
+        if (deeplinkString.startsWith("unstoppable.money:") || deeplinkString.startsWith("tc:")) {
+            val returnParam = uri.getQueryParameter("ret")
+            // when app is opened from camera app, it returns "none" as ret param
+            // so we don't need closing app in this case
+            val closeApp = returnParam != "none"
+            viewModelScope.launch {
+                App.tonConnectManager.handle(uri.toString(), closeApp)
+            }
+            return
+        }
+
+        if (
+            deeplinkString.startsWith("bitcoin:")
+            || deeplinkString.startsWith("ethereum:")
+            || deeplinkString.startsWith("toncoin:")
+        ) {
+            AddressUriParser.addressUri(deeplinkString)?.let { addressUri ->
+                val allowedBlockchainTypes = addressUri.allowedBlockchainTypes
+                var allowedTokenTypes: List<TokenType>? = null
+                addressUri.value<String>(AddressUri.Field.TokenUid)?.let { uid ->
+                    TokenType.fromId(uid)?.let { tokenType ->
+                        allowedTokenTypes = listOf(tokenType)
+                    }
+                }
+
+                openSendTokenSelect = OpenSendTokenSelect(
+                    blockchainTypes = allowedBlockchainTypes,
+                    tokenTypes = allowedTokenTypes,
+                    address = addressUri.address,
+                    amount = addressUri.amount
+                )
+                emitState()
+                return
+            }
+        }
+
         val (tab, deeplinkPageData) = getNavigationDataForDeeplink(uri)
         deeplinkPage = deeplinkPageData
         currentMainTab = tab
         selectedTabIndex = items.indexOf(tab)
         syncNavigation()
+    }
+
+    fun onSendOpened() {
+        openSendTokenSelect = null
+        emitState()
     }
 
 }

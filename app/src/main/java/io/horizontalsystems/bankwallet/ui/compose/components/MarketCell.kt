@@ -3,7 +3,6 @@ package io.horizontalsystems.bankwallet.ui.compose.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -133,24 +131,10 @@ fun MarketCoinFirstRow(
                 overflow = TextOverflow.Ellipsis
             )
             if (badge != null) {
-                Box(
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(ComposeAppTheme.colors.jeremy)
-                ) {
-                    Text(
-                        modifier = Modifier.padding(
-                            start = 4.dp,
-                            end = 4.dp,
-                            bottom = 1.dp
-                        ),
-                        text = badge,
-                        color = ComposeAppTheme.colors.bran,
-                        style = ComposeAppTheme.typography.microSB,
-                        maxLines = 1,
-                    )
-                }
+                Badge(
+                    text = badge,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
             }
             if (advice != null) {
                 HSpacer(8.dp)
@@ -171,7 +155,7 @@ fun SignalBadge(advice: Advice) {
         Advice.Sell -> ComposeAppTheme.colors.lucian
         Advice.StrongBuy -> ComposeAppTheme.colors.tyler
         Advice.StrongSell -> ComposeAppTheme.colors.tyler
-        Advice.Neutral -> ComposeAppTheme.colors.bran
+        Advice.Neutral -> ComposeAppTheme.colors.leah
         else -> ComposeAppTheme.colors.jacob
     }
 
@@ -180,7 +164,7 @@ fun SignalBadge(advice: Advice) {
         Advice.Sell -> ComposeAppTheme.colors.red20
         Advice.StrongBuy -> ComposeAppTheme.colors.remus
         Advice.StrongSell -> ComposeAppTheme.colors.lucian
-        Advice.Neutral -> ComposeAppTheme.colors.jeremy
+        Advice.Neutral -> ComposeAppTheme.colors.blade
         else -> ComposeAppTheme.colors.yellow20
     }
 
@@ -249,7 +233,7 @@ fun MarketDataValueComponent(marketDataValue: MarketDataValue?) {
             Text(
                 text = diffText(marketDataValue.value),
                 color = diffColor(marketDataValue.value),
-                style = ComposeAppTheme.typography.subhead2,
+                style = ComposeAppTheme.typography.subheadR,
                 maxLines = 1,
             )
         }
@@ -257,7 +241,7 @@ fun MarketDataValueComponent(marketDataValue: MarketDataValue?) {
             Text(
                 text = formatValueAsDiff(marketDataValue.value),
                 color = diffColor(marketDataValue.value.raw()),
-                style = ComposeAppTheme.typography.subhead2,
+                style = ComposeAppTheme.typography.subheadR,
                 maxLines = 1,
             )
         }

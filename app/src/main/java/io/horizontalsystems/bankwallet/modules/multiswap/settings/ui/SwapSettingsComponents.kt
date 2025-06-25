@@ -26,7 +26,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.wallet.blockchain.bitcoin.R
-import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.entities.Address
 import io.horizontalsystems.bankwallet.entities.DataState
 import io.horizontalsystems.bankwallet.modules.address.HSAddressInput
@@ -38,9 +37,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.FormsInputStateWarn
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderText
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.body_grey50
-import io.horizontalsystems.marketkit.models.BlockchainType
-import io.horizontalsystems.marketkit.models.TokenQuery
-import io.horizontalsystems.marketkit.models.TokenType
+import io.horizontalsystems.marketkit.models.Token
 
 @Composable
 fun SlippageAmount(
@@ -92,30 +89,27 @@ fun TransactionDeadlineInput(
 
 @Composable
 fun RecipientAddress(
-    blockchainType: BlockchainType,
+    token: Token,
     navController: NavController,
     initial: Address?,
     onError: (Throwable?) -> Unit,
     onValueChange: (Address?) -> Unit,
 ) {
-    val tokenQuery = TokenQuery(blockchainType, TokenType.Native)
-    App.marketKit.token(tokenQuery)?.let { token ->
-        HeaderText(
-            text = stringResource(R.string.SwapSettings_RecipientAddressTitle)
-        )
-        HSAddressInput(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            initial = initial,
-            tokenQuery = token.tokenQuery,
-            coinCode = token.coin.code,
-            navController = navController,
-            onError = onError,
-            onValueChange = onValueChange,
-        )
-        InfoText(
-            text = stringResource(R.string.SwapSettings_RecipientAddressDescription),
-        )
-    }
+    HeaderText(
+        text = stringResource(R.string.SwapSettings_RecipientAddressTitle)
+    )
+    HSAddressInput(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        initial = initial,
+        tokenQuery = token.tokenQuery,
+        coinCode = token.coin.code,
+        navController = navController,
+        onError = onError,
+        onValueChange = onValueChange,
+    )
+    InfoText(
+        text = stringResource(R.string.SwapSettings_RecipientAddressDescription),
+    )
 }
 
 @Composable
@@ -135,7 +129,7 @@ fun InputWithButtons(
                 ComposeAppTheme.colors.red50
             }
         }
-        else -> ComposeAppTheme.colors.steel20
+        else -> ComposeAppTheme.colors.blade
     }
 
     val cautionColor = if (state?.errorOrNull is FormsInputStateWarning) {
@@ -149,7 +143,7 @@ fun InputWithButtons(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+                .border(0.5.dp, borderColor, RoundedCornerShape(12.dp))
                 .background(ComposeAppTheme.colors.lawrence)
                 .height(44.dp)
                 .padding(horizontal = 16.dp),

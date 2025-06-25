@@ -19,6 +19,9 @@ import io.horizontalsystems.bankwallet.core.adapters.SolanaAdapter
 import io.horizontalsystems.bankwallet.core.adapters.SolanaTransactionConverter
 import io.horizontalsystems.bankwallet.core.adapters.SolanaTransactionsAdapter
 import io.horizontalsystems.bankwallet.core.adapters.SplAdapter
+import io.horizontalsystems.bankwallet.core.adapters.StellarAdapter
+import io.horizontalsystems.bankwallet.core.adapters.StellarAssetAdapter
+import io.horizontalsystems.bankwallet.core.adapters.StellarTransactionsAdapter
 import io.horizontalsystems.bankwallet.core.adapters.TonAdapter
 import io.horizontalsystems.bankwallet.core.adapters.TonTransactionConverter
 import io.horizontalsystems.bankwallet.core.adapters.TonTransactionsAdapter
@@ -33,6 +36,7 @@ import io.horizontalsystems.bankwallet.core.managers.EvmLabelManager
 import io.horizontalsystems.bankwallet.core.managers.EvmSyncSourceManager
 import io.horizontalsystems.bankwallet.core.managers.RestoreSettingsManager
 import io.horizontalsystems.bankwallet.core.managers.SolanaKitManager
+import io.horizontalsystems.bankwallet.core.managers.StellarKitManager
 import io.horizontalsystems.bankwallet.core.managers.TonKitManager
 import io.horizontalsystems.bankwallet.core.managers.TronKitManager
 import io.horizontalsystems.bankwallet.entities.Wallet
@@ -51,6 +55,7 @@ class AdapterFactory(
     private val solanaKitManager: SolanaKitManager,
     private val tronKitManager: TronKitManager,
     private val tonKitManager: TonKitManager,
+    private val stellarKitManager: StellarKitManager,
     private val backgroundManager: BackgroundManager,
     private val restoreSettingsManager: RestoreSettingsManager,
     private val coinManager: ICoinManager,
@@ -92,6 +97,12 @@ class AdapterFactory(
         val tonKitWrapper = tonKitManager.getTonKitWrapper(wallet.account)
 
         return JettonAdapter(tonKitWrapper, address, wallet)
+    }
+
+    private fun getStellarAssetAdapter(wallet: Wallet, code: String, issuer: String): IAdapter {
+        val stellarKitWrapper = stellarKitManager.getStellarKitWrapper(wallet.account)
+
+        return StellarAssetAdapter(stellarKitWrapper, code, issuer)
     }
 
     fun getAdapterOrNull(wallet: Wallet) = try {
@@ -157,6 +168,9 @@ class AdapterFactory(
             BlockchainType.Ton -> {
                 TonAdapter(tonKitManager.getTonKitWrapper(wallet.account))
             }
+            BlockchainType.Stellar -> {
+                StellarAdapter(stellarKitManager.getStellarKitWrapper(wallet.account))
+            }
 
             else -> null
         }
@@ -169,6 +183,7 @@ class AdapterFactory(
         }
         is TokenType.Spl -> getSplAdapter(wallet, tokenType.address)
         is TokenType.Jetton -> getJettonAdapter(wallet, tokenType.address)
+        is TokenType.Asset -> getStellarAssetAdapter(wallet, tokenType.code, tokenType.issuer)
         is TokenType.Unsupported -> null
     }
 
@@ -203,6 +218,22 @@ class AdapterFactory(
         val tonTransactionConverter = tonTransactionConverter(address, source) ?: return null
 
         return TonTransactionsAdapter(tonKitWrapper, tonTransactionConverter)
+    }
+
+    fun stellarTransactionsAdapter(source: TransactionSource): ITransactionsAdapter? {
+        val stellarKitWrapper = stellarKitManager.getStellarKitWrapper(source.account)
+
+        val tokenQuery = TokenQuery(BlockchainType.Stellar, TokenType.Native)
+        val baseToken = coinManager.getToken(tokenQuery) ?: return null
+
+        val transactionConverter = StellarTransactionConverter(
+            source,
+            stellarKitWrapper.stellarKit.receiveAddress,
+            coinManager,
+            baseToken
+        )
+
+        return StellarTransactionsAdapter(stellarKitWrapper, transactionConverter)
     }
 
     fun tonTransactionConverter(
@@ -240,6 +271,9 @@ class AdapterFactory(
             BlockchainType.Ton -> {
                 tonKitManager.unlink(wallet.account)
             }
+            BlockchainType.Stellar -> {
+                stellarKitManager.unlink(wallet.account)
+            }
             else -> Unit
         }
     }
@@ -264,6 +298,9 @@ class AdapterFactory(
             }
             BlockchainType.Ton -> {
                 tonKitManager.unlink(transactionSource.account)
+            }
+            BlockchainType.Stellar -> {
+                stellarKitManager.unlink(transactionSource.account)
             }
             else -> Unit
         }

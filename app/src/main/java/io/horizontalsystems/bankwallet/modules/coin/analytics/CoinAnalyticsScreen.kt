@@ -26,6 +26,10 @@ import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
 import io.horizontalsystems.bankwallet.core.providers.Translator
 import io.horizontalsystems.bankwallet.core.slideFromBottom
 import io.horizontalsystems.bankwallet.core.slideFromRight
+import io.horizontalsystems.bankwallet.core.stats.StatEvent
+import io.horizontalsystems.bankwallet.core.stats.StatPage
+import io.horizontalsystems.bankwallet.core.stats.StatPremiumTrigger
+import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.entities.ViewState
 import io.horizontalsystems.bankwallet.modules.coin.analytics.CoinAnalyticsModule.AnalyticsViewItem
 import io.horizontalsystems.bankwallet.modules.coin.analytics.ui.AnalyticsBlockHeader
@@ -318,6 +322,10 @@ private fun AnalyticsPreviewBlock(
         },
         onClick = {
             navController.slideFromBottom(R.id.buySubscriptionFragment)
+            stat(
+                page = StatPage.CoinAnalytics,
+                event = StatEvent.OpenPremium(block.statTrigger ?: StatPremiumTrigger.Other)
+            )
         }
     ) {
         if (block.value != null) {

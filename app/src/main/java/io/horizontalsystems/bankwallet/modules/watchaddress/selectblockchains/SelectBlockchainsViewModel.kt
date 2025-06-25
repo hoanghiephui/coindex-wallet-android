@@ -35,9 +35,10 @@ class SelectBlockchainsViewModel(
             is AccountType.TronAddress,
             is AccountType.BitcoinAddress,
             is AccountType.TonAddress,
-            is AccountType.Cex,
+            is AccountType.StellarAddress,
             is AccountType.Mnemonic,
-            is AccountType.EvmPrivateKey -> Unit // N/A
+            is AccountType.EvmPrivateKey,
+            is AccountType.StellarSecretKey -> Unit // N/A
             is AccountType.EvmAddress -> {
                 title = R.string.Watch_Select_Blockchains
                 coinViewItems = tokens.map {
@@ -103,7 +104,10 @@ class SelectBlockchainsViewModel(
         accountCreated = true
         emitState()
 
-        stat(page = StatPage.WatchWallet, event = StatEvent.WatchWallet(accountType.statAccountType))
+        stat(
+            page = StatPage.WatchWallet,
+            event = StatEvent.WatchWallet(accountType.statAccountType)
+        )
     }
 
 }

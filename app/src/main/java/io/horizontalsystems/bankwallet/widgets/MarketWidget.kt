@@ -350,7 +350,7 @@ class MarketWidget : GlanceAppWidget() {
                 .padding(horizontal = 4.dp, vertical = 2.dp),
             text = text,
             style = TextStyle(
-                color = AppWidgetTheme.colors.bran,
+                color = AppWidgetTheme.colors.leah,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Medium
             ),

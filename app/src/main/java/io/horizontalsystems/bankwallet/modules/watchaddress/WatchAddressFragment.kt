@@ -35,6 +35,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.FormsInput
 import io.horizontalsystems.bankwallet.ui.compose.components.FormsInputMultiline
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderText
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
+import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.coroutines.delay
@@ -103,9 +104,10 @@ fun WatchAddressScreen(navController: NavController, popUpToInclusiveId: Int, in
                     is SubmitButtonType.Watch -> {
                         add(
                             MenuItem(
-                                title = TranslatableString.ResString(R.string.Watch_Address_Watch),
+                                title = TranslatableString.ResString(R.string.Button_Done),
                                 onClick = viewModel::onClickWatch,
-                                enabled = submitType.enabled
+                                enabled = submitType.enabled,
+                                tint = ComposeAppTheme.colors.jacob
                             )
                         )
                     }
@@ -113,7 +115,7 @@ fun WatchAddressScreen(navController: NavController, popUpToInclusiveId: Int, in
                     is SubmitButtonType.Next -> {
                         add(
                             MenuItem(
-                                title = TranslatableString.ResString(R.string.Watch_Address_Watch),
+                                title = TranslatableString.ResString(R.string.Button_Next),
                                 onClick = viewModel::onClickNext,
                                 enabled = submitType.enabled
                             )
@@ -157,6 +159,9 @@ fun WatchAddressScreen(navController: NavController, popUpToInclusiveId: Int, in
                 onPaste = {
                     stat(page = StatPage.WatchWallet, event = StatEvent.Paste(StatEntity.Key))
                 }
+            )
+            InfoText(
+                text = stringResource(R.string.Watch_InfoText),
             )
             Spacer(Modifier.height(32.dp))
         }

@@ -89,7 +89,8 @@ private fun SwapSelectProviderScreenInner(
                 menuItems = listOf(
                     MenuItem(
                         title = TranslatableString.ResString(R.string.Button_Done),
-                        onClick = onClickClose
+                        onClick = onClickClose,
+                        tint = ComposeAppTheme.colors.jacob
                     )
                 ),
             )
@@ -107,7 +108,7 @@ private fun SwapSelectProviderScreenInner(
                 val borderColor = if (viewItem.quote == currentQuote) {
                     ComposeAppTheme.colors.yellow50
                 } else {
-                    ComposeAppTheme.colors.steel20
+                    ComposeAppTheme.colors.blade
                 }
 
                 RowUniversal(

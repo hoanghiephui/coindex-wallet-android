@@ -65,14 +65,14 @@ fun DonateBanner(onClick: () -> Unit) {
                 TextWithDynamicScale(
                     maxLines = 3,
                     text = stringResource(R.string.SettingsBanner_BePartOfTheFuture),
-                    color = Bright,
                     style = ComposeAppTheme.typography.headline1.copy(lineHeight = 22.sp),
+                    color = Bright,
                 )
                 TextWithDynamicScale(
                     maxLines = 2,
                     text = stringResource(R.string.SettingsBanner_SupportTheProject),
+                    style = ComposeAppTheme.typography.subhead,
                     color = YellowD,
-                    style = ComposeAppTheme.typography.subhead1,
                 )
             }
 

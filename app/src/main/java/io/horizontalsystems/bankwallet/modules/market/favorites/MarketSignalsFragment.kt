@@ -110,8 +110,8 @@ fun MarketSignalsScreen(navController: NavController) {
                                     .fillMaxSize()
                                     .then(
                                         Modifier.sectionItemBorder(
-                                            1.dp,
-                                            ComposeAppTheme.colors.steel20,
+                                            0.5.dp,
+                                            ComposeAppTheme.colors.blade,
                                             12.dp,
                                             position
                                         )

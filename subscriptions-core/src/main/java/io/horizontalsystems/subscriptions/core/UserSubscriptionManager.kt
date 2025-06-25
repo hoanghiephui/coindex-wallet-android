@@ -55,6 +55,13 @@ object UserSubscriptionManager {
         return service.getSubscriptions()
     }
 
+    suspend fun hasFreeTrial(): Boolean {
+        val hasFreeTrial = getSubscriptions().flatMap { subscription ->
+            getBasePlans(subscription.id)
+        }.any { it.hasFreeTrial }
+        return hasFreeTrial
+    }
+
     suspend fun launchPurchaseFlow(
         subscriptionId: String,
         offerToken: String,

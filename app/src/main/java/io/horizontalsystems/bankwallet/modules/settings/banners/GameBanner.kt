@@ -62,7 +62,7 @@ fun GameBanner(onClick: () -> Unit) {
                 )
                 Text(
                     text = stringResource(R.string.SettingsBanner_GameDescription),
-                    style = ComposeAppTheme.typography.subhead1,
+                    style = ComposeAppTheme.typography.subhead,
                     color = Bright,
                 )
             }

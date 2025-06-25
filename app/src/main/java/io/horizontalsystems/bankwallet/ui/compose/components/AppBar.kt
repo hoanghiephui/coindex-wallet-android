@@ -135,7 +135,7 @@ fun AppBar(
                     modifier = Modifier
                         .padding(start = 24.dp, end = 16.dp)
                         .size(24.dp),
-                    color = ComposeAppTheme.colors.jacob,
+                    color = ComposeAppTheme.colors.grey,
                     strokeWidth = 2.dp
                 )
             }
@@ -156,7 +156,7 @@ fun AppBar(
                                 CircularProgressIndicator(
                                     progress = { 1f },
                                     modifier = Modifier.size(16.dp),
-                                    color = ComposeAppTheme.colors.steel20,
+                                    color = ComposeAppTheme.colors.blade,
                                     strokeWidth = 1.5.dp,
                                 )
                                 CircularProgressIndicator(
@@ -164,7 +164,7 @@ fun AppBar(
                                     modifier = Modifier
                                         .size(16.dp)
                                         .scale(scaleX = -1f, scaleY = 1f),
-                                    color = ComposeAppTheme.colors.jacob,
+                                    color = ComposeAppTheme.colors.grey,
                                     strokeWidth = 1.5.dp,
                                 )
                             }
@@ -184,7 +184,7 @@ private fun MenuItemSimple(menuItem: MenuItem) {
         else
             menuItem.tint
     } else {
-        ComposeAppTheme.colors.grey50
+        ComposeAppTheme.colors.andy
     }
     val icon = menuItem.icon
     if (icon != null) {

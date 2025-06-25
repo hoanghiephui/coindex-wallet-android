@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.tonapps.wallet.data.tonconnect.entities.DAppRequestEntity
 import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.core.authorizedAction
 import io.horizontalsystems.bankwallet.modules.evmfee.ButtonsGroupWithShade
 import io.horizontalsystems.bankwallet.modules.walletconnect.session.ui.DropDownCell
 import io.horizontalsystems.bankwallet.modules.walletconnect.session.ui.TitleValueCell
@@ -49,7 +50,11 @@ import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TonConnectNewScreen(navController: NavController, requestEntity: DAppRequestEntity) {
+fun TonConnectNewScreen(
+    navController: NavController,
+    requestEntity: DAppRequestEntity,
+    onResult: (Boolean) -> Unit,
+) {
     val viewModel = viewModel<TonConnectNewViewModel>(initializer = {
         TonConnectNewViewModel(requestEntity)
     })
@@ -90,14 +95,22 @@ fun TonConnectNewScreen(navController: NavController, requestEntity: DAppRequest
                     ButtonPrimaryYellow(
                         modifier = Modifier.fillMaxWidth(),
                         title = stringResource(R.string.Button_Connect),
-                        onClick = viewModel::connect,
+                        onClick = {
+                            navController.authorizedAction {
+                                viewModel.connect()
+                                onResult.invoke(true)
+                            }
+                        },
                         enabled = uiState.connectEnabled
                     )
                     VSpacer(16.dp)
                     ButtonPrimaryDefault(
                         modifier = Modifier.fillMaxWidth(),
                         title = stringResource(R.string.Button_Cancel),
-                        onClick = viewModel::reject
+                        onClick = {
+                            viewModel.reject()
+                            onResult.invoke(false)
+                        }
                     )
                 }
             }

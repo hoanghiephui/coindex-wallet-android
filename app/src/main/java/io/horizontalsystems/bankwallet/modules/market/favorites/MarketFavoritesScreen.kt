@@ -23,6 +23,7 @@ import io.horizontalsystems.bankwallet.core.slideFromBottomForResult
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
+import io.horizontalsystems.bankwallet.core.stats.StatPremiumTrigger
 import io.horizontalsystems.bankwallet.core.stats.StatSection
 import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.core.stats.statPeriod
@@ -66,9 +67,10 @@ fun MarketFavoritesScreen(
 
         stat(
             page = StatPage.Markets,
-            section = StatSection.Watchlist,
+
             event = StatEvent.Refresh
-        )
+        ,
+                section = StatSection.Watchlist)
     }
 
     Crossfade(
@@ -102,9 +104,10 @@ fun MarketFavoritesScreen(
 
                             stat(
                                 page = StatPage.Markets,
-                                section = StatSection.Watchlist,
+
                                 event = StatEvent.RemoveFromWatchlist(uid)
-                            )
+                            ,
+                                    section = StatSection.Watchlist)
                         },
                         onCoinClick = { coinUid ->
                             val arguments = CoinFragment.Input(coinUid)
@@ -112,9 +115,10 @@ fun MarketFavoritesScreen(
 
                             stat(
                                 page = StatPage.Markets,
-                                section = StatSection.Watchlist,
+
                                 event = StatEvent.OpenCoin(coinUid)
-                            )
+                            ,
+                                    section = StatSection.Watchlist)
                         },
                         onReorder = { from, to ->
                             viewModel.reorder(from, to)
@@ -141,7 +145,7 @@ fun MarketFavoritesScreen(
                                         ButtonSecondaryCircle(
                                             icon = R.drawable.ic_edit_20,
                                             tint = if (manualOrderEnabled) ComposeAppTheme.colors.dark else ComposeAppTheme.colors.leah,
-                                            background = if (manualOrderEnabled) ComposeAppTheme.colors.jacob else ComposeAppTheme.colors.steel20,
+                                            background = if (manualOrderEnabled) ComposeAppTheme.colors.jacob else ComposeAppTheme.colors.blade,
                                         ) {
                                             manualOrderEnabled = !manualOrderEnabled
                                         }
@@ -163,8 +167,13 @@ fun MarketFavoritesScreen(
                                                 ) {
                                                     if (it.enabled) {
                                                         viewModel.showSignals()}
-                                                    }
-                                                }
+                                                    }}
+                                                    stat(
+                                                        page = StatPage.MarketOverview,
+                                                        event = StatEvent.OpenPremium(
+                                                            StatPremiumTrigger.TradingSignal),
+                                                        section = StatSection.Watchlist
+                                                )
                                             } else {
                                                 viewModel.hideSignals()
                                             }
@@ -185,7 +194,7 @@ fun MarketFavoritesScreen(
 
     if (openSortingSelector) {
         AlertGroup(
-            title = R.string.Market_Sort_PopupTitle,
+            title = stringResource(R.string.Market_Sort_PopupTitle),
             select = Select(uiState.sortingField, viewModel.sortingOptions),
             onSelect = { selected ->
                 manualOrderEnabled = false
@@ -195,8 +204,10 @@ fun MarketFavoritesScreen(
 
                 stat(
                     page = StatPage.Markets,
-                    section = StatSection.Watchlist,
+
                     event = StatEvent.SwitchSortType(selected.statSortType)
+                ,
+                    section = StatSection.Watchlist
                 )
             },
             onDismiss = {
@@ -206,7 +217,7 @@ fun MarketFavoritesScreen(
     }
     if (openPeriodSelector) {
         AlertGroup(
-            title = R.string.CoinPage_Period,
+            title = stringResource(R.string.CoinPage_Period),
             select = Select(uiState.period, viewModel.periods),
             onSelect = { selected ->
                 openPeriodSelector = false
@@ -215,8 +226,10 @@ fun MarketFavoritesScreen(
 
                 stat(
                     page = StatPage.Markets,
-                    section = StatSection.Watchlist,
+
                     event = StatEvent.SwitchPeriod(selected.statPeriod)
+                ,
+                    section = StatSection.Watchlist
                 )
             },
             onDismiss = {
