@@ -295,6 +295,21 @@ private fun SettingSections(
                 }
             }
         )
+        HsDivider()
+        HsSettingCell(
+            title = R.string.SettingsAddressChecker_Title,
+            icon = R.drawable.ic_radar_24,
+            iconTint = ComposeAppTheme.colors.jacob,
+            onClick = {
+                navController.paidAction(AddressBlacklist) {
+                    navController.slideFromRight(R.id.addressCheckerFragment)
+                }
+                stat(
+                    page = StatPage.Settings,
+                    event = StatEvent.OpenPremium(StatPremiumTrigger.AddressChecker)
+                )
+            }
+        )
     }
 
     VSpacer(32.dp)
@@ -357,45 +372,6 @@ private fun SettingSections(
             }
         }
     )
-
-    VSpacer(24.dp)
-
-    PremiumHeader()
-
-    SectionPremiumUniversalLawrence {
-        if (!BuildConfig.FDROID_BUILD) {
-            HsSettingCell(
-                title = R.string.Settings_VipSupport,
-                icon = R.drawable.ic_support_yellow_24,
-                iconTint = ComposeAppTheme.colors.jacob,
-                onClick = {
-                    navController.paidAction(VIPSupport) {
-                        openVipSupport.invoke()
-                    }
-                    stat(
-                        page = StatPage.Settings,
-                        event = StatEvent.OpenPremium(StatPremiumTrigger.VipSupport)
-                    )
-                }
-            )
-            HsDivider()
-        }
-        HsSettingCell(
-            title = R.string.SettingsAddressChecker_Title,
-            icon = R.drawable.ic_radar_24,
-            iconTint = ComposeAppTheme.colors.jacob,
-            onClick = {
-                navController.paidAction(AddressBlacklist) {
-                    navController.slideFromRight(R.id.addressCheckerFragment)
-                }
-                stat(
-                    page = StatPage.Settings,
-                    event = StatEvent.OpenPremium(StatPremiumTrigger.AddressChecker)
-                )
-            }
-        )
-    }
-
 
     VSpacer(32.dp)
 
