@@ -63,6 +63,8 @@ import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.components.ListErrorView
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_grey
+import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_leah
+import io.horizontalsystems.bankwallet.ui.compose.components.subheadR_leah
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -256,7 +258,7 @@ private fun LazyListScope.discovery(
 
             is MainPage.LoadedPage -> {
                 Column(modifier = interestsItemModifier) {
-                    subhead1_grey(
+                    subhead2_leah(
                         modifier = Modifier.padding(16.dp),
                         text = "Discovery",
                         maxLines = 1,
@@ -285,7 +287,7 @@ private fun LazyListScope.discovery(
                             .heightIn(
                                 max = max(
                                     280.dp,
-                                    with(LocalDensity.current) { 280.sp.toDp() })
+                                    with(LocalDensity.current) { 400.sp.toDp() })
                             )
                             .fillMaxWidth()
                             .semantics { traversalIndex = 1f },

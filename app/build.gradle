@@ -125,8 +125,8 @@ android {
         coinhub {
             dimension = "distribution"
             applicationId 'com.blockchain.btc.coinhub'
-            versionCode 173
-            versionName '1.4.7'
+            versionCode 174
+            versionName '1.4.8'
             resValue "string", "companyWebPageLink", "https://bestwallet.money"
             resValue "string", "appWebPageLink", "http://play.google.com/store/apps/details?id=com.blockchain.btc.coinhub"
         }
@@ -229,10 +229,6 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.14'
-    }
     namespace 'com.wallet.blockchain.bitcoin'
     lint {
         disable 'LogNotTimber'
@@ -290,11 +286,11 @@ dependencies {
 
     //AppWidgets
     implementation 'androidx.glance:glance-appwidget:1.1.1'
-    implementation 'com.google.firebase:firebase-crashlytics:19.2.1'
-    implementation 'com.google.firebase:firebase-analytics:22.1.2'
+    implementation 'com.google.firebase:firebase-crashlytics:19.4.4'
+    implementation 'com.google.firebase:firebase-analytics:22.5.0'
 
     // Room
-    def room_version = '2.7.1'
+    def room_version = '2.7.2'
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
@@ -313,14 +309,14 @@ dependencies {
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     // (see https://github.com/ReactiveX/RxJava/releases for latest 2.x.x version)
     implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
-    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.11.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
-    implementation 'com.squareup.retrofit2:converter-scalars:2.11.0'
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
+    implementation 'com.squareup.retrofit2:retrofit:3.0.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:3.0.0'
+    implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:3.0.0'
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:5.0.0"))
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
-    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'com.google.code.gson:gson:2.13.1'
     implementation "androidx.biometric:biometric:$biometric_version"
 
     implementation 'com.atlassian.commonmark:commonmark:0.17.0'
@@ -346,7 +342,7 @@ dependencies {
     implementation("io.github.alexzhirkevich:qrose:1.0.1")
 
     // WorkManager Kotlin
-    def work_version = "2.10.0"
+    def work_version = "2.10.2"
     implementation "androidx.work:work-runtime-ktx:$work_version"
     // WorkManager RxJava2 support
     implementation "androidx.work:work-rxjava2:$work_version"
@@ -391,8 +387,8 @@ dependencies {
 
     implementation 'com.twitter.twittertext:twitter-text:3.1.0'
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.10.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.10.2'
 
     // UI modules
 
@@ -410,12 +406,12 @@ dependencies {
     fdroidCiImplementation project(':subscriptions-fdroid')
     ciImplementation project(':subscriptions-dev')
 
-    implementation platform('androidx.compose:compose-bom:2025.02.00')
+    implementation platform('androidx.compose:compose-bom:2025.06.01')
     // Integration with activities
-    implementation 'androidx.activity:activity-compose:1.10.0'
+    implementation 'androidx.activity:activity-compose:1.10.1'
     // Compose Material Design
     implementation "androidx.compose.material:material"
-    implementation "androidx.compose.material3:material3:1.3.1"
+    implementation "androidx.compose.material3:material3:1.3.2"
     // Animations
     implementation "androidx.compose.animation:animation"
     // Tooling support (Previews, etc.)
@@ -466,21 +462,21 @@ dependencies {
     implementation 'com.applovin.mediation:bytedance-adapter:7.2.0.6.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
     implementation("com.google.android.gms:play-services-ads-identifier:18.2.0")
-    implementation("com.android.billingclient:billing:7.1.1")
-    implementation("com.android.billingclient:billing-ktx:7.1.1")
+    implementation("com.android.billingclient:billing:8.0.0")
+    implementation("com.android.billingclient:billing-ktx:8.0.0")
     implementation project(":in-app-update")
-    implementation('com.airbnb.android:lottie:6.6.2')
-    implementation('com.airbnb.android:lottie-compose:6.6.2')
-    implementation "com.google.dagger:hilt-android:2.54"
-    ksp "com.google.dagger:hilt-compiler:2.54"
+    implementation('com.airbnb.android:lottie:6.6.7')
+    implementation('com.airbnb.android:lottie-compose:6.6.7')
+    implementation "com.google.dagger:hilt-android:2.56.2"
+    ksp "com.google.dagger:hilt-compiler:2.56.2"
     ksp "androidx.hilt:hilt-compiler:1.2.0"
     implementation(project(":billing"))
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
-    implementation("androidx.work:work-runtime-ktx:2.10.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.1")
+    implementation("androidx.work:work-runtime-ktx:2.10.2")
     implementation("androidx.hilt:hilt-work:1.2.0")
-    implementation("joda-time:joda-time:2.12.7")
+    implementation("joda-time:joda-time:2.14.0")
     implementation project(":lightweightlibrary")
 }
 

@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.horizontalsystems.bankwallet.modules.market.topsectors.TopSectorViewItem
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
@@ -77,6 +78,8 @@ fun SingleTopicButton(
             Text(
                 text = viewItem.coinCategory.description["en"] ?: "",
                 style = MaterialTheme.typography.bodySmall,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 3,
                 modifier = Modifier
                     .padding(top = 8.dp),
             )

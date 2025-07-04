@@ -297,7 +297,7 @@ class BillingClientProviderImpl @Inject constructor(
         ) { result, products ->
             when (val response = result.toResponse()) {
                 is BillingResponse.OK -> {
-                    listener.invoke(Result.success(products.translate()))
+                    //listener.invoke(Result.success(products.translate()))
                 }
 
                 is BillingResponse.ServiceDisconnected, is BillingResponse.ServiceError -> {
