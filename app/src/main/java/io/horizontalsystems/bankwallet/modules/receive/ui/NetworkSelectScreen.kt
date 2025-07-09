@@ -34,7 +34,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.SectionUniversalItem
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
-import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
+import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.marketkit.models.FullCoin
 import kotlinx.coroutines.launch
@@ -115,7 +115,7 @@ fun NetworkCell(
             contentDescription = null,
         )
         Column(modifier = Modifier.weight(1f)) {
-            body_leah(text = title)
+            headline2_leah(text = title)
             subhead2_grey(text = subtitle)
         }
         Icon(

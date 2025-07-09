@@ -337,7 +337,7 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
         walletActivator = WalletActivator(walletManager, marketKit)
         tokenAutoEnableManager = TokenAutoEnableManager(appDatabase.tokenAutoEnabledBlockchainDao())
 
-        spamManager = SpamManager(localStorage, coinManager, SpamAddressStorage(appDatabase.spamAddressDao()), marketKit, appConfigProvider)
+        spamManager = SpamManager(localStorage, SpamAddressStorage(appDatabase.spamAddressDao()))
         recentAddressManager = RecentAddressManager(accountManager, appDatabase.recentAddressDao(), ActionCompletedDelegate)
         val evmAccountManagerFactory = EvmAccountManagerFactory(
             accountManager,
@@ -349,8 +349,7 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
             backgroundManager,
             evmSyncSourceManager,
             marketKit,
-            evmAccountManagerFactory,
-            spamManager
+            evmAccountManagerFactory
         )
 
         val tronAccountManager = TronAccountManager(
@@ -414,6 +413,8 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
             stellarKitManager,
         )
         transactionAdapterManager = TransactionAdapterManager(adapterManager, adapterFactory)
+
+        spamManager.set(transactionAdapterManager)
 
         feeCoinProvider = FeeTokenProvider(marketKit)
 

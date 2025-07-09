@@ -13,7 +13,9 @@ import io.horizontalsystems.marketkit.models.HsPointTimePeriod
 import io.horizontalsystems.marketkit.models.HsTimePeriod
 import io.horizontalsystems.marketkit.models.MarketInfo
 import io.horizontalsystems.marketkit.models.NftTopCollection
+import io.horizontalsystems.marketkit.models.Stock
 import io.horizontalsystems.marketkit.models.TokenQuery
+import io.horizontalsystems.marketkit.models.Vault
 import io.horizontalsystems.subscriptions.core.UserSubscriptionManager
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -61,6 +63,8 @@ class MarketKitWrapper(
     fun fullCoins(filter: String, limit: Int = 20) = marketKit.fullCoins(filter, limit)
 
     fun fullCoins(coinUids: List<String>) = marketKit.fullCoins(coinUids)
+
+    fun fullCoinsByCoinCode(coinCodes: List<String>) = marketKit.fullCoinsByCoinCodes(coinCodes)
 
     fun allCoins() = marketKit.allCoins()
 
@@ -288,6 +292,8 @@ class MarketKitWrapper(
     fun requestVipSupport(subscriptionId: String): Single<Map<String, String>> =
         requestWithAuthToken { marketKit.requestVipSupport(it, subscriptionId) }
 
+    fun getStocks(): Single<List<Stock>> = marketKit.getStocks()
+
     // Stats
 
     fun sendStats(stats: String, appVersion: String, appId: String?): Single<Unit> {
@@ -296,8 +302,18 @@ class MarketKitWrapper(
 
     // Etf
 
-    fun etfs(currencyCode: String) = marketKit.etfSingle(currencyCode)
+    fun etfs(category: String) = marketKit.etfSingle(category)
 
-    fun etfPoints(currencyCode: String) = marketKit.etfPointSingle(currencyCode)
+    fun etfPoints(category: String) = marketKit.etfPointSingle(category)
+
+    // Vaults
+
+    fun vaults(): Single<List<Vault>> {
+        return requestWithAuthToken { marketKit.vaultsSingle() }
+    }
+
+    fun vault(address: String, periodType: HsTimePeriod): Single<Vault> {
+        return requestWithAuthToken { marketKit.vaultSingle(address, periodType) }
+    }
 
 }

@@ -39,8 +39,8 @@ import io.horizontalsystems.bankwallet.analytics.TrackScreenViewEvent
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.body_grey
-import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
+import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 
 open class BaseComposableBottomSheetFragment : BottomSheetDialogFragment() {
@@ -121,7 +121,7 @@ fun BottomSheetHeaderMultiline(
                     .weight(1f)
                     .align(Alignment.CenterVertically),
             ) {
-                body_leah(
+                headline2_leah(
                     text = title,
                     maxLines = 1,
                 )

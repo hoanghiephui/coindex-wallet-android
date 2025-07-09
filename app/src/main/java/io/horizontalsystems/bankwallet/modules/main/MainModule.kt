@@ -80,8 +80,8 @@ object MainModule {
         Market(R.drawable.baseline_area_chart_24, R.string.Market_Title),
         Balance(R.drawable.baseline_account_balance_wallet_24, R.string.Balance_Title),
         Search(R.drawable.prem_search_discovery_24, R.string.Market_Search),
-        Transactions(R.drawable.ic_transactions, R.string.Transactions_Title),
-        Settings(R.drawable.ic_settings, R.string.Settings_Title);
+        Transactions(R.drawable.ic_transactions_24, R.string.Transactions_Title),
+        Settings(R.drawable.ic_settings_24, R.string.Settings_Title);
 
         companion object {
             private val map = entries.associateBy(MainNavigation::name)

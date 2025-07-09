@@ -36,7 +36,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.HsCheckbox
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
-import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
+import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_lucian
 
@@ -145,7 +145,7 @@ private fun ItemsSection(
                 }
         ) {
             Column {
-                body_leah(text = account.name)
+                headline2_leah(text = account.name)
                 VSpacer(height = 1.dp)
                 if (!account.hasAnyBackup) {
                     subhead2_lucian(text = stringResource(id = R.string.ManageAccount_BackupRequired_Title))
