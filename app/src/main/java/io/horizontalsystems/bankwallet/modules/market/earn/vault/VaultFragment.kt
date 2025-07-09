@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import io.horizontalsystems.bankwallet.R
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.modules.chart.ChartViewModel
 import io.horizontalsystems.bankwallet.modules.coin.overview.ui.Chart
@@ -49,18 +50,25 @@ class VaultFragment : BaseComposeFragment() {
     @Composable
     override fun GetContent(navController: NavController) {
         withInput<Input>(navController) { input ->
-            val factory = VaultModule.Factory(input)
-            val viewModel = viewModel<VaultViewModel>(factory = factory)
-            val chartViewModel = viewModel<ChartViewModel>(
-                factory = factory
-            )
-            VaultScreen(
-                viewModel,
-                chartViewModel,
-                navController
-            )
+            input?.let {
+                val factory = VaultModule.Factory(input)
+                val viewModel = viewModel<VaultViewModel>(factory = factory)
+                val chartViewModel = viewModel<ChartViewModel>(
+                    factory = factory
+                )
+                VaultScreen(
+                    viewModel,
+                    chartViewModel,
+                    navController
+                )
+            } ?: run {
+                navController.popBackStack()
+            }
         }
     }
+
+    override val logScreen: String
+        get() = "VaultFragment"
 
     @Parcelize
     data class Input(
@@ -77,6 +85,7 @@ class VaultFragment : BaseComposeFragment() {
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun VaultScreen(
     viewModel: VaultViewModel,
