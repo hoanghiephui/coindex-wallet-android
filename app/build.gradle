@@ -125,8 +125,8 @@ android {
         coinhub {
             dimension = "distribution"
             applicationId 'com.blockchain.btc.coinhub'
-            versionCode 174
-            versionName '1.4.8'
+            versionCode 175
+            versionName '1.4.9'
             resValue "string", "companyWebPageLink", "https://bestwallet.money"
             resValue "string", "appWebPageLink", "http://play.google.com/store/apps/details?id=com.blockchain.btc.coinhub"
         }
@@ -313,7 +313,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:3.0.0'
     implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
     implementation 'com.squareup.retrofit2:converter-scalars:3.0.0'
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:5.0.0"))
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:5.1.0"))
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
     implementation 'com.google.code.gson:gson:2.13.1'
@@ -406,7 +406,7 @@ dependencies {
     fdroidCiImplementation project(':subscriptions-fdroid')
     ciImplementation project(':subscriptions-dev')
 
-    implementation platform('androidx.compose:compose-bom:2025.06.01')
+    implementation platform('androidx.compose:compose-bom:2025.07.00')
     // Integration with activities
     implementation 'androidx.activity:activity-compose:1.10.1'
     // Compose Material Design
@@ -431,7 +431,7 @@ dependencies {
     // When using a AppCompat theme
     implementation "com.google.accompanist:accompanist-appcompat-theme:$accompanist_version"
     implementation "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-permissions:0.37.3"
 
     // UI Tests
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
@@ -459,7 +459,7 @@ dependencies {
     api 'com.jaredrummler:android-shell:1.0.0'
     api 'com.offbynull.portmapper:portmapper:2.0.5'
     implementation("com.applovin:applovin-sdk:13.3.1")
-    implementation 'com.applovin.mediation:bytedance-adapter:7.2.0.6.0'
+    implementation 'com.applovin.mediation:bytedance-adapter:7.3.0.3.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
     implementation("com.google.android.gms:play-services-ads-identifier:18.2.0")
     implementation("com.android.billingclient:billing:8.0.0")
@@ -467,13 +467,13 @@ dependencies {
     implementation project(":in-app-update")
     implementation('com.airbnb.android:lottie:6.6.7')
     implementation('com.airbnb.android:lottie-compose:6.6.7')
-    implementation "com.google.dagger:hilt-android:2.56.2"
-    ksp "com.google.dagger:hilt-compiler:2.56.2"
+    implementation "com.google.dagger:hilt-android:2.57"
+    ksp "com.google.dagger:hilt-compiler:2.57"
     ksp "androidx.hilt:hilt-compiler:1.2.0"
     implementation(project(":billing"))
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.2")
     implementation("androidx.work:work-runtime-ktx:2.10.2")
     implementation("androidx.hilt:hilt-work:1.2.0")
     implementation("joda-time:joda-time:2.14.0")
