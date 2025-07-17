@@ -21,9 +21,12 @@ import io.horizontalsystems.bankwallet.modules.multiswap.ui.DataField
 import io.horizontalsystems.bankwallet.modules.send.SendModule
 import io.horizontalsystems.marketkit.models.Token
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
+import kotlin.coroutines.cancellation.CancellationException
 
 class SwapConfirmViewModel(
     private val swapProvider: IMultiSwapProvider,
@@ -56,6 +59,7 @@ class SwapConfirmViewModel(
     private var amountOutMin: BigDecimal? = null
     private var quoteFields: List<DataField> = listOf()
     private var cautionViewItems: List<CautionViewItem> = listOf()
+    private var fetchFinalQuoteJob: Job? = null
 
     init {
         fiatServiceIn.setCurrency(currency)
@@ -170,6 +174,7 @@ class SwapConfirmViewModel(
             priceImpactLevel = priceImpactState.priceImpactLevel,
             quoteFields = quoteFields,
             transactionFields = sendTransactionState.fields,
+            hasSettings = sendTransactionService.hasSettings,
         )
     }
 
@@ -188,9 +193,12 @@ class SwapConfirmViewModel(
     }
 
     private fun fetchFinalQuote() {
-        viewModelScope.launch(Dispatchers.Default) {
+        fetchFinalQuoteJob?.cancel()
+        fetchFinalQuoteJob = viewModelScope.launch(Dispatchers.Default) {
             try {
                 val finalQuote = swapProvider.fetchFinalQuote(tokenIn, tokenOut, amountIn, swapSettings, sendTransactionSettings, swapQuote)
+
+                ensureActive()
 
                 amountOut = finalQuote.amountOut
                 amountOutMin = finalQuote.amountOutMin
@@ -203,6 +211,8 @@ class SwapConfirmViewModel(
                 sendTransactionService.setSendTransactionData(finalQuote.sendTransactionData)
 
                 priceImpactService.setPriceImpact(finalQuote.priceImpact, swapProvider.title)
+            } catch (e: CancellationException) {
+                // Do nothing
             } catch (t: Throwable) {
 //                Log.e("AAA", "fetchFinalQuote error", t)
             }
@@ -257,6 +267,7 @@ data class SwapConfirmUiState(
     val quoteFields: List<DataField>,
     val transactionFields: List<DataField>,
     val extraFees: Map<FeeType, SendModule.AmountData>,
+    val hasSettings: Boolean,
 ) {
     val totalFee by lazy {
         val networkFiatValue = networkFee?.secondary  ?: return@lazy null

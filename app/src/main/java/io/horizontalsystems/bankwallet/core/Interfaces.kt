@@ -50,6 +50,8 @@ import io.horizontalsystems.marketkit.models.TokenQuery
 import io.horizontalsystems.solanakit.models.FullTransaction
 import io.horizontalsystems.stellarkit.room.StellarAsset
 import io.horizontalsystems.tonkit.FriendlyAddress
+import io.horizontalsystems.tronkit.models.Contract
+import io.horizontalsystems.tronkit.network.CreatedTransaction
 import io.horizontalsystems.tronkit.transaction.Fee
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -406,6 +408,8 @@ interface IAdapter {
 interface ISendSolanaAdapter {
     val availableBalance: BigDecimal
     suspend fun send(amount: BigDecimal, to: SolanaAddress): FullTransaction
+    suspend fun send(rawTransaction: ByteArray): FullTransaction
+    fun estimateFee(rawTransaction: ByteArray): BigDecimal
 }
 
 interface ISendTonAdapter {
@@ -420,6 +424,7 @@ interface ISendStellarAdapter {
     fun validate(address: String)
     suspend fun getMinimumSendAmount(address: String) : BigDecimal?
     suspend fun send(amount: BigDecimal, address: String, memo: String?)
+    suspend fun send(transactionEnvelope: String)
 }
 
 interface ISendTronAdapter {
@@ -427,7 +432,11 @@ interface ISendTronAdapter {
     val trxBalanceData: BalanceData
 
     suspend fun estimateFee(amount: BigDecimal, to: TronAddress): List<Fee>
+    suspend fun estimateFee(transaction: CreatedTransaction): List<Fee>
+    suspend fun estimateFee(contract: Contract): List<Fee>
     suspend fun send(amount: BigDecimal, to: TronAddress, feeLimit: Long?)
+    suspend fun send(contract: Contract, feeLimit: Long?)
+    suspend fun send(createdTransaction: CreatedTransaction)
     suspend fun isAddressActive(address: TronAddress): Boolean
     fun isOwnAddress(address: TronAddress): Boolean
 }

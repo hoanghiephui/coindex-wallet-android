@@ -52,7 +52,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
-class SendTransactionServiceBtc(private val token: Token) : AbstractSendTransactionService() {
+class SendTransactionServiceBtc(private val token: Token) : AbstractSendTransactionService(true) {
     private val adapter = App.adapterManager.getAdapterForToken<ISendBitcoinAdapter>(token)!!
     private val provider = FeeRateProviderFactory.provider(token.blockchainType)!!
     private val feeService = SendBitcoinFeeService(adapter)
@@ -152,7 +152,7 @@ class SendTransactionServiceBtc(private val token: Token) : AbstractSendTransact
         extraFees = extraFees
     )
 
-    override fun setSendTransactionData(data: SendTransactionData) {
+    override suspend fun setSendTransactionData(data: SendTransactionData) {
         check(data is SendTransactionData.Btc)
 
         memo = data.memo

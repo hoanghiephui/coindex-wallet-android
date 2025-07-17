@@ -152,7 +152,12 @@ fun TabsSection(
         stat(page = StatPage.Markets, event = StatEvent.SwitchTab(selectedTab.statTab))
     })
     val tabItems = tabs.map {
-        TabItem(stringResource(id = it.titleResId), it == selectedTab, it)
+        TabItem(
+            title = stringResource(id = it.titleResId),
+            selected = it == selectedTab,
+            item = it,
+            premium = it.premium
+        )
     }
 
     ScrollableTabs(
