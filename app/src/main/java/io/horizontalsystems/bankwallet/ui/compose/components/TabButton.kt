@@ -22,7 +22,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
+import androidx.compose.material3.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.LocalContentAlpha
@@ -33,7 +33,7 @@ import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Surface
 import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
