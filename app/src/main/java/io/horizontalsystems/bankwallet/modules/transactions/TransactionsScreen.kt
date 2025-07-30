@@ -1,23 +1,20 @@
 package io.horizontalsystems.bankwallet.modules.transactions
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -66,17 +63,15 @@ import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.HSCircularProgressIndicator
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderStick
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsImage
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.ScreenMessageWithAction
 import io.horizontalsystems.bankwallet.ui.compose.components.ScrollableTabs
-import io.horizontalsystems.bankwallet.ui.compose.components.SectionItemPosition
-import io.horizontalsystems.bankwallet.ui.compose.components.SectionUniversalItem
 import io.horizontalsystems.bankwallet.ui.compose.components.TabItem
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
-import io.horizontalsystems.bankwallet.ui.compose.components.sectionItemBorder
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -225,7 +220,6 @@ private fun onTransactionClick(
     stat(page = StatPage.Transactions, event = StatEvent.Open(StatPage.TransactionInfo))
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.transactionList(
     transactionsMap: Map<String, List<TransactionViewItem>>,
     willShow: (TransactionViewItem) -> Unit,
@@ -236,38 +230,21 @@ fun LazyListScope.transactionList(
 
     transactionsMap.forEach { (dateHeader, transactions) ->
         stickyHeader {
-            HeaderStick(text = dateHeader)
+            HeaderStick(
+                borderBottom = true,
+                text = dateHeader,
+                color = ComposeAppTheme.colors.lawrence,
+            )
         }
 
-        val itemsCount = transactions.size
-        val singleElement = itemsCount == 1
-
-        itemsIndexed(
-            items = transactions,
-            key = { _, item ->
-                item.uid
-            }
-        ) { index, item ->
-            val position: SectionItemPosition = when {
-                singleElement -> SectionItemPosition.Single
-                index == 0 -> SectionItemPosition.First
-                index == itemsCount - 1 -> SectionItemPosition.Last
-                else -> SectionItemPosition.Middle
-            }
-
-            Box(modifier = Modifier.padding(horizontal = 16.dp)) {
-                TransactionCell(item, position) { onClick.invoke(item) }
-            }
+        items(transactions, key = { it.uid }) { item ->
+            TransactionCell(item) { onClick.invoke(item) }
 
             willShow.invoke(item)
 
             if (item.uid == bottomReachedUid) {
                 onBottomReached.invoke()
             }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 
@@ -276,7 +253,7 @@ fun LazyListScope.transactionList(
     }
 }
 
-private fun getBottomReachedUid(transactionsMap: Map<String, List<TransactionViewItem>>): String? {
+fun getBottomReachedUid(transactionsMap: Map<String, List<TransactionViewItem>>): String? {
     val txList = transactionsMap.values.flatten()
     //get index not exact bottom but near to the bottom, to make scroll smoother
     val index = if (txList.size > 4) txList.size - 4 else 0
@@ -285,38 +262,13 @@ private fun getBottomReachedUid(transactionsMap: Map<String, List<TransactionVie
 }
 
 @Composable
-fun TransactionCell(item: TransactionViewItem, position: SectionItemPosition, onClick: () -> Unit) {
-    val divider = position == SectionItemPosition.Middle || position == SectionItemPosition.Last
-    SectionUniversalItem(
-        borderTop = divider,
-    ) {
-        val clipModifier = when (position) {
-            SectionItemPosition.First -> {
-                Modifier.clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            }
+fun TransactionCell(item: TransactionViewItem, onClick: () -> Unit) {
 
-            SectionItemPosition.Last -> {
-                Modifier.clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
-            }
-
-            SectionItemPosition.Single -> {
-                Modifier.clip(RoundedCornerShape(16.dp))
-            }
-
-            else -> Modifier
-        }
-
-        val borderModifier = if (position != SectionItemPosition.Single) {
-            Modifier.sectionItemBorder(0.5.dp, ComposeAppTheme.colors.blade, 16.dp, position)
-        } else {
-            Modifier.border(0.5.dp, ComposeAppTheme.colors.blade, RoundedCornerShape(16.dp))
-        }
-
+    Column {
         RowUniversal(
             modifier = Modifier
-                .fillMaxSize()
-                .then(clipModifier)
-                .then(borderModifier)
+                .height(72.dp)
+                .background(ComposeAppTheme.colors.lawrence)
                 .clickable(onClick = onClick),
         ) {
             Box(
@@ -472,6 +424,7 @@ fun TransactionCell(item: TransactionViewItem, position: SectionItemPosition, on
                 }
             }
         }
+        HsDivider()
     }
 }
 

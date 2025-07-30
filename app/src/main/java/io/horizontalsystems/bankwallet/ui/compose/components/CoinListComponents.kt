@@ -11,6 +11,7 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -306,27 +307,23 @@ fun ScreenMessageWithAction(
         modifier = Modifier
             .padding(paddingValues)
             .fillMaxSize()
+            .background(ComposeAppTheme.colors.lawrence)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        VSpacer(64.dp)
         Box(
-            modifier = Modifier
-                .size(100.dp)
-                .background(
-                    color = ComposeAppTheme.colors.raina,
-                    shape = CircleShape
-                ),
+            modifier = Modifier.size(96.dp),
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                modifier = Modifier.size(48.dp),
+                modifier = Modifier.size(64.dp),
                 painter = painterResource(icon),
                 contentDescription = text,
                 tint = ComposeAppTheme.colors.grey
             )
         }
-        Spacer(Modifier.height(32.dp))
+        VSpacer(16.dp)
         subhead2_grey(
             modifier = Modifier.padding(horizontal = 48.dp),
             text = text,
@@ -334,7 +331,7 @@ fun ScreenMessageWithAction(
             overflow = TextOverflow.Ellipsis,
         )
         actionsComposable?.let { composable ->
-            Spacer(Modifier.height(32.dp))
+            VSpacer(32.dp)
             composable.invoke()
         }
     }
@@ -388,7 +385,7 @@ fun DescriptionCard(title: String?, description: String, image: ImageSource) {
         ) {
             Column(
                 modifier = Modifier
-                    .padding(start = 16.dp, top = 12.dp, end = 8.dp)
+                    .padding(start = 16.dp, end = 8.dp)
                     .weight(1f)
             ) {
                 title?.let {

@@ -17,7 +17,7 @@ import java.net.UnknownHostException
 class MarketFiltersViewModel(val service: MarketFiltersService) :
     ViewModelUiState<MarketFiltersUiState>() {
 
-    private var coinListSet: CoinList = CoinList.Top200
+    private var coinListSet: CoinList = CoinList.Top100
     private var period = FilterViewItemWrapper(
         Translator.getString(TimePeriod.TimePeriod_1D.titleResId),
         TimePeriod.TimePeriod_1D,
@@ -135,8 +135,8 @@ class MarketFiltersViewModel(val service: MarketFiltersService) :
 
         selectedSectors = listOf(FilterViewItemWrapper.getAny())
         service.sectorIds = emptyList()
-        coinListSet = CoinList.Top200
-        service.coinCount = CoinList.Top200.itemsCount
+        coinListSet = CoinList.Top100
+        service.coinCount = CoinList.Top100.itemsCount
         resetEnabled = false
         reloadDataWithSpinner()
     }
@@ -316,8 +316,8 @@ class MarketFiltersViewModel(val service: MarketFiltersService) :
                 service.filterBlockchains = selectedBlockchains
                 service.filterTradingSignal = filterTradingSignal.item?.getAdvices() ?: emptyList()
 
-                if (outperformedSnpOn && service.sp500PriceChanges == null) {
-                    service.setSp500PriceChanges()
+                if ((outperformedSnpOn || outperformedGoldOn) && service.goldPriceChanges == null) {
+                    service.setStockPriceChanges()
                 }
 
                 val numberOfItems = service.fetchNumberOfItems()

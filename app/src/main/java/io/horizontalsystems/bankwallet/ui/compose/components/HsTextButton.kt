@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import io.horizontalsystems.bankwallet.ui.compose.MyRippleConfiguration
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HsTextButton(
     onClick: () -> Unit,

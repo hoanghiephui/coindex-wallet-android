@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
+import io.horizontalsystems.bankwallet.ui.compose.Orange
 
 @Composable
 fun ButtonPrimaryDefaultWithIcon(
@@ -161,6 +162,43 @@ fun ButtonPrimaryYellow(
         buttonColors = ButtonPrimaryDefaults.textButtonColors(
             backgroundColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.surface,
+            disabledBackgroundColor = ComposeAppTheme.colors.blade,
+            disabledContentColor = ComposeAppTheme.colors.andy,
+        ),
+        content = {
+            if (loadingIndicator) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(16.dp),
+                    color = ComposeAppTheme.colors.grey,
+                    strokeWidth = 2.dp
+                )
+                HSpacer(width = 8.dp)
+            }
+
+            Text(
+                title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
+        enabled = enabled
+    )
+}
+
+@Composable
+fun ButtonPrimaryOrange(
+    modifier: Modifier = Modifier,
+    title: String,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+    loadingIndicator: Boolean = false
+) {
+    ButtonPrimary(
+        modifier = modifier,
+        onClick = onClick,
+        buttonColors = ButtonPrimaryDefaults.textButtonColors(
+            backgroundColor = Orange,
+            contentColor = ComposeAppTheme.colors.tyler,
             disabledBackgroundColor = ComposeAppTheme.colors.blade,
             disabledContentColor = ComposeAppTheme.colors.andy,
         ),

@@ -188,7 +188,7 @@ fun SearchBar(
                 }
             }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
+                    painter = painterResource(id = R.drawable.ic_arrow_left_24),
                     contentDescription = stringResource(R.string.Button_Back),
                 )
             }

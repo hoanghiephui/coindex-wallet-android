@@ -46,7 +46,7 @@ class MarketFiltersService(
     val blockchains = marketKit.blockchains(blockchainTypes.map { it.uid })
     val currencyCode = baseCurrency.code
 
-    var coinCount = CoinList.Top200.itemsCount
+    var coinCount = CoinList.Top100.itemsCount
     var filterMarketCap: Pair<Long?, Long?>? = null
     var sectorIds: List<Int> = listOf()
     var filterVolume: Pair<Long?, Long?>? = null
@@ -66,6 +66,7 @@ class MarketFiltersService(
     var filterSolidDex = false
     var filterGoodDistribution = false
     var sp500PriceChanges: Stock? = null
+    var goldPriceChanges: Stock? = null
 
     override fun fetchAsync(): Single<List<MarketItem>> {
         return getTopMarketList()
@@ -92,8 +93,10 @@ class MarketFiltersService(
         }
     }
 
-    suspend fun setSp500PriceChanges() {
-        sp500PriceChanges = marketKit.getStocks().blockingGet().first()
+    suspend fun setStockPriceChanges() {
+        val stocks = marketKit.getStocks(currencyCode).blockingGet()
+        sp500PriceChanges = stocks.first { it.uid == "snp" }
+        goldPriceChanges = stocks.first { it.uid == "tether-gold" }
     }
 
     private fun getTopMarketList(): Single<Map<Int, MarketInfo>> {
@@ -131,8 +134,8 @@ class MarketFiltersService(
                 && (!filterOutperformedBtcOn || outperformed(priceChangeValue, "bitcoin"))
                 && (!filterOutperformedEthOn || outperformed(priceChangeValue, "ethereum"))
                 && (!filterOutperformedBnbOn || outperformed(priceChangeValue, "binancecoin"))
-                && (!filterOutperformedGoldOn || outperformed(priceChangeValue, "tether-gold"))
-                && (!filterOutperformedSnpOn || outperformedSp500(priceChangeValue))
+                && (!filterOutperformedGoldOn || outperformedStock(priceChangeValue, goldPriceChanges))
+                && (!filterOutperformedSnpOn || outperformedStock(priceChangeValue, sp500PriceChanges))
                 && (!filterListedOnTopExchanges || marketInfo.listedOnTopExchanges == true)
                 && (!filterSolidCex || marketInfo.solidCex == true)
                 && (!filterSolidDex || marketInfo.solidDex == true)
@@ -168,9 +171,9 @@ class MarketFiltersService(
         return (coinMarket.priceChangeValue(filterPeriod) ?: BigDecimal.ZERO) < value
     }
 
-    private fun outperformedSp500(value: BigDecimal?): Boolean {
+    private fun outperformedStock(value: BigDecimal?, stock: Stock?): Boolean {
         if (value == null) return false
-        val priceValue: BigDecimal? = sp500PriceChanges?.let { snp ->
+        val priceValue: BigDecimal? = stock?.let { snp ->
             when (filterPeriod) {
                 TimePeriod.TimePeriod_1D -> snp.priceChange.oneDay
 

@@ -32,27 +32,30 @@ import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 @Composable
 fun HeaderStick(
     borderTop: Boolean = false,
+    borderBottom: Boolean = false,
     text: String,
+    color: Color = ComposeAppTheme.colors.tyler,
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(ComposeAppTheme.colors.tyler)
+            .height(55.dp)
+            .background(color)
     ) {
         if (borderTop) {
             HsDivider(modifier = Modifier.align(Alignment.TopCenter))
         }
 
-        Row(
+        subheadSB_andy(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            subhead1_grey(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                text = text,
-                maxLines = 1,
-            )
+                .align(Alignment.BottomStart)
+                .padding(start = 16.dp, bottom = 12.dp),
+            text = text,
+            maxLines = 1,
+        )
+
+        if (borderBottom) {
+            HsDivider(modifier = Modifier.align(Alignment.BottomCenter))
         }
     }
 }

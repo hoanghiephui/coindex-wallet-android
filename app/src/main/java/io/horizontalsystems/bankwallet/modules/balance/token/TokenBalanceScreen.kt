@@ -1,22 +1,20 @@
 package io.horizontalsystems.bankwallet.modules.balance.token
 
-import android.view.View
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -38,11 +36,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import com.tonapps.tonkeeper.api.shortAddress
 import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.analytics.TrackScreenViewEvent
@@ -57,15 +54,15 @@ import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.modules.balance.BackupRequiredError
 import io.horizontalsystems.bankwallet.modules.balance.BalanceViewItem
-import io.horizontalsystems.bankwallet.modules.balance.BalanceViewModel
 import io.horizontalsystems.bankwallet.modules.balance.DeemedValue
 import io.horizontalsystems.bankwallet.modules.balance.ZcashLockedValue
+import io.horizontalsystems.bankwallet.modules.balance.ui.BalanceActionButton
+import io.horizontalsystems.bankwallet.modules.balance.ui.BalanceActionOrangeButton
 import io.horizontalsystems.bankwallet.modules.coin.CoinFragment
 import io.horizontalsystems.bankwallet.modules.manageaccount.dialogs.BackupRequiredDialog
 import io.horizontalsystems.bankwallet.modules.receive.ReceiveFragment
 import io.horizontalsystems.bankwallet.modules.send.address.EnterAddressFragment
 import io.horizontalsystems.bankwallet.modules.send.zcash.shield.ShieldZcashFragment
-import io.horizontalsystems.bankwallet.modules.syncerror.SyncErrorDialog
 import io.horizontalsystems.bankwallet.modules.transactions.TransactionViewItem
 import io.horizontalsystems.bankwallet.modules.transactions.TransactionsViewModel
 import io.horizontalsystems.bankwallet.modules.transactions.transactionList
@@ -73,12 +70,11 @@ import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
-import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryCircle
-import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryDefault
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
-import io.horizontalsystems.bankwallet.ui.compose.components.CoinImage
+import io.horizontalsystems.bankwallet.ui.compose.components.DoubleText
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.ListEmptyView
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
@@ -86,10 +82,11 @@ import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.TextImportantWarning
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_bran
-import io.horizontalsystems.bankwallet.ui.compose.components.body_grey
+import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
+import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.extensions.BottomSheetHeader
-import io.horizontalsystems.bankwallet.ui.extensions.RotatingCircleProgressView
+import io.horizontalsystems.bankwallet.ui.helpers.TextHelper
 import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.coroutines.launch
 
@@ -114,23 +111,31 @@ fun TokenBalanceScreen(
                 navigationIcon = {
                     HsBackButton(onClick = { navController.popBackStack() })
                 },
-                menuItems = listOf(
-                    MenuItem(
-                        title = TranslatableString.ResString(R.string.Settings_Title),
-                        icon = R.drawable.ic_blocks_20,
-                        onClick = {
-                            navController.slideFromRight(R.id.blockchainSettingsFragment)
+                showSpinner = uiState.balanceViewItem?.syncingProgress?.progress != null,
+                menuItems = buildList {
+                    if (uiState.balanceViewItem?.isWatchAccount == true) {
+                        add(
+                            MenuItem(
+                                tint = MaterialTheme.colorScheme.onSurface
+                                icon = R.drawable.ic_balance_chart_24,
+                                title = TranslatableString.ResString(R.string.Coin_Info),
+                                onClick = {
+                                    val coinUid = uiState.balanceViewItem.wallet.coin.uid
+                                    val arguments = CoinFragment.Input(coinUid)
 
-                            stat(
-                                page = StatPage.TokenPage,
-                                event = StatEvent.Open(StatPage.BlockchainSettings)
+                                    navController.slideFromRight(R.id.coinFragment, arguments)
+
+                                    stat(
+                                        page = StatPage.TokenPage,
+                                        event = StatEvent.OpenCoin(coinUid)
+                                    )
+                                }
                             )
-                        },
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                )
+                        )
+                    }
+                }
             )
-        }
+        },
     ) { paddingValues ->
         val transactionItems = uiState.transactions
         if (transactionItems.isNullOrEmpty()) {
@@ -146,19 +151,25 @@ fun TokenBalanceScreen(
                     MaxTemplateNativeAdViewComposable(adState, AdType.SMALL, navController)
                     ListEmptyView(
                         text = stringResource(R.string.Transactions_WaitForSync),
-                        icon = R.drawable.ic_clock
+                        icon = R.drawable.ic_warning_filled_24
                     )
                 } else {
                     MaxTemplateNativeAdViewComposable(adState, AdType.SMALL, navController)
                     ListEmptyView(
                         text = stringResource(R.string.Transactions_EmptyList),
-                        icon = R.drawable.ic_outgoingraw
+                        icon = R.drawable.ic_warning_filled_24
                     )
                 }
             }
         } else {
             val listState = rememberLazyListState()
-            LazyColumn(Modifier.padding(paddingValues), state = listState) {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+                    .background(ComposeAppTheme.colors.lawrence),
+                state = listState
+            ) {
                 item {
                     uiState.balanceViewItem?.let {
                         TokenBalanceHeader(
@@ -205,6 +216,7 @@ private fun onTransactionClick(
     stat(page = StatPage.TokenPage, event = StatEvent.Open(StatPage.TransactionInfo))
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TokenBalanceHeader(
     balanceViewItem: BalanceViewItem,
@@ -212,54 +224,87 @@ private fun TokenBalanceHeader(
     viewModel: TokenBalanceViewModel,
 ) {
     val context = LocalContext.current
+    val infoModalBottomSheetState =
+        androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var bottomSheetContent by remember { mutableStateOf<BottomSheetContent?>(null) }
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .background(ComposeAppTheme.colors.tyler),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        WalletIcon(
-            viewItem = balanceViewItem,
-            viewModel = viewModel,
-            navController = navController,
-        )
         VSpacer(height = 12.dp)
-        Text(
-            modifier = Modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = {
-                        viewModel.toggleBalanceVisibility()
-                        HudHelper.vibrate(context)
+        if (balanceViewItem.primaryValue.visible) {
+            val body = if (balanceViewItem.syncingTextValue != null) {
+                balanceViewItem.syncingTextValue + (balanceViewItem.syncedUntilTextValue?.let { " - $it" }
+                    ?: "")
+            } else {
+                balanceViewItem.secondaryValue.value
+            }
+            DoubleText(
+                title = balanceViewItem.primaryValue.value,
+                body = body,
+                dimmed = balanceViewItem.primaryValue.dimmed,
+                onClickTitle = {
+                    viewModel.toggleBalanceVisibility()
+                    HudHelper.vibrate(context)
 
-                        stat(page = StatPage.TokenPage, event = StatEvent.ToggleBalanceHidden)
-                    }
-                ),
-            text = if (balanceViewItem.primaryValue.visible) balanceViewItem.primaryValue.value else "*****",
-            color = if (balanceViewItem.primaryValue.dimmed) ComposeAppTheme.colors.grey else ComposeAppTheme.colors.leah,
-            style = ComposeAppTheme.typography.title2R,
-            textAlign = TextAlign.Center,
-        )
-        VSpacer(height = 6.dp)
-        if (balanceViewItem.syncingTextValue != null) {
-            body_grey(
-                text = balanceViewItem.syncingTextValue + (balanceViewItem.syncedUntilTextValue?.let { " - $it" }
-                    ?: ""),
-                maxLines = 1,
+                    stat(page = StatPage.TokenPage, event = StatEvent.ToggleBalanceHidden)
+                },
+                onClickSubtitle = {
+                    viewModel.toggleBalanceVisibility()
+                    HudHelper.vibrate(context)
+
+                    stat(page = StatPage.TokenPage, event = StatEvent.ToggleBalanceHidden)
+                },
             )
         } else {
-            Text(
-                text = if (balanceViewItem.secondaryValue.visible) balanceViewItem.secondaryValue.value else "*****",
-                color = if (balanceViewItem.secondaryValue.dimmed) ComposeAppTheme.colors.andy else ComposeAppTheme.colors.grey,
-                style = ComposeAppTheme.typography.body,
-                maxLines = 1,
+            DoubleText(
+                title = "------",
+                body = "",
+                dimmed = false,
+                onClickTitle = {
+                    viewModel.toggleBalanceVisibility()
+                    HudHelper.vibrate(context)
+
+                    stat(page = StatPage.TokenPage, event = StatEvent.ToggleBalanceHidden)
+                },
+                onClickSubtitle = {
+
+                }
             )
         }
-        VSpacer(height = 24.dp)
-        ButtonsRow(viewItem = balanceViewItem, navController = navController, viewModel = viewModel)
-        LockedBalanceSection(balanceViewItem, navController)
+
+        ButtonsRow(
+            viewItem = balanceViewItem,
+            navController = navController,
+            viewModel = viewModel,
+            showBottomSheet = {
+                bottomSheetContent = it
+                coroutineScope.launch {
+                    infoModalBottomSheetState.show()
+                }
+            }
+        )
+        LockedBalanceSection(
+            balanceViewItem = balanceViewItem,
+            navController = navController,
+            showBottomSheet = {
+                bottomSheetContent = it
+                coroutineScope.launch {
+                    infoModalBottomSheetState.show()
+                }
+            },
+            hideBottomSheet = {
+                coroutineScope.launch {
+                    bottomSheetContent = null
+                    infoModalBottomSheetState.hide()
+                }
+            }
+        )
+
         balanceViewItem.warning?.let {
             VSpacer(height = 8.dp)
             TextImportantWarning(
@@ -268,75 +313,122 @@ private fun TokenBalanceHeader(
                 text = it.text.getString()
             )
         }
-        VSpacer(height = 16.dp)
+    }
+    bottomSheetContent?.let { info ->
+        InfoBottomSheet(
+            content = info,
+            bottomSheetState = infoModalBottomSheetState,
+            hideBottomSheet = {
+                coroutineScope.launch {
+                    infoModalBottomSheetState.hide()
+                }
+                bottomSheetContent = null
+            }
+        )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LockedBalanceSection(balanceViewItem: BalanceViewItem, navController: NavController) {
-    val infoModalBottomSheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var bottomSheetContent by remember { mutableStateOf<BottomSheetContent?>(null) }
-    val coroutineScope = rememberCoroutineScope()
-
-    if (balanceViewItem.lockedValues.isNotEmpty()) {
-        Column(
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .border(0.5.dp, ComposeAppTheme.colors.blade, RoundedCornerShape(16.dp))
+fun WatchAddressCell(
+    address: String,
+    onInfoClick: () -> Unit,
+    onCopyClick: (String) -> Unit
+) {
+    RowUniversal(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(ComposeAppTheme.colors.lawrence)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        subhead1_grey(
+            text = stringResource(R.string.Balance_WalletAddress),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        HSpacer(8.dp)
+        HsIconButton(
+            modifier = Modifier.size(20.dp),
+            onClick = onInfoClick
         ) {
-            balanceViewItem.lockedValues.forEach { lockedValue ->
-                val infoTitle = lockedValue.infoTitle.getString()
-                val infoText = lockedValue.info.getString()
-                val actionButtonTitle: String?
-                val onClickActionButton: (() -> Unit)?
+            Icon(
+                painter = painterResource(id = R.drawable.ic_info_filled_20),
+                contentDescription = "info button",
+                tint = ComposeAppTheme.colors.grey
+            )
+        }
+        Spacer(
+            modifier = Modifier.weight(1f)
+        )
+        headline2_leah(
+            text = address.shortAddress,
+            modifier = Modifier.clickable {
+                onCopyClick.invoke(address)
+            }
+        )
+        HSpacer(8.dp)
+        HsIconButton(
+            modifier = Modifier.size(20.dp),
+            onClick = {
+                onCopyClick.invoke(address)
+            }
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_copy_filled_20),
+                contentDescription = "copy button",
+                tint = ComposeAppTheme.colors.grey
+            )
+        }
+    }
+}
 
-                if (lockedValue is ZcashLockedValue) {
-                    actionButtonTitle = stringResource(R.string.Balance_Zcash_UnshieldedBalance_Shield)
-                    onClickActionButton = {
-                        coroutineScope.launch {
-                            bottomSheetContent = null
-                            infoModalBottomSheetState.hide()
-                        }
+@Composable
+private fun LockedBalanceSection(
+    balanceViewItem: BalanceViewItem,
+    navController: NavController,
+    showBottomSheet: (BottomSheetContent) -> Unit = { _ -> },
+    hideBottomSheet: () -> Unit
+) {
+    if (balanceViewItem.lockedValues.isNotEmpty()) {
+        balanceViewItem.lockedValues.forEach { lockedValue ->
+            val infoTitle = lockedValue.infoTitle.getString()
+            val infoText = lockedValue.info.getString()
+            val actionButtonTitle: String?
+            val onClickActionButton: (() -> Unit)?
 
-                        navController.slideFromRight(
-                            R.id.shieldZcash,
-                            ShieldZcashFragment.Input(balanceViewItem.wallet, R.id.tokenBalanceFragment)
+            if (lockedValue is ZcashLockedValue) {
+                actionButtonTitle =
+                    stringResource(R.string.Balance_Zcash_UnshieldedBalance_Shield)
+                onClickActionButton = {
+                    hideBottomSheet.invoke()
+
+                    navController.slideFromRight(
+                        R.id.shieldZcash,
+                        ShieldZcashFragment.Input(
+                            balanceViewItem.wallet,
+                            R.id.tokenBalanceFragment
                         )
-                    }
-                } else {
-                    actionButtonTitle = null
-                    onClickActionButton = null
+                    )
                 }
+            } else {
+                actionButtonTitle = null
+                onClickActionButton = null
+            }
 
-                LockedBalanceCell(
-                    title = lockedValue.title.getString(),
-                    lockedAmount = lockedValue.coinValue
-                ) {
-                    bottomSheetContent = BottomSheetContent(
+            LockedBalanceCell(
+                title = lockedValue.title.getString(),
+                lockedAmount = lockedValue.coinValue
+            ) {
+                showBottomSheet.invoke(
+                    BottomSheetContent(
                         icon = R.drawable.ic_info_24,
                         title = infoTitle,
                         description = infoText,
                         actionButtonTitle = actionButtonTitle,
                         onClickActionButton = onClickActionButton
                     )
-                    coroutineScope.launch {
-                        infoModalBottomSheetState.show()
-                    }
-                }
+                )
             }
-        }
-        bottomSheetContent?.let { info ->
-            InfoBottomSheet(
-                content = info,
-                bottomSheetState = infoModalBottomSheetState,
-                hideBottomSheet = {
-                    coroutineScope.launch {
-                        infoModalBottomSheetState.hide()
-                    }
-                    bottomSheetContent = null
-                }
-            )
         }
     }
 }
@@ -400,10 +492,12 @@ private fun LockedBalanceCell(
     lockedAmount: DeemedValue<String>,
     onClickInfo: () -> Unit
 ) {
-
     RowUniversal(
         modifier = Modifier
+            .fillMaxWidth()
+            .background(ComposeAppTheme.colors.lawrence)
             .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         subhead2_grey(
             text = title,
@@ -430,87 +524,17 @@ private fun LockedBalanceCell(
             maxLines = 1,
         )
     }
+    HsDivider()
 }
-
-@Composable
-private fun WalletIcon(
-    viewItem: BalanceViewItem,
-    viewModel: TokenBalanceViewModel,
-    navController: NavController
-) {
-    Box(
-        modifier = Modifier
-            .height(52.dp)
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        viewItem.syncingProgress.progress?.let { progress ->
-            AndroidView(
-                modifier = Modifier
-                    .size(52.dp),
-                factory = { context ->
-                    RotatingCircleProgressView(context)
-                },
-                update = { view ->
-                    val color = when (viewItem.syncingProgress.dimmed) {
-                        true -> R.color.grey_50
-                        false -> R.color.grey
-                    }
-                    view.setProgressColored(progress, view.context.getColor(color))
-                }
-            )
-        }
-        if (viewItem.failedIconVisible) {
-            val view = LocalView.current
-            Image(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clickable {
-                        onSyncErrorClicked(viewItem, viewModel, navController, view)
-                    },
-                painter = painterResource(id = R.drawable.ic_attention_24),
-                contentDescription = "coin icon",
-                colorFilter = ColorFilter.tint(ComposeAppTheme.colors.lucian)
-            )
-        } else {
-            CoinImage(
-                token = viewItem.wallet.token,
-                modifier = Modifier.size(32.dp)
-            )
-        }
-    }
-}
-
-private fun onSyncErrorClicked(
-    viewItem: BalanceViewItem,
-    viewModel: TokenBalanceViewModel,
-    navController: NavController,
-    view: View
-) {
-    when (val syncErrorDetails = viewModel.getSyncErrorDetails(viewItem)) {
-        is BalanceViewModel.SyncError.Dialog -> {
-            val wallet = syncErrorDetails.wallet
-            val errorMessage = syncErrorDetails.errorMessage
-
-            navController.slideFromBottom(
-                R.id.syncErrorDialog,
-                SyncErrorDialog.Input(wallet, errorMessage)
-            )
-        }
-
-        is BalanceViewModel.SyncError.NetworkNotAvailable -> {
-            HudHelper.showErrorMessage(view, R.string.Hud_Text_NoInternet)
-        }
-    }
-}
-
 
 @Composable
 private fun ButtonsRow(
     viewItem: BalanceViewItem,
     navController: NavController,
-    viewModel: TokenBalanceViewModel
+    viewModel: TokenBalanceViewModel,
+    showBottomSheet: (BottomSheetContent) -> Unit
 ) {
+    val view = LocalView.current
     val onClickReceive = {
         try {
             val wallet = viewModel.getWalletForReceive()
@@ -532,19 +556,50 @@ private fun ButtonsRow(
         }
     }
 
-    Row(
-        modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 16.dp)
-    ) {
-        if (viewItem.isWatchAccount) {
-            ButtonPrimaryDefault(
-                modifier = Modifier.weight(1f),
-                title = stringResource(R.string.Balance_Address),
+    if (viewItem.isWatchAccount) {
+        val infoTitle = stringResource(R.string.Balance_WalletAddress)
+        val infoDescription = ""
+        viewModel.uiState.receiveAddressForWatchAccount?.let { address ->
+            WatchAddressCell(
+                address = address,
+                onInfoClick = {
+                    showBottomSheet.invoke(
+                        BottomSheetContent(
+                            icon = R.drawable.ic_info_24,
+                            title = infoTitle,
+                            description = infoDescription,
+                            actionButtonTitle = null,
+                            onClickActionButton = null
+                        )
+                    )
+                },
+                onCopyClick = { copiedAddress ->
+                    TextHelper.copyText(copiedAddress)
+                    HudHelper.showSuccessMessage(view, R.string.Hud_Text_Copied)
+                    stat(
+                        page = StatPage.TokenPage,
+                        event = StatEvent.CopyAddress(viewItem.wallet.token.blockchain.uid)
+                    )
+                }
+            )
+        }
+        HsDivider()
+    } else {
+        Row(
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 24.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            BalanceActionOrangeButton(
+                icon = R.drawable.ic_arrow_down_24,
+                title = stringResource(R.string.Balance_Receive),
                 onClick = onClickReceive,
             )
-        } else {
-            ButtonPrimaryYellow(
-                modifier = Modifier.weight(1f),
+            BalanceActionButton(
+                icon = R.drawable.ic_arrow_up_24,
                 title = stringResource(R.string.Balance_Send),
+                enabled = viewItem.sendEnabled,
                 onClick = {
                     val sendTitle = Translator.getString(
                         R.string.Send_Title,
@@ -563,49 +618,32 @@ private fun ButtonsRow(
                         event = StatEvent.OpenSend(viewItem.wallet.token)
                     )
                 },
-                enabled = viewItem.sendEnabled
             )
-            HSpacer(8.dp)
-            if (!viewItem.swapVisible) {
-                ButtonPrimaryDefault(
-                    modifier = Modifier.weight(1f),
-                    title = stringResource(R.string.Balance_Receive),
-                    onClick = onClickReceive,
-                )
-            } else {
-                ButtonPrimaryCircle(
-                    icon = R.drawable.ic_arrow_down_left_24,
-                    contentDescription = stringResource(R.string.Balance_Receive),
-                    onClick = onClickReceive,
-                )
-            }
             if (viewItem.swapVisible) {
-                HSpacer(8.dp)
-                ButtonPrimaryCircle(
-                    icon = R.drawable.ic_swap_24,
-                    contentDescription = stringResource(R.string.Swap),
+                BalanceActionButton(
+                    icon = R.drawable.ic_swap_circle_24,
+                    title = stringResource(R.string.Swap),
+                    enabled = viewItem.swapEnabled,
                     onClick = {
                         navController.slideFromRight(R.id.multiswap, viewItem.wallet.token)
 
                         stat(page = StatPage.TokenPage, event = StatEvent.Open(StatPage.Swap))
                     },
-                    enabled = viewItem.swapEnabled
                 )
             }
+            BalanceActionButton(
+                icon = R.drawable.ic_balance_chart_24,
+                title = stringResource(R.string.Coin_Info),
+                enabled = !viewItem.wallet.token.isCustom,
+                onClick = {
+                    val coinUid = viewItem.wallet.coin.uid
+                    val arguments = CoinFragment.Input(coinUid)
+
+                    navController.slideFromRight(R.id.coinFragment, arguments)
+
+                    stat(page = StatPage.TokenPage, event = StatEvent.OpenCoin(coinUid))
+                },
+            )
         }
-        HSpacer(8.dp)
-        ButtonPrimaryCircle(
-            icon = R.drawable.ic_chart_24,
-            contentDescription = stringResource(R.string.Coin_Info),
-            enabled = !viewItem.wallet.token.isCustom,
-            onClick = {
-                val coinUid = viewItem.wallet.coin.uid
-                val arguments = CoinFragment.Input(coinUid)
-
-                navController.slideFromRight(R.id.coinFragment, arguments)
-
-                stat(page = StatPage.TokenPage, event = StatEvent.OpenCoin(coinUid))
-            },
-        )
     }
 }
