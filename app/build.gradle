@@ -125,8 +125,8 @@ android {
         coinhub {
             dimension = "distribution"
             applicationId 'com.blockchain.btc.coinhub'
-            versionCode 175
-            versionName '1.4.9'
+            versionCode 176
+            versionName '1.5.0'
             resValue "string", "companyWebPageLink", "https://bestwallet.money"
             resValue "string", "appWebPageLink", "http://play.google.com/store/apps/details?id=com.blockchain.btc.coinhub"
         }
@@ -286,8 +286,8 @@ dependencies {
 
     //AppWidgets
     implementation 'androidx.glance:glance-appwidget:1.1.1'
-    implementation 'com.google.firebase:firebase-crashlytics:19.4.4'
-    implementation 'com.google.firebase:firebase-analytics:22.5.0'
+    implementation 'com.google.firebase:firebase-crashlytics:20.0.0'
+    implementation 'com.google.firebase:firebase-analytics:23.0.0'
 
     // Room
     def room_version = '2.7.2'
@@ -459,7 +459,7 @@ dependencies {
     api 'com.jaredrummler:android-shell:1.0.0'
     api 'com.offbynull.portmapper:portmapper:2.0.5'
     implementation("com.applovin:applovin-sdk:13.3.1")
-    implementation 'com.applovin.mediation:bytedance-adapter:7.3.0.3.0'
+    //implementation 'com.applovin.mediation:bytedance-adapter:7.3.0.3.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
     implementation("com.google.android.gms:play-services-ads-identifier:18.2.0")
     implementation("com.android.billingclient:billing:8.0.0")

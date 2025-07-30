@@ -11,6 +11,10 @@
 -dontwarn javax.naming.directory.DirContext
 -dontwarn javax.naming.directory.InitialDirContext
 -dontwarn org.slf4j.impl.StaticLoggerBinder
+-dontwarn lombok.Generated
+-dontwarn lombok.NonNull
+-dontwarn org.joda.convert.FromString
+-dontwarn org.joda.convert.ToString
 
 # Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and
 # EnclosingMethod is required to use InnerClasses.
