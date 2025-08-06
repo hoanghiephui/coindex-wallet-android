@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
@@ -21,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import io.horizontalsystems.bankwallet.R
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.getInput
 import io.horizontalsystems.bankwallet.core.setNavigationResultX
@@ -76,8 +77,12 @@ class VaultBlockchainsSelectorFragment : BaseComposeFragment() {
 
     @Parcelize
     data class Result(val selected: List<Blockchain>) : Parcelable
+
+    override val logScreen: String
+        get() = "VaultBlockchainsSelectorFragment"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FilterByBlockchainsScreen(
     blockchains: List<Blockchain>,

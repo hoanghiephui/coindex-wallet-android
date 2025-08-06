@@ -1,23 +1,31 @@
 package io.horizontalsystems.bankwallet.modules.main
 
+import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BadgedBox
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,9 +36,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -39,7 +50,10 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import io.horizontalsystems.bankwallet.R
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.managers.RateAppManager
 import io.horizontalsystems.bankwallet.core.slideFromBottom
@@ -53,11 +67,14 @@ import io.horizontalsystems.bankwallet.modules.balance.ui.BalanceScreen
 import io.horizontalsystems.bankwallet.modules.main.MainModule.MainNavigation
 import io.horizontalsystems.bankwallet.modules.manageaccount.dialogs.BackupRequiredDialog
 import io.horizontalsystems.bankwallet.modules.market.MarketScreen
+import io.horizontalsystems.bankwallet.modules.market.search.MarketSearchModule
+import io.horizontalsystems.bankwallet.modules.market.search.MarketSearchViewModel
 import io.horizontalsystems.bankwallet.modules.rateapp.RateApp
 import io.horizontalsystems.bankwallet.modules.releasenotes.ReleaseNotesFragment
 import io.horizontalsystems.bankwallet.modules.rooteddevice.RootedDeviceModule
 import io.horizontalsystems.bankwallet.modules.rooteddevice.RootedDeviceScreen
 import io.horizontalsystems.bankwallet.modules.rooteddevice.RootedDeviceViewModel
+import io.horizontalsystems.bankwallet.modules.search.SearchScreen
 import io.horizontalsystems.bankwallet.modules.sendtokenselect.SendTokenSelectFragment
 import io.horizontalsystems.bankwallet.modules.settings.main.SettingsScreen
 import io.horizontalsystems.bankwallet.modules.tor.TorStatusView
@@ -67,10 +84,9 @@ import io.horizontalsystems.bankwallet.modules.transactions.TransactionsViewMode
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCAccountTypeNotSupportedDialog
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCManager.SupportState
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.Orange
+import io.horizontalsystems.bankwallet.ui.compose.NiaNavigationBar
+import io.horizontalsystems.bankwallet.ui.compose.NiaNavigationBarItem
 import io.horizontalsystems.bankwallet.ui.compose.components.BadgeText
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBottomNavigation
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBottomNavigationItem
 import io.horizontalsystems.bankwallet.ui.extensions.WalletSwitchBottomSheet
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -84,8 +100,7 @@ class MainFragment : BaseComposeFragment() {
 
         backStackEntry?.let {
             val viewModel =
-                ViewModelProvider(backStackEntry.viewModelStore, TransactionsModule.Factory())
-                    .get(TransactionsViewModel::class.java)
+                ViewModelProvider(backStackEntry.viewModelStore, TransactionsModule.Factory())[TransactionsViewModel::class.java]
             MainScreenWithRootedDeviceCheck(
                 transactionsViewModel = viewModel,
                 navController = navController,
@@ -110,6 +125,8 @@ class MainFragment : BaseComposeFragment() {
             })
     }
 
+    override val logScreen: String
+        get() = "MainFragment"
 }
 
 @Composable
@@ -132,7 +149,8 @@ private fun MainScreen(
     mainActivityViewModel: MainActivityViewModel,
     transactionsViewModel: TransactionsViewModel,
     fragmentNavController: NavController,
-    viewModel: MainViewModel = viewModel(factory = MainModule.Factory())
+    viewModel: MainViewModel = viewModel(factory = MainModule.Factory()),
+    searchViewModel: MarketSearchViewModel = viewModel(factory = MarketSearchModule.Factory())
 ) {
     val activityIntent by mainActivityViewModel.intentLiveData.observeAsState()
     LaunchedEffect(activityIntent) {
@@ -152,53 +170,32 @@ private fun MainScreen(
     var isBottomSheetVisible by remember { mutableStateOf(false) }
 
     Scaffold(
-        backgroundColor = ComposeAppTheme.colors.tyler,
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             Column {
                 if (uiState.torEnabled) {
                     TorStatusView()
                 }
-                HsBottomNavigation(
-                    backgroundColor = ComposeAppTheme.colors.blade,
-                    elevation = 0.dp
+                AnimatedVisibility(
+                    visible = true,
+                    enter = slideInVertically(initialOffsetY = { it }),
+                    exit = slideOutVertically(targetOffsetY = { it })
                 ) {
-                    uiState.mainNavItems.forEach { item ->
-                        HsBottomNavigationItem(
-                            icon = {
-                                BadgedIcon(item.badge) {
-                                    Icon(
-                                        painter = painterResource(item.mainNavItem.iconRes),
-                                        contentDescription = stringResource(item.mainNavItem.titleRes)
-                                    )
-                                }
-                            },
-                            selected = item.selected,
-                            enabled = item.enabled,
-                            selectedContentColor = Orange,
-                            unselectedContentColor = if (item.enabled) ComposeAppTheme.colors.grey else ComposeAppTheme.colors.andy,
-                            onClick = {
-                                viewModel.onSelect(item.mainNavItem)
+                    NiaBottomBar(
+                        destinations = uiState.mainNavItems,
+                        onNavigateToDestination = {
+                            viewModel.onSelect(it.mainNavItem)
+                            stat(
+                                page = StatPage.Main,
+                                event = StatEvent.SwitchTab(it.mainNavItem.statTab)
 
-                                stat(
-                                    page = StatPage.Main,
-                                    event = StatEvent.SwitchTab(item.mainNavItem.statTab)
-                                )
-                            },
-                            onLongClick = {
-                                if (item.mainNavItem == MainNavigation.Balance) {
-                                    coroutineScope.launch {
-                                        modalBottomSheetState.show()
-                                        isBottomSheetVisible = true
-
-                                        stat(
-                                            page = StatPage.Main,
-                                            event = StatEvent.Open(StatPage.SwitchWallet)
-                                        )
-                                    }
-                                }
-                            }
-                        )
-                    }
+                            )
+                        },
+                        bottomBarVisibility = true,
+                        modifier = Modifier
+                    )
                 }
             }
         }
@@ -229,6 +226,12 @@ private fun MainScreen(
                     )
 
                     MainNavigation.Settings -> SettingsScreen(fragmentNavController)
+                    MainNavigation.Search -> {
+                        SearchScreen(
+                            searchViewModel,
+                            fragmentNavController
+                        )
+                    }
                 }
             }
         }
@@ -286,13 +289,13 @@ private fun MainScreen(
 
     if (uiState.showRateAppDialog) {
         val context = LocalContext.current
-        RateApp(
+        /*RateApp(
             onRateClick = {
                 RateAppManager.openPlayMarket(context)
                 viewModel.closeRateDialog()
             },
             onCancelClick = { viewModel.closeRateDialog() }
-        )
+        )*/
     }
 
     if (uiState.wcSupportState != null) {
@@ -394,7 +397,67 @@ private fun BadgedIcon(
 fun NavController.safeGetBackStackEntry(destinationId: Int): NavBackStackEntry? {
     return try {
         this.getBackStackEntry(destinationId)
-    } catch (e: IllegalArgumentException) {
+    } catch (_: IllegalArgumentException) {
         null
+    }
+}
+
+@Composable
+private fun NiaBottomBar(
+    destinations: List<MainModule.NavigationViewItem>,
+    onNavigateToDestination: (MainModule.NavigationViewItem) -> Unit,
+    modifier: Modifier = Modifier,
+    bottomBarVisibility: Boolean,
+) {
+    NiaNavigationBar(
+        modifier = modifier,
+        visibility = bottomBarVisibility
+    ) {
+        destinations.forEach { destination ->
+            val selected = destination.selected
+            NiaNavigationBarItem(
+                selected = selected,
+                onClick = { onNavigateToDestination(destination) },
+                icon = {
+                    Icon(
+                        painter = painterResource(destination.mainNavItem.iconRes),
+                        contentDescription = stringResource(destination.mainNavItem.titleRes)
+                    )
+                },
+                selectedIcon = {
+                    Icon(
+                        painter = painterResource(destination.mainNavItem.iconRes),
+                        contentDescription = stringResource(destination.mainNavItem.titleRes)
+                    )
+                },
+                label = {
+                    Text(
+                        stringResource(destination.mainNavItem.titleRes),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                modifier = Modifier,
+                enabled = destination.enabled
+            )
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalPermissionsApi::class)
+private fun NotificationPermissionEffect() {
+    // Permission requests should only be made from an Activity Context, which is not present
+    // in previews
+    if (LocalInspectionMode.current) return
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+    val notificationsPermissionState = rememberPermissionState(
+        Manifest.permission.POST_NOTIFICATIONS,
+    )
+    LaunchedEffect(notificationsPermissionState) {
+        val status = notificationsPermissionState.status
+        if (status is PermissionStatus.Denied && !status.shouldShowRationale) {
+            notificationsPermissionState.launchPermissionRequest()
+        }
     }
 }

@@ -9,15 +9,22 @@ import io.horizontalsystems.bankwallet.modules.balance.BalanceScreenState
 import io.horizontalsystems.bankwallet.modules.main.MainViewModel
 
 @Composable
-fun BalanceScreen(navController: NavController,
-                  mainViewModel: MainViewModel,) {
+fun BalanceScreen(
+    navController: NavController,
+    //mainViewModel: MainViewModel,
+) {
     val viewModel = viewModel<BalanceAccountsViewModel>(factory = BalanceModule.AccountsFactory())
 
     when (val tmpAccount = viewModel.balanceScreenState) {
         BalanceScreenState.NoAccount -> StartSetupWalletScreen(navController)
         is BalanceScreenState.HasAccount -> {
-            BalanceForAccount(navController, tmpAccount.accountViewItem, mainViewModel)
+            BalanceForAccount(
+                navController = navController,
+                accountViewItem = tmpAccount.accountViewItem,
+                //mainViewModel = mainViewModel
+            )
         }
+
         else -> {}
     }
 }

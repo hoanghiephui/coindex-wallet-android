@@ -13,9 +13,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,11 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import io.horizontalsystems.bankwallet.R
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.modules.balance.BalanceViewItem2
 import io.horizontalsystems.bankwallet.modules.balance.ui.BalanceCardInner
 import io.horizontalsystems.bankwallet.modules.balance.ui.BalanceCardSubtitleType
@@ -43,6 +46,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.TabItem
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_andy
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TokenSelectScreen(
     navController: NavController,
@@ -53,7 +57,8 @@ fun TokenSelectScreen(
     header: @Composable (() -> Unit)? = null
 ) {
     Scaffold(
-        backgroundColor = ComposeAppTheme.colors.tyler,
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.background,
         topBar = {
             AppBar(
                 title = title,
@@ -89,7 +94,7 @@ fun TokenSelectScreen(
                     viewModel.updateFilter(text)
                 }
                 if (tabItems.isNotEmpty()) {
-                    ScrollableTabs(tabItems) {
+                    ScrollableTabs(tabs = tabItems) {
                         viewModel.onTabSelected(it)
                     }
                 }
@@ -136,7 +141,6 @@ private fun SearchInput(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 10.dp),
         shape = RoundedCornerShape(24.dp),
-        elevation = 0.dp
     ) {
         Row(
             modifier = Modifier
