@@ -103,7 +103,6 @@ fun AppBar(
         title = titleComposable,
         navigationIcon = navigationIcon,
         menuItems = menuItems,
-        showSpinner = showSpinner,
         colors = colors,
         scrollBehavior = scrollBehavior
     )
