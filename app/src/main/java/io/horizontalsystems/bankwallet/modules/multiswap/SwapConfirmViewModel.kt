@@ -50,6 +50,7 @@ class SwapConfirmViewModel(
     private var fiatAmountOut: BigDecimal? = null
     private var fiatAmountOutMin: BigDecimal? = null
 
+    private var mevProtectionEnabled = false
     private var loading = true
     private var timerState = timerService.stateFlow.value
     private var sendTransactionState = sendTransactionService.stateFlow.value
@@ -60,6 +61,7 @@ class SwapConfirmViewModel(
     private var quoteFields: List<DataField> = listOf()
     private var cautionViewItems: List<CautionViewItem> = listOf()
     private var fetchFinalQuoteJob: Job? = null
+    private val mevProtectionAvailable = sendTransactionService.mevProtectionAvailable
 
     init {
         fiatServiceIn.setCurrency(currency)
@@ -175,6 +177,8 @@ class SwapConfirmViewModel(
             quoteFields = quoteFields,
             transactionFields = sendTransactionState.fields,
             hasSettings = sendTransactionService.hasSettings,
+            mevProtectionAvailable = mevProtectionAvailable,
+            mevProtectionEnabled = mevProtectionEnabled,
         )
     }
 
@@ -222,7 +226,13 @@ class SwapConfirmViewModel(
     suspend fun swap() = withContext(Dispatchers.Default) {
         stat(page = StatPage.SwapConfirmation, event = StatEvent.Send)
 
-        sendTransactionService.sendTransaction()
+        sendTransactionService.sendTransaction(mevProtectionEnabled)
+    }
+
+    fun toggleMevProtection(enabled: Boolean) {
+        mevProtectionEnabled = enabled
+
+        emitState()
     }
 
     companion object {
@@ -268,6 +278,8 @@ data class SwapConfirmUiState(
     val transactionFields: List<DataField>,
     val extraFees: Map<FeeType, SendModule.AmountData>,
     val hasSettings: Boolean,
+    val mevProtectionAvailable: Boolean,
+    val mevProtectionEnabled: Boolean,
 ) {
     val totalFee by lazy {
         val networkFiatValue = networkFee?.secondary  ?: return@lazy null

@@ -1,5 +1,6 @@
 package io.horizontalsystems.bankwallet.ui.compose.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -127,7 +128,9 @@ fun HeaderSorting(
 }
 
 @Composable
-fun PremiumHeader() {
+fun PremiumHeader(
+    @StringRes  title: Int = R.string.Premium_Title,
+) {
     Row(
         modifier = Modifier
             .padding(horizontal = 32.dp)
@@ -144,7 +147,7 @@ fun PremiumHeader() {
             contentDescription = null,
         )
         subhead1_jacob(
-            text = stringResource(R.string.Premium_Title),
+            text = stringResource(title),
             maxLines = 1
         )
     }

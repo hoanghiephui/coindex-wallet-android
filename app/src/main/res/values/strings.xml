@@ -955,6 +955,7 @@
     <string name="Settings_Telegram" translatable="false">Telegram</string>
     <string name="Settings_Twitter" translatable="false">Twitter</string>
     <string name="Settings_JoinUnstoppables">Join CoinDex</string>
+    <string name="Settings_Support">Support</string>
     <string name="Settings_VipSupport">VIP Group</string>
     <string name="Settings_BotSupport">BOT Support</string>
     <string name="Settings_JoinUnstoppables_Description">Learn and master crypto via exclusive videos. Get to know us informally. Be the first to see things we work on.</string>
@@ -989,6 +990,8 @@
     <string name="SettingsSecurity_AutoLock_After15Min">15 minutes</string>
     <string name="SettingsSecurity_AutoLock_After30Min">30 minutes</string>
     <string name="SettingsSecurity_AutoLock_After1Hour">1 hour</string>
+
+    <string name="Mev_Protection">MEV Protection</string>
 
     <!--Address Checker-->
     <string name="SettingsAddressChecker_Title">Address Checker</string>
@@ -1046,6 +1049,9 @@
     <string name="SettingsSubscription_ManageSubscription">Manage Subscription</string>
 
     <string name="Period_Days">%s days</string>
+
+    <string name="Premium_TitleForDroid">Premium (Free for F-Droid)</string>
+
     <!--Premium Screens-->
     <string name="Premium_Title">Premium</string>
     <string name="Premium_ChoosePlanForYou">Choose the plan</string>
@@ -1073,6 +1079,7 @@
     <string name="Premium_UpgradeFeature_AddressPhishing">Scam Protection</string>
     <string name="Premium_UpgradeFeature_AddressBlacklist">Blacklist Check</string>
     <string name="Premium_UpgradeFeature_VipSupport">VIP Group</string>
+    <string name="Premium_UpgradeFeature_MevProtection">MEV Protection</string>
     <string name="Premium_UpgradeFeature_PrivacyMode">Privacy Mode</string>
     <string name="Premium_UpgradeFeature_MultiWallet">Multi-wallet</string>
     <string name="Premium_UpgradeFeature_NoAds">No advertisements</string>
@@ -1084,6 +1091,7 @@
     <string name="Premium_UpgradeFeature_AddressPhishing_Description">Effective auto-protection against scams and phishing attacks</string>
     <string name="Premium_UpgradeFeature_AddressBlacklist_Description">Guarantee of legality for your crypto operations</string>
     <string name="Premium_UpgradeFeature_VipSupport_Description">Access to wallet team for quick tech support.</string>
+    <string name="Premium_UpgradeFeature_MevProtection_Description">MEV Protection</string>
     <string name="Premium_UpgradeFeature_PrivacyMode_Description">Full disconnection from data collection.</string>
     <string name="Premium_UpgradeFeature_MultiWallet_Description">Create multiple wallets on one app.</string>
     <string name="Premium_UpgradeFeature_NoAds_Description">Not disturbed by advertisements.</string>
@@ -1095,6 +1103,7 @@
     <string name="Premium_UpgradeFeature_AddressPhishing_BigDescription">One wrong address, and your crypto is gone forever. Unstoppable automatically scans recipient addresses for suspicious patterns and defends against the latest phishing threats, preventing you from sending funds to a hacker. Block fraudulent transfers before they happen.</string>
     <string name="Premium_UpgradeFeature_AddressBlacklist_BigDescription">Protect yourself from risky and sanctioned entities. Blacklist Checker automatically screens recipient addresses against high-risk databases, flagging scams, frauds, and sanctioned entities before you send. If an address is blacklisted, you’ll know before making a costly mistake. Secure your transactions. Keep your crypto clean. Stay compliant.</string>
     <string name="Premium_UpgradeFeature_VipSupport_BigDescription">Be part of the evolution. Join the VIP Group to connect directly with our team for tech support. Vote on upcoming features, and get an exclusive first look at future updates. Your voice matters—help shape the next-gen crypto wallet.</string>
+    <string name="Premium_UpgradeFeature_MevProtection_BigDescription">MEV Protection</string>
     <string name="Premium_UpgradeFeature_PrivacyMode_BigDescription">Grants the ability to disable UI/UX data collection, ensuring complete privacy and preventing any usage analysis.</string>
     <string name="Premium_UpgradeFeature_MultiWallet_BigDescription">For easy management of many wallets within a single app while staying ultra secure.</string>
     <string name="Premium_UpgradeFeature_NoAds_BigDescription">A seamless experience without being disturbed by advertisements.</string>
@@ -1530,6 +1539,11 @@
     <string name="CoinSettings_BitcoinCashCoinType_Type0_Description">Common before 2018</string>
     <string name="CoinSettings_BitcoinCashCoinType_Type145_Description">Common after 2018</string>
 
+    <!-- Nym VPN -->
+
+    <string name="NymVpn_GetNymVpn" translatable="false">Get Nym VPN</string>
+    <string name="NymVpn_Description" translatable="false">Unstoppable offers the best prices on Nym VPN service. Connect through us and you will increase your privacy much more favorably</string>
+
     <!-- Tor -->
 
     <string name="Tor_Title" translatable="false">Tor</string>
@@ -1549,7 +1563,6 @@
 
     <string name="CoinPage_TimeDuration_Day">1D</string>
     <string name="CoinPage_TimeDuration_Week">1W</string>
-    <string name="CoinPage_TimeDuration_OneWeek">1W</string>
     <string name="CoinPage_TimeDuration_Month">1M</string>
     <string name="CoinPage_TimeDuration_TwoWeeks">2W</string>
     <string name="CoinPage_TimeDuration_Month3">3M</string>

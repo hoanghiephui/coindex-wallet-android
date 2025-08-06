@@ -29,7 +29,7 @@ android {
         compileSdk compile_sdk_version
         minSdkVersion min_sdk_version
         targetSdkVersion compile_sdk_version
-        versionCode 139
+        versionCode 140
         versionName "0.44.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ['de', 'es', 'en', 'fa', 'fr', 'ko', 'pt', 'pt-rBR', 'ru', 'tr', 'zh']
@@ -355,9 +355,9 @@ dependencies {
     implementation 'com.github.horizontalsystems:stellar-kit-android:f7ff7d2'
     implementation 'com.github.horizontalsystems:ton-kit-android:dcddd90'
     implementation 'com.github.horizontalsystems:bitcoin-kit-android:7826bf5'
-    implementation 'com.github.horizontalsystems:ethereum-kit-android:1.2.0'
+    implementation 'com.github.horizontalsystems:ethereum-kit-android:1e8b0a1'
     implementation 'com.github.horizontalsystems:blockchain-fee-rate-kit-android:1d3bd49'
-    implementation 'com.github.horizontalsystems:market-kit-android:039eda5'
+    implementation 'com.github.horizontalsystems:market-kit-android:d58b793'
     implementation 'com.github.horizontalsystems:solana-kit-android:eae6858'
     implementation 'com.github.horizontalsystems:tron-kit-android:16ae04a'
     // Zcash SDK

@@ -8,6 +8,7 @@ import io.horizontalsystems.subscriptions.core.AdvancedSearch
 import io.horizontalsystems.subscriptions.core.BasePlan
 import io.horizontalsystems.subscriptions.core.DuressMode
 import io.horizontalsystems.subscriptions.core.IPaidAction
+import io.horizontalsystems.subscriptions.core.MevProtection
 import io.horizontalsystems.subscriptions.core.MultiWallet
 import io.horizontalsystems.subscriptions.core.NoAds
 import io.horizontalsystems.subscriptions.core.PricingPhase
@@ -28,6 +29,7 @@ object BuySubscriptionModel {
             AddressPhishing -> R.string.Premium_UpgradeFeature_AddressPhishing
             AddressBlacklist -> R.string.Premium_UpgradeFeature_AddressBlacklist
             VIPSupport -> R.string.Premium_UpgradeFeature_VipSupport
+            MevProtection -> R.string.Premium_UpgradeFeature_MevProtection
             Watchlist -> R.string.Market_Tab_Watchlist
             MultiWallet -> R.string.Premium_UpgradeFeature_MultiWallet
             NoAds -> R.string.Premium_UpgradeFeature_NoAds
@@ -43,6 +45,7 @@ object BuySubscriptionModel {
             AddressPhishing -> R.string.Premium_UpgradeFeature_AddressPhishing_Description
             AddressBlacklist -> R.string.Premium_UpgradeFeature_AddressBlacklist_Description
             VIPSupport -> R.string.Premium_UpgradeFeature_VipSupport_Description
+            MevProtection -> R.string.Premium_UpgradeFeature_MevProtection_Description
             Watchlist -> R.string.Hud_Added_To_Watchlist
             MultiWallet -> R.string.Premium_UpgradeFeature_MultiWallet_Description
             NoAds -> R.string.Premium_UpgradeFeature_NoAds_Description
@@ -58,6 +61,7 @@ object BuySubscriptionModel {
             AddressPhishing -> R.string.Premium_UpgradeFeature_AddressPhishing_BigDescription
             AddressBlacklist -> R.string.Premium_UpgradeFeature_AddressBlacklist_BigDescription
             VIPSupport -> R.string.Premium_UpgradeFeature_VipSupport_BigDescription
+            MevProtection -> R.string.Premium_UpgradeFeature_VipSupport_BigDescription
             Watchlist -> R.string.Hud_Added_To_Watchlist
             MultiWallet -> R.string.Premium_UpgradeFeature_MultiWallet_BigDescription
             NoAds -> R.string.Premium_UpgradeFeature_NoAds_BigDescription
@@ -73,6 +77,7 @@ object BuySubscriptionModel {
             AddressPhishing -> R.drawable.prem_shield_24
             AddressBlacklist -> R.drawable.prem_warning_24
             VIPSupport -> R.drawable.prem_vip_support_24
+            MevProtection -> R.drawable.prem_shield_24
             Watchlist -> R.drawable.star_filled_yellow_16
             MultiWallet -> R.drawable.ic_in_wallet_dark_24
             NoAds -> R.drawable.baseline_ads_click_24

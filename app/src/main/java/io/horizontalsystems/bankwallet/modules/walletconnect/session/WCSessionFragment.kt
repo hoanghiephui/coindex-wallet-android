@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +48,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.HeaderText
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.TextImportantWarning
+import io.horizontalsystems.bankwallet.ui.compose.components.title3_leah
 import io.horizontalsystems.bankwallet.ui.helpers.TextHelper
 import io.horizontalsystems.core.findNavController
 import io.horizontalsystems.core.helpers.HudHelper
@@ -99,8 +101,22 @@ fun WCSessionPage(
 
         Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
         AppBar(
-            title = stringResource(R.string.WalletConnect_Title),
-            showSpinner = uiState.connecting,
+            title = {
+                title3_leah(
+                    text = stringResource(R.string.WalletConnect_Title),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            },
+            stateIcon = {
+                if (uiState.connecting) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = ComposeAppTheme.colors.grey,
+                        strokeWidth = 2.dp
+                    )
+                }
+            },
             menuItems = listOf(
                 MenuItem(
                     title = TranslatableString.ResString(R.string.Button_Close),
