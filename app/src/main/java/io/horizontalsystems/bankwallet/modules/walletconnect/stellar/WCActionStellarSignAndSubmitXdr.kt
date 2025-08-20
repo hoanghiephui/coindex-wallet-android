@@ -1,7 +1,7 @@
 package io.horizontalsystems.bankwallet.modules.walletconnect.stellar
 
 import com.google.gson.GsonBuilder
-import io.horizontalsystems.bankwallet.R
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.modules.multiswap.sendtransaction.SendTransactionData
 import io.horizontalsystems.bankwallet.modules.multiswap.sendtransaction.SendTransactionServiceFactory

@@ -17,6 +17,6 @@ fun WcRequestPreScreen(navController: NavController) {
     if (uiState is DataState.Success) {
         WcRequestScreen(navController, uiState.data.sessionRequest, uiState.data.wcAction)
     } else if (uiState is DataState.Error) {
-        ListErrorView(uiState.error.message ?: "Error") { }
+        ListErrorView(onClick = {}, errorText = uiState.error.message ?: "Error")
     }
 }

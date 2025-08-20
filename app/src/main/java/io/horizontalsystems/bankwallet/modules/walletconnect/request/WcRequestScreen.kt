@@ -7,16 +7,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.walletconnect.web3.wallet.client.Wallet
-import io.horizontalsystems.bankwallet.R
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.modules.evmfee.ButtonsGroupWithShade
 import io.horizontalsystems.bankwallet.modules.sendevmtransaction.SectionView
@@ -28,6 +31,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WcRequestScreen(
     navController: NavController,
@@ -47,7 +51,8 @@ fun WcRequestScreen(
     }
 
     Scaffold(
-        backgroundColor = ComposeAppTheme.colors.tyler,
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.background,
         topBar = {
             AppBar(
                 title = uiState.title.getString(),

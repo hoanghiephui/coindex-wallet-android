@@ -1,6 +1,6 @@
 package io.horizontalsystems.bankwallet.modules.walletconnect.stellar
 
-import io.horizontalsystems.bankwallet.R
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.providers.Translator
 import io.horizontalsystems.bankwallet.modules.sendevmtransaction.SectionViewItem
 import io.horizontalsystems.bankwallet.modules.sendevmtransaction.ValueType

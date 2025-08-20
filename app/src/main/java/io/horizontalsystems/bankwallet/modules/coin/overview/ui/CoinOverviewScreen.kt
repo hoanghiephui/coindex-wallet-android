@@ -67,14 +67,12 @@ import io.horizontalsystems.bankwallet.modules.managewallets.ManageWalletsModule
 import io.horizontalsystems.bankwallet.modules.managewallets.ManageWalletsViewModel
 import io.horizontalsystems.bankwallet.modules.markdown.MarkdownFragment
 import io.horizontalsystems.bankwallet.modules.restoreconfig.BirthdayHeightConfig
-import io.horizontalsystems.bankwallet.modules.zcashconfigure.ZcashConfigure
 import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ChartBinance
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.HSSwipeRefresh
 import io.horizontalsystems.bankwallet.ui.compose.ListenerChart
 import io.horizontalsystems.bankwallet.ui.compose.TitlePrice
-import io.horizontalsystems.bankwallet.ui.compose.animations.CrossSlide
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryCircle
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryDefault
 import io.horizontalsystems.bankwallet.ui.compose.components.CellFooter

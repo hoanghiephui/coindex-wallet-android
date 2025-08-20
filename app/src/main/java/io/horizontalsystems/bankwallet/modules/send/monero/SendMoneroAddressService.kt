@@ -1,6 +1,6 @@
 package io.horizontalsystems.bankwallet.modules.send.monero
 
-import io.horizontalsystems.bankwallet.R
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.providers.Translator
 import io.horizontalsystems.bankwallet.entities.Address
 import io.horizontalsystems.monerokit.MoneroKit

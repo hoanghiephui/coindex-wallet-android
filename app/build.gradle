@@ -484,7 +484,7 @@ dependencies {
     implementation project(":lightweightlibrary")
 }
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy {
         cacheChangingModulesFor 0, 'seconds'
     }

@@ -64,6 +64,9 @@ class WCRequestFragment : BaseComposeFragment() {
         }
     }
 
+    override val logScreen: String
+        get() = "WCRequestFragment"
+
     private fun showError(e: Throwable) {
         HudHelper.showErrorMessage(
             requireActivity().findViewById(android.R.id.content),
@@ -179,9 +182,6 @@ fun WcRequestError(navController: NavController) {
             onClick = { navController.popBackStack() }
         )
     }
-
-    override val logScreen: String
-        get() = "WCRequestFragment"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
