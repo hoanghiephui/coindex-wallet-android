@@ -149,7 +149,7 @@
     <string name="SelectContacts_All">All</string>
 
     <string name="Restore_BirthdayHeight">Birthday Height</string>
-    <string name="Restore_ZCash">ZCash</string>
+    <string name="Restore_ZCash">Zcash</string>
     <string name="Restore_ZCash_BirthdayHeight_Hint">Enter wallet\'s birthday height for faster synchronization.</string>
     <string name="Restore_ZCash_Birthday_Hint">000000000 (optional)</string>
     <string name="Restore_ZCash_RestoreAsNew">Restore as New</string>
@@ -222,8 +222,10 @@
     <string name="MarketPlatformCoins_PlatformEcosystemDescription">Market cap of all protocols on the %s chain</string>
 
     <!--Market Global Metrics-->
-    <string name="MarketGlobalMetrics_TotalMarketCap">Total Cap</string>
-    <string name="MarketGlobalMetrics_Volume">24h Vol.</string>
+    <string name="MarketGlobalMetrics_TotalMarketCapShort">Total Cap</string>
+    <string name="MarketGlobalMetrics_TotalMarketCap">Total Market Cap</string>
+    <string name="MarketGlobalMetrics_Volume">Volume</string>
+    <string name="MarketGlobalMetrics_VolumeShort">24h Vol.</string>
     <string name="MarketGlobalMetrics_TvlInDefi">TVL</string>
     <string name="MarketGlobalMetrics_EtfInflow">ETF</string>
     <string name="MarketGlobalMetrics_TotalMarketCapDescription">Total market value of all cryptocurrencies</string>
@@ -364,7 +366,7 @@
     <string name="Market_Filters_Select">Select %d</string>
 
     <!--Vaults-->
-    <string name="Market_Vaults_WantToUnlockPremium">Want to unlock more earning opportunities?</string>
+    <string name="Market_Vaults_WantToUnlockPremium">Explore the best DeFi staking returns, all in one place.</string>
     <string name="Market_Vaults_UnlockPremium">Unlock Premium</string>
     <string name="Market_Vaults_Sorting_APY">Highest APY</string>
     <string name="Market_Vaults_Sorting_TVL">Highest TVL</string>
@@ -381,6 +383,7 @@
     <string name="Market_Vaults_Vault_Protocol">Protocol</string>
     <string name="Market_Vaults_Vault_UnderlyingToken">Underlying token</string>
     <string name="Market_Vaults_Vault_Holders">Holders</string>
+    <string name="Market_Vaults_ChartTvl">TVL</string>
 
     <!--Coin Markets-->
 
@@ -634,6 +637,8 @@
     <string name="WalletConnect_Status_Online">Online</string>
     <string name="WalletConnect_Status_Connecting">Connecting…</string>
     <string name="WalletConnect_NewConnect">New Connection</string>
+    <string name="WalletConnect_SendTransactionRequest_Title">Send Transaction</string>
+    <string name="WalletConnect_SendTransactionRequest_ButtonSend">Send</string>
     <string name="WalletConnect_SignMessageRequest_Title">Sign Request</string>
     <string name="WalletConnect_SignMessageRequest_dApp" translatable="false">dApp</string>
     <string name="WalletConnect_SignMessageRequest_ShowMessageTitle">Message to sign</string>
@@ -1191,13 +1196,22 @@
     <string name="AddEvmSyncSource_Error_InvalidUrl">Entered url is invalid. Valid url must have one of the following schemes: https, wss</string>
 
 
+    <!--Add Monero Node-->
+    <string name="AddMoneroNode_AddNode">Add Node</string>
+    <string name="AddMoneroNode_NodeUrl">Node Url</string>
+    <string name="AddMoneroNode_Username">Username (optional)</string>
+    <string name="AddMoneroNode_Pasword">Password (optional)</string>
+    <string name="AddMoneroNode_Warning_UrlExists">Node with this url already exists</string>
+    <string name="AddMoneroNode_Error_InvalidUrl">Entered url is invalid. Valid url must have one of the following schemes: https</string>
+
+
     <!--Btc Blockchain Settings -->
     <string name="BtcBlockchainSettings_RestoreSourceChangeWarning">After changing source the wallet will have to resync itself.</string>
     <string name="BtcBlockchainSettings_RestoreSourceSettingsDescription">Choose the source CoinDex app should use for synchronizing wallet(s).</string>
     <string name="BtcBlockchainSettings_InputsOutputs">Inputs/Outputs</string>
     <string name="BtcBlockchainSettings_TransactionSettings">Transaction Settings</string>
     <string name="BtcBlockchainSettings_TransactionInputsOutputs">Transaction Inputs / Outputs</string>
-    <string name="BtcBlockchainSettings_TransactionInputsOutputsSettingsDescription">Make your BTC, LTC, BCH transactions harder to trace by changing the way transactions are structured.</string>
+    <string name="BtcBlockchainSettings_TransactionInputsOutputsSettingsDescription">Make your %s transaction harder to trace by changing the way transaction is structured.</string>
     <string name="BtcBlockchainSettings_TransactionInputsOutputsDescription">Most Bitcoin transactions, as well as transactions in alike cryptocurrencies including Bitcoin Cash, Dash, and Litecoin, generate two outputs. One output is the amount that goes to the receiver and the other is the change output that is returned to the sender. The way most wallets construct transactions makes it easy for a third party to understand which of the outputs went to the receiving party and which one was the change amount returned to the sender. As the output returned to the sender is later used in future transactions, a connection between these two transactions becomes apparent.
 \n\nThe CoinDex wallet implements measures to make it harder for someone to figure out which output goes where.
 \n\nThere are two options available to CoinDex users:
@@ -1542,7 +1556,7 @@
     <!-- Nym VPN -->
 
     <string name="NymVpn_GetNymVpn" translatable="false">Get Nym VPN</string>
-    <string name="NymVpn_Description" translatable="false">Unstoppable offers the best prices on Nym VPN service. Connect through us and you will increase your privacy much more favorably</string>
+    <string name="NymVpn_Description" translatable="false">Unstoppable recommends NYM VPN for increased privacy.</string>
 
     <!-- Tor -->
 
@@ -1858,6 +1872,7 @@
     <string name="BalanceSyncError_ButtonRetry">Retry</string>
     <string name="BalanceSyncError_ButtonChangeSource">Change Source</string>
     <string name="BalanceSyncError_ButtonReport">Report</string>
+    <string name="BalanceSyncError_Text">Sync error</string>
 
     <!--Release notes-->
 

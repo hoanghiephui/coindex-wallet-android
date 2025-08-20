@@ -351,13 +351,17 @@ dependencies {
     //appcenterdebugImplementation leakCanary
     //debugImplementation leakCanary
 
+    //Logging
+    implementation "com.jakewharton.timber:timber:5.0.1"
+
     // Wallet kits
-    implementation 'com.github.horizontalsystems:stellar-kit-android:f7ff7d2'
+    implementation 'com.github.horizontalsystems:monero-kit-android:9b57b9f'
+    implementation 'com.github.horizontalsystems:stellar-kit-android:519533b'
     implementation 'com.github.horizontalsystems:ton-kit-android:dcddd90'
-    implementation 'com.github.horizontalsystems:bitcoin-kit-android:7826bf5'
-    implementation 'com.github.horizontalsystems:ethereum-kit-android:1e8b0a1'
+    implementation 'com.github.horizontalsystems:bitcoin-kit-android:5d94bfe'
+    implementation 'com.github.horizontalsystems:ethereum-kit-android:3b88c12'
     implementation 'com.github.horizontalsystems:blockchain-fee-rate-kit-android:1d3bd49'
-    implementation 'com.github.horizontalsystems:market-kit-android:d58b793'
+    implementation 'com.github.horizontalsystems:market-kit-android:ef89ba0'
     implementation 'com.github.horizontalsystems:solana-kit-android:eae6858'
     implementation 'com.github.horizontalsystems:tron-kit-android:16ae04a'
     // Zcash SDK

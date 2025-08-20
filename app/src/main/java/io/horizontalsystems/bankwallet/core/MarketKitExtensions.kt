@@ -161,6 +161,9 @@ val TokenQuery.isSupported: Boolean
         BlockchainType.Stellar -> {
             tokenType is TokenType.Native || tokenType is TokenType.Asset
         }
+        BlockchainType.Monero -> {
+            tokenType is TokenType.Native
+        }
         is BlockchainType.Unsupported -> false
     }
 
@@ -186,6 +189,7 @@ val Blockchain.description: String
         BlockchainType.Tron -> "TRX, TRC20 tokens"
         BlockchainType.Ton -> "TON"
         BlockchainType.Stellar -> "XLM, Stellar assets"
+        BlockchainType.Monero -> "XMR"
         else -> ""
     }
 
@@ -199,6 +203,7 @@ val BlockchainType.imageUrl: String
 
 val BlockchainType.restoreSettingTypes: List<RestoreSettingType>
     get() = when (this) {
+        BlockchainType.Monero,
         BlockchainType.Zcash -> listOf(RestoreSettingType.BirthdayHeight)
         else -> listOf()
     }
@@ -208,8 +213,10 @@ private val blockchainOrderMap: Map<BlockchainType, Int> by lazy {
     listOf(
         BlockchainType.Bitcoin,
         BlockchainType.Ethereum,
-        BlockchainType.Tron,
         BlockchainType.BinanceSmartChain,
+        BlockchainType.Litecoin,
+        BlockchainType.Monero,
+        BlockchainType.Tron,
         BlockchainType.Polygon,
         BlockchainType.Stellar,
         BlockchainType.ArbitrumOne,
@@ -221,7 +228,6 @@ private val blockchainOrderMap: Map<BlockchainType, Int> by lazy {
         BlockchainType.ZkSync,
         BlockchainType.Ton,
         BlockchainType.Gnosis,
-        BlockchainType.Litecoin,
         BlockchainType.BitcoinCash,
         BlockchainType.Dash,
         BlockchainType.Fantom,
@@ -275,6 +281,7 @@ val BlockchainType.title: String
     BlockchainType.Tron -> "Tron"
     BlockchainType.Ton -> "Ton"
     BlockchainType.Stellar -> "Stellar"
+    BlockchainType.Monero -> "Monero"
     is BlockchainType.Unsupported -> this.uid
 }
 
@@ -332,6 +339,7 @@ val BlockchainType.isEvm: Boolean
         BlockchainType.Tron,
         is BlockchainType.Unsupported,
         BlockchainType.Zcash,
+        BlockchainType.Monero,
             -> false
     }
 
@@ -624,6 +632,7 @@ val BlockchainType.Companion.supported: List<BlockchainType>
         BlockchainType.Tron,
         BlockchainType.Ton,
         BlockchainType.Stellar,
+        BlockchainType.Monero,
     )
 
 val CoinPrice.diff: BigDecimal?

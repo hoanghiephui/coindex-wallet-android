@@ -40,6 +40,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsImage
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
+import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_leah
@@ -79,7 +80,7 @@ class VaultFragment : BaseComposeFragment() {
         val tvl: String,
         val chain: String,
         val url: String?,
-        val holders: String,
+        val holders: String?,
         val assetSymbol: String,
         val protocolName: String,
         val assetLogo: String?,
@@ -125,7 +126,11 @@ private fun VaultScreen(
                         .weight(1f),
                 ) {
                     item {
-                        VaultCard(uiState.vaultViewItem.name, uiState.vaultViewItem.assetLogo)
+                        VaultCard(
+                            uiState.vaultViewItem.name,
+                            uiState.vaultViewItem.assetLogo,
+                            uiState.vaultViewItem.rank
+                        )
                     }
                     item {
                         Chart(chartViewModel)
@@ -151,7 +156,7 @@ private fun VaultScreen(
                         VSpacer(32.dp)
                     }
                     item {
-                        CellFooter("vaults.fyi")
+                        CellFooter("Powered by Vaults.fyi")
                     }
                 }
             }
@@ -162,35 +167,41 @@ private fun VaultScreen(
 @Composable
 fun VaultDetails(item: VaultModule.VaultViewItem) {
     CellUniversalLawrenceSection(
-        listOf(
-            {
+        buildList {
+            add {
                 DetailCell(
                     stringResource(R.string.Market_Vaults_Vault_TVL),
                     item.tvl,
                     titleBadge = item.rank
                 )
-            }, {
+            }
+            add {
                 DetailCell(
                     stringResource(R.string.Market_Vaults_Vault_Network),
                     item.chain
                 )
-            }, {
+            }
+            add {
                 DetailCell(
                     stringResource(R.string.Market_Vaults_Vault_Protocol),
                     item.protocolName
                 )
-            }, {
+            }
+            add {
                 DetailCell(
                     stringResource(R.string.Market_Vaults_Vault_UnderlyingToken),
                     item.assetSymbol
                 )
-            }, {
-                DetailCell(
-                    stringResource(R.string.Market_Vaults_Vault_Holders),
-                    item.holders
-                )
             }
-        )
+            item.holders?.let {
+                add {
+                    DetailCell(
+                        stringResource(R.string.Market_Vaults_Vault_Holders),
+                        it
+                    )
+                }
+            }
+        }
     )
 }
 
@@ -225,7 +236,11 @@ fun DetailCell(
 }
 
 @Composable
-fun VaultCard(title: String, image: String?) {
+fun VaultCard(
+    title: String,
+    image: String?,
+    rank: String
+) {
     Column {
         HsDivider()
         Row(
@@ -246,6 +261,11 @@ fun VaultCard(title: String, image: String?) {
 
             subhead2_leah(
                 text = title,
+                modifier = Modifier.weight(1f),
+            )
+
+            subhead1_grey(
+                text = rank
             )
 
         }

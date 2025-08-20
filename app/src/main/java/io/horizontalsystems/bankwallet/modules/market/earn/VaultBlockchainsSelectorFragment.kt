@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.getInput
+import io.horizontalsystems.bankwallet.core.paidAction
 import io.horizontalsystems.bankwallet.core.setNavigationResultX
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
@@ -38,6 +39,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.cell.CellUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.cell.SectionUniversalLawrence
 import io.horizontalsystems.core.findNavController
 import io.horizontalsystems.marketkit.models.Blockchain
+import io.horizontalsystems.subscriptions.core.AdvancedSearch
 import kotlinx.parcelize.Parcelize
 
 class VaultBlockchainsSelectorFragment : BaseComposeFragment() {
@@ -52,6 +54,7 @@ class VaultBlockchainsSelectorFragment : BaseComposeFragment() {
         FilterByBlockchainsScreen(
             input.allBlockchains,
             input.selected,
+            navController = navController,
             onDone = { selected ->
                 navController.setNavigationResultX(Result(selected))
                 navController.popBackStack()
@@ -87,6 +90,7 @@ class VaultBlockchainsSelectorFragment : BaseComposeFragment() {
 private fun FilterByBlockchainsScreen(
     blockchains: List<Blockchain>,
     selected: List<Blockchain>,
+    navController: NavController,
     onDone: (List<Blockchain>) -> Unit,
 ) {
     var selectedBlockchains = remember { mutableStateListOf<Blockchain>() }
@@ -142,10 +146,12 @@ private fun FilterByBlockchainsScreen(
                             blockchain = item,
                             checked = item in selectedBlockchains,
                         ) {
-                            if (item in selectedBlockchains) {
-                                selectedBlockchains.remove(item)
-                            } else {
-                                selectedBlockchains.add(item)
+                            navController.paidAction(AdvancedSearch) {
+                                if (item in selectedBlockchains) {
+                                    selectedBlockchains.remove(item)
+                                } else {
+                                    selectedBlockchains.add(item)
+                                }
                             }
                         }
                     }

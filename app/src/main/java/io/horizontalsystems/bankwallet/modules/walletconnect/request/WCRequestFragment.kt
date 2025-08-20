@@ -18,6 +18,7 @@ import com.google.gson.Gson
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.AppLogger
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
+import io.horizontalsystems.bankwallet.core.isEvm
 import io.horizontalsystems.bankwallet.modules.evmfee.ButtonsGroupWithShade
 import io.horizontalsystems.bankwallet.modules.sendevmtransaction.TitleValue
 import io.horizontalsystems.bankwallet.modules.sendevmtransaction.ValueType
@@ -37,6 +38,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.ScreenMessageWithAc
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.cell.SectionUniversalLawrence
 import io.horizontalsystems.core.helpers.HudHelper
+import io.horizontalsystems.marketkit.models.BlockchainType
 import kotlinx.coroutines.launch
 
 class WCRequestFragment : BaseComposeFragment() {
@@ -44,12 +46,39 @@ class WCRequestFragment : BaseComposeFragment() {
 
     @Composable
     override fun GetContent(navController: NavController) {
-        val wcRequestViewModel = viewModel<WCNewRequestViewModel>(factory = WCNewRequestViewModel.Factory())
+        val wcRequestRouterViewModel =
+            viewModel<WCRequestRouterViewModel>(factory = WCRequestRouterViewModel.Factory())
+
+        val uiState = wcRequestRouterViewModel.uiState
+
+        val blockchainType = uiState.blockchainType
+
+        if (blockchainType == null) {
+            WcRequestError(navController)
+        } else if (blockchainType.isEvm) {
+            WcRequestEvm(navController)
+        } else if (blockchainType is BlockchainType.Stellar) {
+            WcRequestPreScreen(navController)
+        } else {
+            WcRequestError(navController)
+        }
+    }
+
+    private fun showError(e: Throwable) {
+        HudHelper.showErrorMessage(
+            requireActivity().findViewById(android.R.id.content),
+            e.message ?: e::class.java.simpleName
+        )
+    }
+
+    @Composable
+    fun WcRequestEvm(navController: NavController) {
+        val wcRequestEvmViewModel = viewModel<WCRequestEvmViewModel>(factory = WCRequestEvmViewModel.Factory())
         val composableScope = rememberCoroutineScope()
-        when (val sessionRequestUI = wcRequestViewModel.sessionRequest) {
+        when (val sessionRequestUI = wcRequestEvmViewModel.sessionRequestUi) {
             is SessionRequestUI.Content -> {
                 if (sessionRequestUI.method == "eth_sendTransaction") {
-                    val blockchainType = wcRequestViewModel.blockchain?.type ?: return
+                    val blockchainType = wcRequestEvmViewModel.blockchainType ?: return
                     val transaction =
                         try {
                             val ethTransaction = Gson().fromJson(
@@ -69,7 +98,7 @@ class WCRequestFragment : BaseComposeFragment() {
                         sessionRequestUI.peerUI.peerName
                     )
                 } else if (sessionRequestUI.method == "eth_signTransaction") {
-                    val blockchainType = wcRequestViewModel.blockchain?.type ?: return
+                    val blockchainType = wcRequestEvmViewModel.blockchainType ?: return
 
                     val transaction = try {
                         val ethTransaction = Gson().fromJson(
@@ -95,7 +124,7 @@ class WCRequestFragment : BaseComposeFragment() {
                         onAllow = {
                             composableScope.launch {
                                 try {
-                                    wcRequestViewModel.allow()
+                                    wcRequestEvmViewModel.allow()
                                     navController.popBackStack()
                                 } catch (e: Throwable) {
                                     showError(e)
@@ -106,7 +135,7 @@ class WCRequestFragment : BaseComposeFragment() {
                         onDecline = {
                             composableScope.launch {
                                 try {
-                                    wcRequestViewModel.reject()
+                                    wcRequestEvmViewModel.reject()
                                     navController.popBackStack()
                                 } catch (e: Throwable) {
                                     showError(e)
@@ -133,13 +162,21 @@ class WCRequestFragment : BaseComposeFragment() {
                 }
             }
         }
-
     }
+}
 
-    private fun showError(e: Throwable) {
-        HudHelper.showErrorMessage(
-            requireActivity().findViewById(android.R.id.content),
-            e.message ?: e::class.java.simpleName
+@Composable
+fun WcRequestError(navController: NavController) {
+    ScreenMessageWithAction(
+        text = stringResource(R.string.Error),
+        icon = R.drawable.ic_error_48
+    ) {
+        ButtonPrimaryYellow(
+            modifier = Modifier
+                .padding(horizontal = 48.dp)
+                .fillMaxWidth(),
+            title = stringResource(R.string.Button_Close),
+            onClick = { navController.popBackStack() }
         )
     }
 
@@ -179,7 +216,8 @@ fun WCNewSignRequestScreen(
             MessageContent(
                 sessionRequestUI.param,
                 sessionRequestUI.peerUI.peerName,
-                sessionRequestUI.chainData,
+                sessionRequestUI.chainName,
+                sessionRequestUI.chainAddress,
             )
 
             VSpacer(24.dp)
@@ -195,7 +233,7 @@ fun WCNewSignRequestScreen(
 }
 
 @Composable
-private fun ActionButtons(
+fun ActionButtons(
     onDecline: () -> Unit = {},
     onAllow: () -> Unit = {}
 ) {
@@ -217,10 +255,11 @@ private fun ActionButtons(
 }
 
 @Composable
-private fun MessageContent(
+fun MessageContent(
     message: String,
     dAppName: String?,
-    wcChainData: WCChainData?,
+    chainName: String?,
+    chainAddress: String?,
 ) {
     SectionUniversalLawrence {
         dAppName?.let { dApp ->
@@ -232,12 +271,11 @@ private fun MessageContent(
                 )
             )
         }
-        wcChainData?.let {
-            BlockchainCell(wcChainData.chain.name, wcChainData.address)
+        chainName?.let {
+            BlockchainCell(chainName, chainAddress)
         }
     }
 
     MessageToSign(message)
 
 }
-

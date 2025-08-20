@@ -140,7 +140,7 @@ open class ChartViewModel(
             }
 
             val diff = if (chartPointsWrapper.customHint == null) {
-                Value.Percent(chartData.diff())
+                Value.Percent(service.chartPointsDiff(chartData.items))
             } else {
                 null
             }
@@ -184,7 +184,7 @@ open class ChartViewModel(
     }
 
     private fun getFormattedValue(value: Float, currency: Currency): String {
-        return valueFormatter.formatValue(currency,  value.toBigDecimal())
+        return valueFormatter.formatMinMaxValue(currency,  value.toBigDecimal())
     }
 
     override fun onCleared() {
@@ -209,7 +209,7 @@ open class ChartViewModel(
         val rsi = item.rsi
         val macd = item.macd
         val dominance = item.dominance
-        val volume = item.volume
+        val chartVolume = item.volume
 
         return when {
             movingAverages.isNotEmpty() || rsi != null || macd != null -> {
@@ -221,8 +221,13 @@ open class ChartViewModel(
                     null
                 )
             }
-            volume != null -> ChartModule.ChartHeaderExtraData.Volume(
-                App.numberFormatter.formatFiatShort(volume.toBigDecimal(), service.currency.symbol, 2)
+            chartVolume != null -> ChartModule.ChartHeaderExtraData.Volume(
+                volume = App.numberFormatter.formatFiatShort(
+                    chartVolume.value.toBigDecimal(),
+                    service.currency.symbol,
+                    2
+                ),
+                type = chartVolume.type
             )
             else -> null
         }

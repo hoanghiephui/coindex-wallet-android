@@ -50,10 +50,10 @@ import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.stat
-import io.horizontalsystems.bankwallet.core.stats.statPeriod
 import io.horizontalsystems.bankwallet.core.stats.statSortType
 import io.horizontalsystems.bankwallet.entities.Currency
 import io.horizontalsystems.bankwallet.entities.ViewState
+import io.horizontalsystems.bankwallet.modules.coin.overview.ui.ChartTab
 import io.horizontalsystems.bankwallet.modules.coin.overview.ui.GraphicLine
 import io.horizontalsystems.bankwallet.modules.coin.overview.ui.Loading
 import io.horizontalsystems.bankwallet.modules.market.ImageSource
@@ -190,7 +190,7 @@ fun EtfByChain(
                     val listState = hsRememberLazyListState(
                         2,
                         uiState.sortBy,
-                        uiState.timeDuration
+                        uiState.listTimePeriod
                     )
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -206,6 +206,12 @@ fun EtfByChain(
                         }
                         item {
                             ChartEtf(uiState.chartDataLoading, uiState.etfPoints, uiState.currency)
+                            VSpacer(height = 8.dp)
+                            ChartTab(
+                                tabItems = uiState.chartTabs,
+                            ) { tab ->
+                                viewModel.onSelectChartInterval(tab)
+                            }
                         }
                         stickyHeader {
                             HeaderSorting(borderBottom = true, borderTop = true) {
@@ -224,7 +230,7 @@ fun EtfByChain(
                                     onClick = {
                                         openPeriodSelector = true
                                     },
-                                    title = stringResource(uiState.timeDuration.titleResId),
+                                    title = stringResource(uiState.listTimePeriod.titleResId),
                                     iconRight = painterResource(R.drawable.ic_down_arrow_20),
                                 )
                                 HSpacer(width = 16.dp)
@@ -249,7 +255,7 @@ fun EtfByChain(
     if (openPeriodSelector) {
         AlertGroup(
             title = stringResource(R.string.CoinPage_Period),
-            select = Select(uiState.timeDuration, viewModel.timeDurations),
+            select = Select(uiState.listTimePeriod, EtfListTimePeriod.entries),
             onSelect = { selected ->
                 viewModel.onSelectTimeDuration(selected)
                 openPeriodSelector = false
@@ -321,17 +327,12 @@ fun ChartEtf(loading: Boolean, etfPoints: List<EtfPoint>, currency: Currency) {
         etfPoints.lastOrNull()
     }
 
-    val totalInflow = etfPoint?.totalInflow
     val dailyInflow = etfPoint?.dailyInflow
     val totalAssets = etfPoint?.totalAssets
     val dateStr = if (isSelected) {
         etfPoint?.date?.let { DateHelper.getFullDate(it) }
     } else {
         null
-    }
-
-    val totalInflowStr = totalInflow?.let {
-        App.numberFormatter.formatFiatShort(it, currency.symbol, currency.decimal)
     }
 
     val dailyInflowStr = dailyInflow?.let {
@@ -363,13 +364,13 @@ fun ChartEtf(loading: Boolean, etfPoints: List<EtfPoint>, currency: Currency) {
 
     Column {
         ChartHeader(
-            mainValue = totalInflowStr,
+            mainValue = totalAssetsStr,
             mainValueStyleLarge = !isSelected,
             mainSubvalue = dateStr,
             secondaryValue = dailyInflowStr,
             secondaryValuePositive = dailyInflowPositive,
-            tertiaryTitle = stringResource(id = R.string.MarketEtf_TotalNetAssets),
-            tertiaryValue = totalAssetsStr
+            tertiaryTitle = "",
+            tertiaryValue = null
         )
 
         val loadingModifier = if (loading) Modifier.alpha(0.5f) else Modifier
