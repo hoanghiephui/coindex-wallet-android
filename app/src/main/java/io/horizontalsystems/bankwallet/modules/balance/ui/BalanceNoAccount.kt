@@ -33,8 +33,8 @@ import io.horizontalsystems.bankwallet.modules.balance.BalanceAccountsViewModel
 import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryDefault
-import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryOrange
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryTransparent
+import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 
 @Composable
@@ -67,7 +67,7 @@ fun BalanceNoAccount(
         Spacer(Modifier.height(15.dp))
         MaxTemplateNativeAdViewComposable(adState, AdType.SMALL, navController)
         Spacer(Modifier.height(15.dp))
-        ButtonPrimaryOrange(
+        ButtonPrimaryYellow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 48.dp),

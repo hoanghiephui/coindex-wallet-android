@@ -1,9 +1,11 @@
 package io.horizontalsystems.bankwallet.modules.manageaccount
 
 import android.os.Parcelable
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,6 +22,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.AdType
@@ -39,6 +42,7 @@ import io.horizontalsystems.bankwallet.modules.balance.ui.NoteError
 import io.horizontalsystems.bankwallet.modules.balance.ui.NoteWarning
 import io.horizontalsystems.bankwallet.modules.manageaccount.ManageAccountModule.BackupItem
 import io.horizontalsystems.bankwallet.modules.manageaccount.ManageAccountModule.KeyAction
+import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
@@ -73,9 +77,6 @@ class ManageAccountFragment : BaseComposeFragment() {
 
     @Parcelize
     data class Input(val accountId: String) : Parcelable
-
-    override val logScreen: String
-        get() = "ManageAccountFragment"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -88,107 +89,120 @@ fun ManageAccountScreen(navController: NavController, accountId: String) {
         navController.popBackStack()
         viewModel.onClose()
     }
+
     val (adState, _) = rememberAdNativeView(
         BuildConfig.HOME_MARKET_NATIVE,
         adPlacements = "ManageAccountFragment",
         viewModel
     )
-    Column {
-        AppBar(
-            title = viewModel.viewState.title,
-            navigationIcon = {
-                HsBackButton(onClick = { navController.popBackStack() })
-            },
-            menuItems = listOf(
-                MenuItem(
-                    title = TranslatableString.ResString(R.string.ManageAccount_Save),
-                    onClick = { viewModel.onSave() },
-                    enabled = viewModel.viewState.canSave,
-                    tint = ComposeAppTheme.colors.jacob
+
+    Scaffold(
+        backgroundColor = ComposeAppTheme.colors.tyler,
+        topBar = {
+            AppBar(
+                title = viewModel.viewState.title,
+                navigationIcon = {
+                    HsBackButton(onClick = { navController.popBackStack() })
+                },
+                menuItems = listOf(
+                    MenuItem(
+                        title = TranslatableString.ResString(R.string.ManageAccount_Save),
+                        onClick = { viewModel.onSave() },
+                        enabled = viewModel.viewState.canSave,
+                        tint = ComposeAppTheme.colors.jacob
+                    )
                 )
             )
-        )
+        },
+    ) { innerPaddings ->
+        Box(
+            modifier = Modifier
+                .padding(innerPaddings)
+                .fillMaxSize()
+                .imePadding()
+        ) {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
+                HeaderText(stringResource(id = R.string.ManageAccount_Name))
 
-        Column {
-            HeaderText(stringResource(id = R.string.ManageAccount_Name))
-
-            FormsInput(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                initial = viewModel.viewState.title,
-                hint = "",
-                onValueChange = {
-                    viewModel.onChange(it)
-
-                    stat(
-                        page = StatPage.ManageWallet,
-                        event = StatEvent.Edit(StatEntity.WalletName)
-                    )
-                }
-            )
-
-            when (viewModel.viewState.headerNote) {
-                HeaderNote.NonStandardAccount -> {
-                    NoteError(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 32.dp),
-                        text = stringResource(R.string.AccountRecovery_MigrationRequired),
-                        onClick = {
-                            FaqManager.showFaqPage(
-                                navController,
-                                FaqManager.faqPathMigrationRequired
-                            )
-                        }
-                    )
-                }
-
-                HeaderNote.NonRecommendedAccount -> {
-                    NoteWarning(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 32.dp),
-                        text = stringResource(R.string.AccountRecovery_MigrationRecommended),
-                        onClick = {
-                            FaqManager.showFaqPage(
-                                navController,
-                                FaqManager.faqPathMigrationRecommended
-                            )
-                        },
-                        onClose = null
-                    )
-                }
-
-                HeaderNote.None -> Unit
-            }
-
-            KeyActions(viewModel, navController)
-
-            if (viewModel.viewState.backupActions.isNotEmpty()) {
-                BackupActions(
-                    viewModel.viewState.backupActions,
-                    viewModel.account,
-                    navController
-                )
-            }
-
-            VSpacer(32.dp)
-            CellUniversalLawrenceSection(
-                listOf {
-                    RedActionItem(
-                        title = stringResource(id = R.string.ManageAccount_Unlink),
-                        icon = painterResource(id = R.drawable.ic_delete_20)
-                    ) {
-                        navController.slideFromBottom(
-                            R.id.unlinkConfirmationDialog,
-                            viewModel.account
-                        )
+                FormsInput(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    initial = viewModel.viewState.title,
+                    hint = "",
+                    onValueChange = {
+                        viewModel.onChange(it)
 
                         stat(
                             page = StatPage.ManageWallet,
-                            event = StatEvent.Open(StatPage.UnlinkWallet)
+                            event = StatEvent.Edit(StatEntity.WalletName)
                         )
                     }
+                )
+
+                when (viewModel.viewState.headerNote) {
+                    HeaderNote.NonStandardAccount -> {
+                        NoteError(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 32.dp),
+                            text = stringResource(R.string.AccountRecovery_MigrationRequired),
+                            onClick = {
+                                FaqManager.showFaqPage(
+                                    navController,
+                                    FaqManager.faqPathMigrationRequired
+                                )
+                            }
+                        )
+                    }
+
+                    HeaderNote.NonRecommendedAccount -> {
+                        NoteWarning(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 32.dp),
+                            text = stringResource(R.string.AccountRecovery_MigrationRecommended),
+                            onClick = {
+                                FaqManager.showFaqPage(
+                                    navController,
+                                    FaqManager.faqPathMigrationRecommended
+                                )
+                            },
+                            onClose = null
+                        )
+                    }
+
+                    HeaderNote.None -> Unit
                 }
-            )
+
+                KeyActions(viewModel, navController)
+
+                if (viewModel.viewState.backupActions.isNotEmpty()) {
+                    BackupActions(
+                        viewModel.viewState.backupActions,
+                        viewModel.account,
+                        navController
+                    )
+                }
+
+                VSpacer(32.dp)
+                CellUniversalLawrenceSection(
+                    listOf {
+                        RedActionItem(
+                            title = stringResource(id = R.string.ManageAccount_Unlink),
+                            icon = painterResource(id = R.drawable.ic_delete_20)
+                        ) {
+                            navController.slideFromBottom(
+                                R.id.unlinkConfirmationDialog,
+                                viewModel.account
+                            )
+
+                            stat(
+                                page = StatPage.ManageWallet,
+                                event = StatEvent.Open(StatPage.UnlinkWallet)
+                            )
+                        }
+                    }
+                )
             VSpacer(8.dp)
             MaxTemplateNativeAdViewComposable(adState, AdType.SMALL, navController)
-            VSpacer(32.dp)
+            VSpacer(32.dp)}
         }
     }
 }
