@@ -20,11 +20,11 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,7 +55,6 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
-import io.horizontalsystems.bankwallet.core.managers.RateAppManager
 import io.horizontalsystems.bankwallet.core.slideFromBottom
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.core.stats.StatEntity
@@ -69,7 +68,6 @@ import io.horizontalsystems.bankwallet.modules.manageaccount.dialogs.BackupRequi
 import io.horizontalsystems.bankwallet.modules.market.MarketScreen
 import io.horizontalsystems.bankwallet.modules.market.search.MarketSearchModule
 import io.horizontalsystems.bankwallet.modules.market.search.MarketSearchViewModel
-import io.horizontalsystems.bankwallet.modules.rateapp.RateApp
 import io.horizontalsystems.bankwallet.modules.releasenotes.ReleaseNotesFragment
 import io.horizontalsystems.bankwallet.modules.rooteddevice.RootedDeviceModule
 import io.horizontalsystems.bankwallet.modules.rooteddevice.RootedDeviceScreen
@@ -87,9 +85,13 @@ import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.NiaNavigationBar
 import io.horizontalsystems.bankwallet.ui.compose.NiaNavigationBarItem
 import io.horizontalsystems.bankwallet.ui.compose.components.BadgeText
+import io.horizontalsystems.bankwallet.ui.extensions.HeaderUpdate
 import io.horizontalsystems.bankwallet.ui.extensions.WalletSwitchBottomSheet
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import se.warting.inappupdate.compose.findActivity
+import se.warting.inappupdate.compose.rememberInAppUpdateState
+import se.warting.inappupdate.compose.review.rememberInAppReviewManager
 
 class MainFragment : BaseComposeFragment() {
     private val mainActivityViewModel by activityViewModels<MainActivityViewModel>()
@@ -100,7 +102,10 @@ class MainFragment : BaseComposeFragment() {
 
         backStackEntry?.let {
             val viewModel =
-                ViewModelProvider(backStackEntry.viewModelStore, TransactionsModule.Factory())[TransactionsViewModel::class.java]
+                ViewModelProvider(
+                    backStackEntry.viewModelStore,
+                    TransactionsModule.Factory()
+                )[TransactionsViewModel::class.java]
             MainScreenWithRootedDeviceCheck(
                 transactionsViewModel = viewModel,
                 navController = navController,
@@ -168,6 +173,12 @@ private fun MainScreen(
 
     val modalBottomSheetState = androidx.compose.material3.rememberModalBottomSheetState()
     var isBottomSheetVisible by remember { mutableStateOf(false) }
+    val updateState = rememberInAppUpdateState()
+    val inAppReviewManager = rememberInAppReviewManager()
+    val context = LocalContext.current
+    var isUpdateSheetVisible by remember { mutableStateOf(false) }
+    val modalUpdateSheetState = androidx.compose.material3.rememberModalBottomSheetState()
+
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -204,6 +215,8 @@ private fun MainScreen(
             coroutineScope.launch {
                 modalBottomSheetState.hide()
                 isBottomSheetVisible = false
+                modalUpdateSheetState.hide()
+                isUpdateSheetVisible = false
             }
         }
         Column(modifier = Modifier.padding(it)) {
@@ -270,6 +283,34 @@ private fun MainScreen(
         }
     }
 
+    if (isUpdateSheetVisible) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                isUpdateSheetVisible = false
+            },
+            sheetState = modalUpdateSheetState,
+            containerColor = ComposeAppTheme.colors.transparent
+        ) {
+            HeaderUpdate(
+                updateState,
+                context,
+                onHide = {
+                    coroutineScope.launch {
+                        isUpdateSheetVisible = false
+                        modalUpdateSheetState.hide()
+                    }
+                },
+                onShow = {
+                    coroutineScope.launch {
+                        isUpdateSheetVisible = true
+                        modalUpdateSheetState.show()
+                    }
+                },
+                rememberCoroutineScope = rememberCoroutineScope()
+            )
+        }
+    }
+
     if (uiState.showWhatsNew) {
         LaunchedEffect(Unit) {
             fragmentNavController.slideFromBottom(
@@ -287,16 +328,19 @@ private fun MainScreen(
         }
     }
 
-    if (uiState.showRateAppDialog) {
-        val context = LocalContext.current
-        /*RateApp(
-            onRateClick = {
-                RateAppManager.openPlayMarket(context)
-                viewModel.closeRateDialog()
-            },
-            onCancelClick = { viewModel.closeRateDialog() }
-        )*/
-    }
+    LaunchedEffect(key1 = uiState.showRateAppDialog, block = {
+        if (uiState.showRateAppDialog) {
+            inAppReviewManager.launchReviewFlow(
+                activity = context.findActivity(),
+                onReviewRequestSuccess = {
+                    viewModel.closeRateDialog()
+                },
+                onReviewRequestFail = {
+                    viewModel.closeRateDialog()
+                }
+            )
+        }
+    })
 
     if (uiState.wcSupportState != null) {
         when (val wcSupportState = uiState.wcSupportState) {
@@ -353,6 +397,7 @@ private fun MainScreen(
     LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
         viewModel.onResume()
     }
+    NotificationPermissionEffect()
 }
 
 @Composable
