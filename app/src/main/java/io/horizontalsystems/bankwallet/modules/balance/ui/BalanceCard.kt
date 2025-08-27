@@ -108,8 +108,6 @@ fun BalanceCard(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .clip(RoundedCornerShape(12.dp))
             .background(ComposeAppTheme.colors.lawrence)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
