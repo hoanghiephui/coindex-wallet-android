@@ -373,28 +373,6 @@ private fun SettingSections(
         }
     )
 
-    VSpacer(24.dp)
-
-    PremiumHeader()
-
-    SectionPremiumUniversalLawrence {
-        HsSettingCell(
-            title = R.string.SettingsAddressChecker_Title,
-            icon = R.drawable.ic_radar_24,
-            iconTint = ComposeAppTheme.colors.jacob,
-            onClick = {
-                navController.paidAction(AddressBlacklist) {
-                    navController.slideFromRight(R.id.addressCheckerFragment)
-                }
-                stat(
-                    page = StatPage.Settings,
-                    event = StatEvent.OpenPremium(StatPremiumTrigger.AddressChecker)
-                )
-            }
-        )
-    }
-
-
     VSpacer(32.dp)
 
     CellUniversalLawrenceSection(
