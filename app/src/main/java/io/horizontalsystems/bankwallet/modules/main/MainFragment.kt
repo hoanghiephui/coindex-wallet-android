@@ -10,10 +10,12 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -63,6 +65,8 @@ import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.core.stats.statTab
 import io.horizontalsystems.bankwallet.modules.balance.ui.BalanceScreen
+import io.horizontalsystems.bankwallet.modules.coin.overview.ui.Loading
+import io.horizontalsystems.bankwallet.modules.keystore.NoSystemLockWarning
 import io.horizontalsystems.bankwallet.modules.main.MainModule.MainNavigation
 import io.horizontalsystems.bankwallet.modules.manageaccount.dialogs.BackupRequiredDialog
 import io.horizontalsystems.bankwallet.modules.market.MarketScreen
@@ -87,6 +91,7 @@ import io.horizontalsystems.bankwallet.ui.compose.NiaNavigationBarItem
 import io.horizontalsystems.bankwallet.ui.compose.components.BadgeText
 import io.horizontalsystems.bankwallet.ui.extensions.HeaderUpdate
 import io.horizontalsystems.bankwallet.ui.extensions.WalletSwitchBottomSheet
+import io.horizontalsystems.bankwallet.ui.extensions.rememberLifecycleEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import se.warting.inappupdate.compose.findActivity
@@ -178,6 +183,7 @@ private fun MainScreen(
     val context = LocalContext.current
     var isUpdateSheetVisible by remember { mutableStateOf(false) }
     val modalUpdateSheetState = androidx.compose.material3.rememberModalBottomSheetState()
+    val lifecycleEvent = rememberLifecycleEvent()
 
 
     Scaffold(
@@ -232,7 +238,36 @@ private fun MainScreen(
             ) { page ->
                 when (uiState.mainNavItems[page].mainNavItem) {
                     MainNavigation.Market -> MarketScreen(fragmentNavController)
-                    MainNavigation.Balance -> BalanceScreen(fragmentNavController)
+                    MainNavigation.Balance -> {
+                        if (lifecycleEvent == Lifecycle.Event.ON_RESUME) {
+                            (context.findActivity() as MainActivity).validate(
+                                onUseAppNotWallet = {
+                                    viewModel.openPageBalance(false)
+                                },
+                                onUseAppWallet = {
+                                    viewModel.openPageBalance(true)
+                                },
+                                isWithBalance = true
+                            )
+                        }
+                        if (uiState.isLoadBalance) {
+                            Loading()
+                        } else {
+                            if (uiState.isShowBalance) {
+                                BalanceScreen(
+                                    fragmentNavController,
+                                )
+                            } else {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    NoSystemLockWarning()
+                                }
+                            }
+                        }
+                    }
                     MainNavigation.Transactions -> TransactionsScreen(
                         fragmentNavController,
                         transactionsViewModel

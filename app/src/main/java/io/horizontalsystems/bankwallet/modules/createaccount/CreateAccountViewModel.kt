@@ -34,7 +34,7 @@ class CreateAccountViewModel(
     private var passphrase = ""
     private var passphraseConfirmation = ""
 
-    val mnemonicKinds = CreateAccountModule.Kind.values().toList()
+    val mnemonicKinds = CreateAccountModule.Kind.entries
 
     val defaultAccountName = accountFactory.getNextAccountName()
     var accountName: String = defaultAccountName
