@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -39,7 +40,7 @@ fun DoubleText(
                 ),
             text = title,
             style = ComposeAppTheme.typography.title2М,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.primary,
             maxLines = 1
         )
         Spacer(modifier = Modifier.height(6.dp))
