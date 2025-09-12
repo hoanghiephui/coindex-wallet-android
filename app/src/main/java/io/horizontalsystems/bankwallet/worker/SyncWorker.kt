@@ -1,6 +1,5 @@
 package io.horizontalsystems.bankwallet.worker
 
-import android.Manifest
 import android.Manifest.permission
 import android.app.Notification
 import android.app.NotificationChannel
@@ -8,15 +7,17 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Color
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.hilt.work.HiltWorker
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.ForegroundInfo
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkerParameters
 import com.android.billing.network.AppDispatcher
 import com.android.billing.network.Dispatcher
 import com.wallet.blockchain.bitcoin.BuildConfig
@@ -45,7 +46,8 @@ internal class SyncWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result = withContext(ioDispatcher) {
         try {
-            val result = repository.getPriceCoin(base = "USD", filter = "listed", resolution = "latest")
+            val result =
+                repository.getPriceCoin(base = "USD", filter = "listed", resolution = "latest")
             val data = result.data ?: return@withContext Result.retry()
 
             val priceData = listOf("BTC", "ETH", "BCH").mapNotNull { code ->
@@ -79,9 +81,10 @@ internal class SyncWorker @AssistedInject constructor(
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
 
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent =
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, getChannelId())
             .setSmallIcon(R.drawable.ic_logo_notification)
             .setContentTitle(context.getString(R.string.Notification_Title1))
             .setContentText(message)
@@ -97,10 +100,11 @@ internal class SyncWorker @AssistedInject constructor(
     }
 
     private fun createNotificationChannelIfNeeded(context: Context) {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (notificationManager.getNotificationChannel(CHANNEL_ID) == null) {
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (notificationManager.getNotificationChannel(getChannelId()) == null) {
             val channel = NotificationChannel(
-                CHANNEL_ID,
+                getChannelId(),
                 "Blockchain",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
@@ -113,8 +117,9 @@ internal class SyncWorker @AssistedInject constructor(
         }
     }
 
+    private fun getChannelId(): String = BuildConfig.APPLICATION_ID
+
     companion object {
-        private const val CHANNEL_ID = BuildConfig.APPLICATION_ID
         private const val NOTIFICATION_ID = 2022
 
         private val morningDelay = calculateInitialDelayForTime(7)
@@ -133,7 +138,10 @@ internal class SyncWorker @AssistedInject constructor(
         private fun calculateInitialDelayForTime(hour: Int): Long {
             val now = DateTime.now()
             val targetTime = now.withTimeAtStartOfDay().plusHours(hour)
-            return Duration(now, if (now.hourOfDay < hour) targetTime else targetTime.plusDays(1)).standardMinutes
+            return Duration(
+                now,
+                if (now.hourOfDay < hour) targetTime else targetTime.plusDays(1)
+            ).standardMinutes
         }
     }
 }

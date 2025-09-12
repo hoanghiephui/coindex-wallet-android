@@ -347,13 +347,13 @@ private fun MainScreen(
     }
 
     if (uiState.showWhatsNew) {
-        LaunchedEffect(Unit) {
+        /*LaunchedEffect(Unit) {
             fragmentNavController.slideFromBottom(
                 R.id.releaseNotesFragment,
                 ReleaseNotesFragment.Input(true)
             )
             viewModel.whatsNewShown()
-        }
+        }*/
     }
 
     if (uiState.showDonationPage) {

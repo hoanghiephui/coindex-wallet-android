@@ -58,17 +58,17 @@ protobuf {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("com.google.android.material:material:1.12.0")
+    implementation("com.google.android.material:material:1.13.0")
     implementation("com.android.billingclient:billing:8.0.0")
     implementation("com.android.billingclient:billing-ktx:8.0.0")
-    implementation("com.google.dagger:hilt-android:2.57")
+    implementation("com.google.dagger:hilt-android:2.57.1")
     implementation("com.jakewharton.timber:timber:5.0.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.56.2")
+    kapt("com.google.dagger:hilt-android-compiler:2.57.1")
     implementation("androidx.datastore:datastore:1.1.7")
-    implementation("com.google.protobuf:protobuf-kotlin-lite:4.31.1")
-    implementation(platform("androidx.compose:compose-bom:2025.07.00"))
+    implementation("com.google.protobuf:protobuf-kotlin-lite:4.32.1")
+    implementation(platform("androidx.compose:compose-bom:2025.09.00"))
     implementation("androidx.compose.ui:ui-tooling-preview")
 
     testImplementation("junit:junit:4.13.2")
