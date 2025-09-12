@@ -186,8 +186,15 @@ class ChartBinanceView @JvmOverloads constructor(
             }
             rightPriceScale = priceScaleOptions {
                 scaleMargins = priceScaleMargins {
-                    top = 0.3f
-                    bottom = 0.25f
+                    top = 0.1f
+                    bottom = 0.4f
+                }
+                borderVisible = false
+            }
+            leftPriceScale = priceScaleOptions {
+                scaleMargins = priceScaleMargins {
+                    top = 0.7f
+                    bottom = 0.05f
                 }
                 borderVisible = false
             }
