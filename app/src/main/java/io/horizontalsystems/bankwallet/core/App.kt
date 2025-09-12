@@ -54,6 +54,7 @@ import io.horizontalsystems.bankwallet.core.managers.LanguageManager
 import io.horizontalsystems.bankwallet.core.managers.LocalStorageManager
 import io.horizontalsystems.bankwallet.core.managers.MarketFavoritesManager
 import io.horizontalsystems.bankwallet.core.managers.MarketKitWrapper
+import io.horizontalsystems.bankwallet.core.managers.MoneroNodeManager
 import io.horizontalsystems.bankwallet.core.managers.NetworkManager
 import io.horizontalsystems.bankwallet.core.managers.NftAdapterManager
 import io.horizontalsystems.bankwallet.core.managers.NftMetadataManager
@@ -96,6 +97,7 @@ import io.horizontalsystems.bankwallet.core.storage.AppDatabase
 import io.horizontalsystems.bankwallet.core.storage.BlockchainSettingsStorage
 import io.horizontalsystems.bankwallet.core.storage.EnabledWalletsStorage
 import io.horizontalsystems.bankwallet.core.storage.EvmSyncSourceStorage
+import io.horizontalsystems.bankwallet.core.storage.MoneroNodeStorage
 import io.horizontalsystems.bankwallet.core.storage.NftStorage
 import io.horizontalsystems.bankwallet.core.storage.RestoreSettingsStorage
 import io.horizontalsystems.bankwallet.core.storage.SpamAddressStorage
@@ -117,6 +119,8 @@ import io.horizontalsystems.bankwallet.modules.theme.ThemeType
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCManager
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCSessionManager
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCWalletRequestHandler
+import io.horizontalsystems.bankwallet.modules.walletconnect.handler.WCHandlerEvm
+import io.horizontalsystems.bankwallet.modules.walletconnect.stellar.WCHandlerStellar
 import io.horizontalsystems.bankwallet.modules.walletconnect.storage.WCSessionStorage
 import io.horizontalsystems.bankwallet.widgets.MarketWidgetManager
 import io.horizontalsystems.bankwallet.widgets.MarketWidgetRepository
@@ -138,12 +142,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.security.MessageDigest
 import java.util.logging.Level
 import java.util.logging.Logger
 import javax.inject.Inject
 import androidx.work.Configuration as WorkConfiguration
+import timber.log.Timber
 
 @HiltAndroidApp
 class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
@@ -203,6 +207,8 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
         lateinit var evmSyncSourceManager: EvmSyncSourceManager
         lateinit var evmBlockchainManager: EvmBlockchainManager
         lateinit var solanaRpcSourceManager: SolanaRpcSourceManager
+        lateinit var moneroNodeManager: MoneroNodeManager
+        lateinit var moneroNodeStorage: MoneroNodeStorage
         lateinit var nftMetadataManager: NftMetadataManager
         lateinit var nftAdapterManager: NftAdapterManager
         lateinit var nftMetadataSyncer: NftMetadataSyncer
@@ -313,6 +319,9 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
             backgroundManager
         )
 
+        moneroNodeStorage = MoneroNodeStorage(appDatabase)
+        moneroNodeManager = MoneroNodeManager(blockchainSettingsStorage, moneroNodeStorage,marketKit)
+
         tronKitManager = TronKitManager(appConfigProvider, backgroundManager)
         tonKitManager = TonKitManager(backgroundManager)
         stellarKitManager = StellarKitManager(backgroundManager)
@@ -337,7 +346,7 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
         walletActivator = WalletActivator(walletManager, marketKit)
         tokenAutoEnableManager = TokenAutoEnableManager(appDatabase.tokenAutoEnabledBlockchainDao())
 
-        spamManager = SpamManager(localStorage, coinManager, SpamAddressStorage(appDatabase.spamAddressDao()), marketKit, appConfigProvider)
+        spamManager = SpamManager(localStorage, SpamAddressStorage(appDatabase.spamAddressDao()))
         recentAddressManager = RecentAddressManager(accountManager, appDatabase.recentAddressDao(), ActionCompletedDelegate)
         val evmAccountManagerFactory = EvmAccountManagerFactory(
             accountManager,
@@ -349,8 +358,7 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
             backgroundManager,
             evmSyncSourceManager,
             marketKit,
-            evmAccountManagerFactory,
-            spamManager
+            evmAccountManagerFactory
         )
 
         val tronAccountManager = TronAccountManager(
@@ -401,7 +409,8 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
             restoreSettingsManager = restoreSettingsManager,
             coinManager = coinManager,
             evmLabelManager = evmLabelManager,
-            localStorage = localStorage
+            localStorage = localStorage,
+            moneroNodeManager = moneroNodeManager
         )
         adapterManager = AdapterManager(
             walletManager,
@@ -412,8 +421,11 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
             tronKitManager,
             tonKitManager,
             stellarKitManager,
+            moneroNodeManager
         )
         transactionAdapterManager = TransactionAdapterManager(adapterManager, adapterFactory)
+
+        spamManager.set(transactionAdapterManager)
 
         feeCoinProvider = FeeTokenProvider(marketKit)
 
@@ -434,6 +446,8 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
         rateAppManager = RateAppManager(walletManager, adapterManager, localStorage)
 
         wcManager = WCManager(accountManager)
+        wcManager.addWcHandler(WCHandlerEvm(evmBlockchainManager))
+        wcManager.addWcHandler(WCHandlerStellar(stellarKitManager))
         wcWalletRequestHandler = WCWalletRequestHandler(evmBlockchainManager)
 
         termsManager = TermsManager(localStorage)
@@ -511,6 +525,7 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
 
         roiManager = RoiManager(localStorage)
 
+        Timber.plant(Timber.DebugTree())
         startTasks()
         setAnalytic()
         Thread.setDefaultUncaughtExceptionHandler { _, e ->

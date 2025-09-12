@@ -255,7 +255,7 @@ fun SecurityCheckCard(
             .padding(horizontal = 16.dp),
         backgroundColor = ComposeAppTheme.colors.tyler,
         border = BorderStroke(0.5.dp, ComposeAppTheme.colors.blade),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         elevation = 0.dp
     ) {
         Column {
@@ -325,7 +325,7 @@ fun NetworkItem(
     ) {
         Text(
             text = title,
-            color = Color.Black,
+            color = ComposeAppTheme.colors.grey,
             fontSize = 14.sp
         )
 

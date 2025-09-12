@@ -20,7 +20,7 @@
     <string name="Button_Next">Next</string>
     <string name="Button_Enable">Enable</string>
     <string name="Button_Disable">Disable</string>
-    <string name="Button_ScanQr">Scan QR Code</string>
+    <string name="Button_ScanQr">Scan</string>
     <string name="Button_Close">Close</string>
     <string name="Button_Ok">OK</string>
     <string name="Button_Activate">Activate</string>
@@ -57,6 +57,8 @@
     <string name="Button_Apply">Apply</string>
     <string name="Button_SetAmount">Set Amount</string>
     <string name="Button_ContinueAnyway">Continue Anyway</string>
+
+    <string name="Attention_Title">Attention</string>
 
     <string name="Error_OutOfRange">Can\'t be less than %1$s or more than %2$s</string>
     <string name="Error_NotInteger">Wrong integer number</string>
@@ -147,7 +149,7 @@
     <string name="SelectContacts_All">All</string>
 
     <string name="Restore_BirthdayHeight">Birthday Height</string>
-    <string name="Restore_ZCash">ZCash</string>
+    <string name="Restore_ZCash">Zcash</string>
     <string name="Restore_ZCash_BirthdayHeight_Hint">Enter wallet\'s birthday height for faster synchronization.</string>
     <string name="Restore_ZCash_Birthday_Hint">000000000 (optional)</string>
     <string name="Restore_ZCash_RestoreAsNew">Restore as New</string>
@@ -166,6 +168,7 @@
     <string name="Market_Field_PriceDiff">Price</string>
     <string name="Market_Title">Markets</string>
     <string name="Market_Search">Search</string>
+    <string name="Market_All">All</string>
     <string name="Market_Search_Sections_RecentTitle">RECENT</string>
     <string name="Market_Search_Sections_PopularTitle">POPULAR</string>
     <string name="Market_FilterSection_MarketParameters">MARKET PARAMETERS</string>
@@ -177,6 +180,7 @@
     <string name="Market_Field_HighestVolume">Highest Volume</string>
     <string name="Market_Field_LowestVolume">Lowest Volume</string>
     <string name="Market_Sort_PopupTitle">Sort by</string>
+    <string name="Market_Filter_PopupTitle">Filter by</string>
     <string name="Market_BtcDominance">BTC Dominance</string>
     <string name="Market_SeeAll">See All</string>
     <string name="Market_PoweredByApi">Powered By CoinGeko API</string>
@@ -186,6 +190,7 @@
     <string name="Market_Tab_Pairs">Pairs</string>
     <string name="Market_Tab_Sectors">Sectors</string>
     <string name="Market_Tab_Watchlist">Favorites</string>
+    <string name="Market_Tab_Earn">Earn</string>
     <string name="Market_Tab_Watchlist_EmptyList">Your favorites are empty.</string>
     <string name="Market_Category_TopCoins">Top Coins</string>
     <string name="Market_Signals">Signals</string>
@@ -217,8 +222,10 @@
     <string name="MarketPlatformCoins_PlatformEcosystemDescription">Market cap of all protocols on the %s chain</string>
 
     <!--Market Global Metrics-->
-    <string name="MarketGlobalMetrics_TotalMarketCap">Total Cap</string>
-    <string name="MarketGlobalMetrics_Volume">24h Vol.</string>
+    <string name="MarketGlobalMetrics_TotalMarketCapShort">Total Cap</string>
+    <string name="MarketGlobalMetrics_TotalMarketCap">Total Market Cap</string>
+    <string name="MarketGlobalMetrics_Volume">Volume</string>
+    <string name="MarketGlobalMetrics_VolumeShort">24h Vol.</string>
     <string name="MarketGlobalMetrics_TvlInDefi">TVL</string>
     <string name="MarketGlobalMetrics_EtfInflow">ETF</string>
     <string name="MarketGlobalMetrics_TotalMarketCapDescription">Total market value of all cryptocurrencies</string>
@@ -237,6 +244,9 @@
     <string name="MarketEtf_Inflow">Inflow</string>
     <string name="MarketEtf_Outflow">Outflow</string>
     <string name="MarketEtf_TotalNetAssets">Total Net Assets</string>
+    <string name="MarketEtf_BitcoinEtf">Bitcoin ETF</string>
+    <string name="MarketEtf_EthereumEtf">Ethereum ETF</string>
+    <string name="MarketEtf_EtfDescription">Net inflow of all %s ETFs, including spot and futures-based funds.</string>
 
     <!--Market Search-->
     <string name="EmptyResults">No results found</string>
@@ -257,6 +267,8 @@
     <string name="Market_Filter_OutperformedBtc">Outperformed BTC</string>
     <string name="Market_Filter_OutperformedEth">Outperformed ETH</string>
     <string name="Market_Filter_OutperformedBnb">Outperformed BNB</string>
+    <string name="Market_Filter_OutperformedGold">Outperformed Gold</string>
+    <string name="Market_Filter_OutperformedSnp">Outperformed S&amp;P 500</string>
     <string name="Market_Filter_PriceCloseTo">Price Close To</string>
     <string name="Market_Filter_PriceCloseToAth">Price Close To ATH</string>
     <string name="Market_Filter_PriceCloseToAtl">Price Close To ATL</string>
@@ -353,6 +365,26 @@
 
     <string name="Market_Filters_Select">Select %d</string>
 
+    <!--Vaults-->
+    <string name="Market_Vaults_WantToUnlockPremium">Explore the best DeFi staking returns, all in one place.</string>
+    <string name="Market_Vaults_UnlockPremium">Unlock Premium</string>
+    <string name="Market_Vaults_Sorting_APY">Highest APY</string>
+    <string name="Market_Vaults_Sorting_TVL">Highest TVL</string>
+
+    <string name="Market_Vaults_Filter_AllAssets">All assets</string>
+    <string name="Market_Vaults_Filter_AllChains">All chains</string>
+    <string name="Market_Vaults_Filter_ETHYield">ETH yield</string>
+    <string name="Market_Vaults_Filter_USDYield">USD yield</string>
+    <string name="Market_Vaults_OpenDapp">Open dapp</string>
+    <string name="Market_Vaults_Filter_MultipleChains">%d Chains</string>
+
+    <string name="Market_Vaults_Vault_TVL">TVL</string>
+    <string name="Market_Vaults_Vault_Network">Network</string>
+    <string name="Market_Vaults_Vault_Protocol">Protocol</string>
+    <string name="Market_Vaults_Vault_UnderlyingToken">Underlying token</string>
+    <string name="Market_Vaults_Vault_Holders">Holders</string>
+    <string name="Market_Vaults_ChartTvl">TVL</string>
+
     <!--Coin Markets-->
 
     <!--TVL Rank-->
@@ -363,6 +395,7 @@
     <string name="Balance_Withdraw">Withdraw</string>
     <string name="Balance_Title">Balance</string>
     <string name="Balance_Send">Send</string>
+    <string name="Balance_ChooseCoin">Choose Coin</string>
     <string name="Balance_Deposit">Deposit</string>
     <string name="Balance_Receive">Receive</string>
     <string name="Balance_Address">Address</string>
@@ -405,6 +438,7 @@
     <string name="Balance_Receive_ActivationRequired">To receive an address you need to activate the token. This is required by the Stellar network.</string>
     <string name="Balance_Receive_Trustline">Trustline</string>
     <string name="Balance_Reserved_Title">Reserved</string>
+    <string name="Balance_WalletAddress">Wallet Address</string>
 
     <string name="Balance_Zcash_UnshieldedBalance_Title">Transparent</string>
     <string name="Balance_Zcash_UnshieldedBalance_Info_Title">Transparent amount</string>
@@ -603,6 +637,8 @@
     <string name="WalletConnect_Status_Online">Online</string>
     <string name="WalletConnect_Status_Connecting">Connecting…</string>
     <string name="WalletConnect_NewConnect">New Connection</string>
+    <string name="WalletConnect_SendTransactionRequest_Title">Send Transaction</string>
+    <string name="WalletConnect_SendTransactionRequest_ButtonSend">Send</string>
     <string name="WalletConnect_SignMessageRequest_Title">Sign Request</string>
     <string name="WalletConnect_SignMessageRequest_dApp" translatable="false">dApp</string>
     <string name="WalletConnect_SignMessageRequest_ShowMessageTitle">Message to sign</string>
@@ -689,6 +725,8 @@
     <string name="SwapConfirm_FetchingFinalQuote">Fetching final quote</string>
     <string name="SwapWarning_SlippageNotApplicable_Title">Slippage is not applicable</string>
     <string name="SwapWarning_SlippageNotApplicable_Description">Minimum slippage applicable  for this quote is %s%%</string>
+    <string name="SwapWarning_SlippageNotAvailable_Title">No Slippage Control</string>
+    <string name="SwapWarning_SlippageNotAvailable_Description">Cross-chain swaps depend on third-party liquidity and delays, which may affect the final amount.</string>
 
     <!-- Swap Settings -->
     <string name="SwapSettings_Title">Swap Settings</string>
@@ -922,6 +960,7 @@
     <string name="Settings_Telegram" translatable="false">Telegram</string>
     <string name="Settings_Twitter" translatable="false">Twitter</string>
     <string name="Settings_JoinUnstoppables">Join CoinDex</string>
+    <string name="Settings_Support">Support</string>
     <string name="Settings_VipSupport">VIP Group</string>
     <string name="Settings_BotSupport">BOT Support</string>
     <string name="Settings_JoinUnstoppables_Description">Learn and master crypto via exclusive videos. Get to know us informally. Be the first to see things we work on.</string>
@@ -956,6 +995,8 @@
     <string name="SettingsSecurity_AutoLock_After15Min">15 minutes</string>
     <string name="SettingsSecurity_AutoLock_After30Min">30 minutes</string>
     <string name="SettingsSecurity_AutoLock_After1Hour">1 hour</string>
+
+    <string name="Mev_Protection">MEV Protection</string>
 
     <!--Address Checker-->
     <string name="SettingsAddressChecker_Title">Address Checker</string>
@@ -1013,6 +1054,9 @@
     <string name="SettingsSubscription_ManageSubscription">Manage Subscription</string>
 
     <string name="Period_Days">%s days</string>
+
+    <string name="Premium_TitleForDroid">Premium (Free for F-Droid)</string>
+
     <!--Premium Screens-->
     <string name="Premium_Title">Premium</string>
     <string name="Premium_ChoosePlanForYou">Choose the plan</string>
@@ -1040,6 +1084,7 @@
     <string name="Premium_UpgradeFeature_AddressPhishing">Scam Protection</string>
     <string name="Premium_UpgradeFeature_AddressBlacklist">Blacklist Check</string>
     <string name="Premium_UpgradeFeature_VipSupport">VIP Group</string>
+    <string name="Premium_UpgradeFeature_MevProtection">MEV Protection</string>
     <string name="Premium_UpgradeFeature_PrivacyMode">Privacy Mode</string>
     <string name="Premium_UpgradeFeature_MultiWallet">Multi-wallet</string>
     <string name="Premium_UpgradeFeature_NoAds">No advertisements</string>
@@ -1051,6 +1096,7 @@
     <string name="Premium_UpgradeFeature_AddressPhishing_Description">Effective auto-protection against scams and phishing attacks</string>
     <string name="Premium_UpgradeFeature_AddressBlacklist_Description">Guarantee of legality for your crypto operations</string>
     <string name="Premium_UpgradeFeature_VipSupport_Description">Access to wallet team for quick tech support.</string>
+    <string name="Premium_UpgradeFeature_MevProtection_Description">MEV Protection</string>
     <string name="Premium_UpgradeFeature_PrivacyMode_Description">Full disconnection from data collection.</string>
     <string name="Premium_UpgradeFeature_MultiWallet_Description">Create multiple wallets on one app.</string>
     <string name="Premium_UpgradeFeature_NoAds_Description">Not disturbed by advertisements.</string>
@@ -1062,6 +1108,7 @@
     <string name="Premium_UpgradeFeature_AddressPhishing_BigDescription">One wrong address, and your crypto is gone forever. Unstoppable automatically scans recipient addresses for suspicious patterns and defends against the latest phishing threats, preventing you from sending funds to a hacker. Block fraudulent transfers before they happen.</string>
     <string name="Premium_UpgradeFeature_AddressBlacklist_BigDescription">Protect yourself from risky and sanctioned entities. Blacklist Checker automatically screens recipient addresses against high-risk databases, flagging scams, frauds, and sanctioned entities before you send. If an address is blacklisted, you’ll know before making a costly mistake. Secure your transactions. Keep your crypto clean. Stay compliant.</string>
     <string name="Premium_UpgradeFeature_VipSupport_BigDescription">Be part of the evolution. Join the VIP Group to connect directly with our team for tech support. Vote on upcoming features, and get an exclusive first look at future updates. Your voice matters—help shape the next-gen crypto wallet.</string>
+    <string name="Premium_UpgradeFeature_MevProtection_BigDescription">MEV Protection</string>
     <string name="Premium_UpgradeFeature_PrivacyMode_BigDescription">Grants the ability to disable UI/UX data collection, ensuring complete privacy and preventing any usage analysis.</string>
     <string name="Premium_UpgradeFeature_MultiWallet_BigDescription">For easy management of many wallets within a single app while staying ultra secure.</string>
     <string name="Premium_UpgradeFeature_NoAds_BigDescription">A seamless experience without being disturbed by advertisements.</string>
@@ -1149,13 +1196,22 @@
     <string name="AddEvmSyncSource_Error_InvalidUrl">Entered url is invalid. Valid url must have one of the following schemes: https, wss</string>
 
 
+    <!--Add Monero Node-->
+    <string name="AddMoneroNode_AddNode">Add Node</string>
+    <string name="AddMoneroNode_NodeUrl">Node Url</string>
+    <string name="AddMoneroNode_Username">Username (optional)</string>
+    <string name="AddMoneroNode_Pasword">Password (optional)</string>
+    <string name="AddMoneroNode_Warning_UrlExists">Node with this url already exists</string>
+    <string name="AddMoneroNode_Error_InvalidUrl">Entered url is invalid. Valid url must have one of the following schemes: https</string>
+
+
     <!--Btc Blockchain Settings -->
     <string name="BtcBlockchainSettings_RestoreSourceChangeWarning">After changing source the wallet will have to resync itself.</string>
     <string name="BtcBlockchainSettings_RestoreSourceSettingsDescription">Choose the source CoinDex app should use for synchronizing wallet(s).</string>
     <string name="BtcBlockchainSettings_InputsOutputs">Inputs/Outputs</string>
     <string name="BtcBlockchainSettings_TransactionSettings">Transaction Settings</string>
     <string name="BtcBlockchainSettings_TransactionInputsOutputs">Transaction Inputs / Outputs</string>
-    <string name="BtcBlockchainSettings_TransactionInputsOutputsSettingsDescription">Make your BTC, LTC, BCH transactions harder to trace by changing the way transactions are structured.</string>
+    <string name="BtcBlockchainSettings_TransactionInputsOutputsSettingsDescription">Make your %s transaction harder to trace by changing the way transaction is structured.</string>
     <string name="BtcBlockchainSettings_TransactionInputsOutputsDescription">Most Bitcoin transactions, as well as transactions in alike cryptocurrencies including Bitcoin Cash, Dash, and Litecoin, generate two outputs. One output is the amount that goes to the receiver and the other is the change output that is returned to the sender. The way most wallets construct transactions makes it easy for a third party to understand which of the outputs went to the receiving party and which one was the change amount returned to the sender. As the output returned to the sender is later used in future transactions, a connection between these two transactions becomes apparent.
 \n\nThe CoinDex wallet implements measures to make it harder for someone to figure out which output goes where.
 \n\nThere are two options available to CoinDex users:
@@ -1497,6 +1553,11 @@
     <string name="CoinSettings_BitcoinCashCoinType_Type0_Description">Common before 2018</string>
     <string name="CoinSettings_BitcoinCashCoinType_Type145_Description">Common after 2018</string>
 
+    <!-- Nym VPN -->
+
+    <string name="NymVpn_GetNymVpn" translatable="false">Get Nym VPN</string>
+    <string name="NymVpn_Description" translatable="false">Unstoppable recommends NYM VPN for increased privacy.</string>
+
     <!-- Tor -->
 
     <string name="Tor_Title" translatable="false">Tor</string>
@@ -1515,7 +1576,7 @@
     <string name="Coin_Tab_Details">Analytics</string>
 
     <string name="CoinPage_TimeDuration_Day">1D</string>
-    <string name="CoinPage_TimeDuration_Week">7D</string>
+    <string name="CoinPage_TimeDuration_Week">1W</string>
     <string name="CoinPage_TimeDuration_Month">1M</string>
     <string name="CoinPage_TimeDuration_TwoWeeks">2W</string>
     <string name="CoinPage_TimeDuration_Month3">3M</string>
@@ -1811,6 +1872,7 @@
     <string name="BalanceSyncError_ButtonRetry">Retry</string>
     <string name="BalanceSyncError_ButtonChangeSource">Change Source</string>
     <string name="BalanceSyncError_ButtonReport">Report</string>
+    <string name="BalanceSyncError_Text">Sync error</string>
 
     <!--Release notes-->
 

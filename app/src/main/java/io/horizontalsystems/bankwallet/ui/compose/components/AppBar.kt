@@ -103,7 +103,6 @@ fun AppBar(
         title = titleComposable,
         navigationIcon = navigationIcon,
         menuItems = menuItems,
-        showSpinner = showSpinner,
         colors = colors,
         scrollBehavior = scrollBehavior
     )
@@ -115,7 +114,7 @@ fun AppBar(
     title: @Composable () -> Unit,
     navigationIcon: @Composable (() -> Unit)? = null,
     menuItems: List<IMenuItem> = listOf(),
-    showSpinner: Boolean = false,
+    stateIcon: @Composable (() -> Unit)? = null,
     colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
     scrollBehavior: TopAppBarScrollBehavior? = null,
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
@@ -130,14 +129,15 @@ fun AppBar(
             navigationIcon?.invoke()
         },
         actions = {
-            if (showSpinner) {
-                CircularProgressIndicator(
+            stateIcon?.let{
+                Box(
                     modifier = Modifier
                         .padding(start = 24.dp, end = 16.dp)
                         .size(24.dp),
-                    color = ComposeAppTheme.colors.grey,
-                    strokeWidth = 2.dp
-                )
+                    contentAlignment = Alignment.Center
+                ) {
+                    it()
+                }
             }
             menuItems.forEach { menuItem ->
                 when (menuItem) {

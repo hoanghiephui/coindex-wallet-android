@@ -260,7 +260,7 @@
         android:name="io.horizontalsystems.bankwallet.modules.watchaddress.selectblockchains.SelectBlockchainsFragment" />
     <fragment
         android:id="@+id/zcashConfigure"
-        android:name="io.horizontalsystems.bankwallet.modules.zcashconfigure.ZcashConfigure"/>
+        android:name="io.horizontalsystems.bankwallet.modules.restoreconfig.BirthdayHeightConfig"/>
     <fragment
         android:id="@+id/receiveFragment"
         android:name="io.horizontalsystems.bankwallet.modules.receive.ReceiveFragment" />
@@ -278,6 +278,10 @@
         android:id="@+id/solanaNetworkFragment"
         android:name="io.horizontalsystems.bankwallet.modules.solananetwork.SolanaNetworkFragment"
         android:label="SolanaNetworkFragment" />
+    <fragment
+        android:id="@+id/moneroNetworkFragment"
+        android:name="io.horizontalsystems.bankwallet.modules.moneronetwork.MoneroNetworkFragment"
+        android:label="MoneroNetworkFragment" />
     <fragment
         android:id="@+id/btcBlockchainSettingsFragment"
         android:name="io.horizontalsystems.bankwallet.modules.btcblockchainsettings.BtcBlockchainSettingsFragment"/>
@@ -427,6 +431,12 @@
     <fragment
         android:id="@+id/roiSelectCoinsFragment"
         android:name="io.horizontalsystems.bankwallet.modules.roi.RoiSelectCoinsFragment"/>
+    <fragment
+        android:id="@+id/vaultFragment"
+        android:name="io.horizontalsystems.bankwallet.modules.market.earn.vault.VaultFragment" />
+    <fragment
+        android:id="@+id/vaultsBlockchainsSelectorFragment"
+        android:name="io.horizontalsystems.bankwallet.modules.market.earn.VaultBlockchainsSelectorFragment"/>
 
     <dialog
         android:id="@+id/BillingPlusDialog"

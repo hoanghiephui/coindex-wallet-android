@@ -6,6 +6,7 @@ import io.horizontalsystems.bankwallet.core.ILocalStorage
 import io.horizontalsystems.bankwallet.core.order
 import io.horizontalsystems.bankwallet.entities.Currency
 import io.horizontalsystems.marketkit.models.BlockchainType
+import java.math.BigDecimal
 
 class AppConfigProvider(localStorage: ILocalStorage) {
 
@@ -27,6 +28,8 @@ class AppConfigProvider(localStorage: ILocalStorage) {
     val walletConnectAppMetaDataUrl by lazy { Translator.getString(R.string.walletConnectAppMetaDataUrl) }
     val walletConnectAppMetaDataIcon by lazy { Translator.getString(R.string.walletConnectAppMetaDataIcon) }
     val accountsBackupFileSalt by lazy { Translator.getString(R.string.accountsBackupFileSalt) }
+    val simplexSupportChat = "https://smp11.simplex.im/g#yTrDh716RZCNYsdPSDrqMMlHnqZlW4XJGnFTugBrsAI"
+    val nymVpnLink = "https://nymtechnologies.pxf.io/N9vnr1"
 
     val blocksDecodedEthereumRpc by lazy {
         Translator.getString(R.string.blocksDecodedEthereumRpc)
@@ -181,13 +184,16 @@ class AppConfigProvider(localStorage: ILocalStorage) {
         }
     }
 
-    val spamCoinValueLimits: Map<String, Double> = mapOf(
-        "tether" to 0.01,
-        "usd-coin" to 0.01,
-        "dai" to 0.01,
-        "binance-usd" to 0.01,
-        "binance-peg-busd" to 0.01,
-        "stasis-eurs" to 0.01,
+    // coinCode -> min value
+    val spamCoinValueLimits: Map<String, BigDecimal> = mapOf(
+        "USDT" to BigDecimal("0.01"),
+        "USDC" to BigDecimal("0.01"),
+        "DAI" to BigDecimal("0.01"),
+        "BUSD" to BigDecimal("0.01"),
+        "EURS" to BigDecimal("0.01"),
+        "BSC-USD" to BigDecimal("0.01"),
+        "TRX" to BigDecimal("10"),
+        "XLM" to BigDecimal("0.01"),
     )
 
     val chainalysisBaseUrl by lazy {

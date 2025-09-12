@@ -15,6 +15,7 @@ import io.horizontalsystems.bankwallet.core.adapters.EvmAdapter
 import io.horizontalsystems.bankwallet.core.adapters.EvmTransactionsAdapter
 import io.horizontalsystems.bankwallet.core.adapters.JettonAdapter
 import io.horizontalsystems.bankwallet.core.adapters.LitecoinAdapter
+import io.horizontalsystems.bankwallet.core.adapters.MoneroAdapter
 import io.horizontalsystems.bankwallet.core.adapters.SolanaAdapter
 import io.horizontalsystems.bankwallet.core.adapters.SolanaTransactionConverter
 import io.horizontalsystems.bankwallet.core.adapters.SolanaTransactionsAdapter
@@ -34,6 +35,7 @@ import io.horizontalsystems.bankwallet.core.managers.BtcBlockchainManager
 import io.horizontalsystems.bankwallet.core.managers.EvmBlockchainManager
 import io.horizontalsystems.bankwallet.core.managers.EvmLabelManager
 import io.horizontalsystems.bankwallet.core.managers.EvmSyncSourceManager
+import io.horizontalsystems.bankwallet.core.managers.MoneroNodeManager
 import io.horizontalsystems.bankwallet.core.managers.RestoreSettingsManager
 import io.horizontalsystems.bankwallet.core.managers.SolanaKitManager
 import io.horizontalsystems.bankwallet.core.managers.StellarKitManager
@@ -56,6 +58,7 @@ class AdapterFactory(
     private val tronKitManager: TronKitManager,
     private val tonKitManager: TonKitManager,
     private val stellarKitManager: StellarKitManager,
+    private val moneroNodeManager: MoneroNodeManager,
     private val backgroundManager: BackgroundManager,
     private val restoreSettingsManager: RestoreSettingsManager,
     private val coinManager: ICoinManager,
@@ -87,10 +90,11 @@ class AdapterFactory(
         return SplAdapter(solanaKitWrapper, wallet, address)
     }
 
-    private fun getTrc20Adapter(wallet: Wallet, address: String): IAdapter {
+    private fun getTrc20Adapter(wallet: Wallet, address: String): Trc20Adapter? {
         val tronKitWrapper = tronKitManager.getTronKitWrapper(wallet.account)
+        val baseToken = coinManager.getToken(TokenQuery(BlockchainType.Tron, TokenType.Native)) ?: return null
 
-        return Trc20Adapter(tronKitWrapper, address, wallet)
+        return Trc20Adapter(tronKitWrapper, address, wallet, coinManager, baseToken, evmLabelManager)
     }
 
     private fun getJettonAdapter(wallet: Wallet, address: String): IAdapter {
@@ -170,6 +174,14 @@ class AdapterFactory(
             }
             BlockchainType.Stellar -> {
                 StellarAdapter(stellarKitManager.getStellarKitWrapper(wallet.account))
+            }
+            BlockchainType.Monero -> {
+                MoneroAdapter.create(
+                    context = context,
+                    wallet = wallet,
+                    restoreSettings = restoreSettingsManager.settings(wallet.account, wallet.token.blockchainType),
+                    node = moneroNodeManager.currentNode
+                )
             }
 
             else -> null

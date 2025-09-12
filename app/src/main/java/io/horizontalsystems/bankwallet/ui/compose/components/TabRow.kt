@@ -48,7 +48,8 @@ data class TabItem<T>(
     val item: T,
     val icon: ImageSource? = null,
     val label: String? = null,
-    val enabled: Boolean = true
+    val enabled: Boolean = true,
+    val premium: Boolean = false,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

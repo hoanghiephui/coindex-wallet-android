@@ -62,6 +62,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.captionSB_grey
+import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 
 class CoinRankFragment : BaseComposeFragment() {
@@ -232,7 +233,7 @@ private fun CoinRankCell(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                body_leah(
+                headline2_leah(
                     text = name,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1

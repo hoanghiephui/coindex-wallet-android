@@ -1,4 +1,4 @@
-package io.horizontalsystems.bankwallet.modules.zcashconfigure
+package io.horizontalsystems.bankwallet.modules.restoreconfig
 
 import android.os.Bundle
 import android.os.Parcelable
@@ -63,9 +63,11 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
+import io.horizontalsystems.bankwallet.core.getInput
 import io.horizontalsystems.bankwallet.core.imageUrl
 import io.horizontalsystems.bankwallet.core.setNavigationResultX
-import io.horizontalsystems.bankwallet.modules.enablecoin.restoresettings.ZCashConfig
+import io.horizontalsystems.bankwallet.core.title
+import io.horizontalsystems.bankwallet.modules.enablecoin.restoresettings.BirthdayHeightConfig
 import io.horizontalsystems.bankwallet.modules.evmfee.ButtonsGroupWithShade
 import io.horizontalsystems.bankwallet.ui.compose.ColoredTextStyle
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
@@ -87,10 +89,11 @@ import io.horizontalsystems.bankwallet.ui.compose.components.title3_leah
 import io.horizontalsystems.bankwallet.ui.extensions.BottomSheetHeader
 import io.horizontalsystems.core.findNavController
 import io.horizontalsystems.marketkit.models.BlockchainType
+import io.horizontalsystems.marketkit.models.Token
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
-class ZcashConfigure : BaseComposeFragment() {
+class BirthdayHeightConfig : BaseComposeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         activity?.onBackPressedDispatcher?.addCallback(this) {
@@ -100,16 +103,19 @@ class ZcashConfigure : BaseComposeFragment() {
 
     @Composable
     override fun GetContent(navController: NavController) {
-        ZcashConfigureScreen(
-            onCloseWithResult = { closeWithConfigt(it, navController) },
-            onCloseClick = { close(navController) }
-        )
+        navController.getInput<Token>()?.let { token ->
+            BirthdayHeightConfigScreen(
+                blockchainType = token.blockchainType,
+                onCloseWithResult = { closeWithConfig(it, navController) },
+                onCloseClick = { close(navController) }
+            )
+        }
     }
 
     override val logScreen: String
         get() = "ZcashConfigure"
 
-    private fun closeWithConfigt(config: ZCashConfig, navController: NavController) {
+    private fun closeWithConfig(config: BirthdayHeightConfig, navController: NavController) {
         navController.setNavigationResultX(Result(config))
         navController.popBackStack()
     }
@@ -120,15 +126,16 @@ class ZcashConfigure : BaseComposeFragment() {
     }
 
     @Parcelize
-    data class Result(val config: ZCashConfig?) : Parcelable
+    data class Result(val config: BirthdayHeightConfig?) : Parcelable
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ZcashConfigureScreen(
+fun BirthdayHeightConfigScreen(
+    blockchainType: BlockchainType,
     onCloseClick: () -> Unit,
-    onCloseWithResult: (ZCashConfig) -> Unit,
-    viewModel: ZcashConfigureViewModel = viewModel()
+    onCloseWithResult: (BirthdayHeightConfig) -> Unit,
+    viewModel: BirthdayHeightConfigViewModel = viewModel()
 ) {
     var showSlowSyncWarning by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -183,7 +190,7 @@ fun ZcashConfigureScreen(
         Scaffold(
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.background,
-            topBar = { ZcashAppBar(onCloseClick = onCloseClick) }
+            topBar = { ConfigureAppBar(blockchainType, onCloseClick) }
         ) {
             Column(modifier = Modifier.padding(it)) {
                 Column(
@@ -312,7 +319,8 @@ private fun OptionCell(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ZcashAppBar(
+fun ConfigureAppBar(
+    blockchainType: BlockchainType,
     onCloseClick: () -> Unit,
 ) {
     AppBar(
@@ -323,13 +331,13 @@ fun ZcashAppBar(
                         .padding(end = 16.dp)
                         .size(24.dp),
                     painter = rememberAsyncImagePainter(
-                        model = BlockchainType.Zcash.imageUrl,
+                        model = blockchainType.imageUrl,
                         error = painterResource(R.drawable.ic_platform_placeholder_32)
                     ),
                     contentDescription = null
                 )
                 title3_leah(
-                    text = stringResource(R.string.Restore_ZCash),
+                    text = blockchainType.title,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -392,8 +400,8 @@ private fun BirthdayHeightInput(
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .border(0.5.dp, ComposeAppTheme.colors.blade, RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(16.dp))
+            .border(0.5.dp, ComposeAppTheme.colors.blade, RoundedCornerShape(16.dp))
             .background(ComposeAppTheme.colors.lawrence)
             .height(44.dp)
             .padding(horizontal = 16.dp),
@@ -433,8 +441,8 @@ private fun BirthdayHeightInput(
 
 @Preview
 @Composable
-private fun Preview_ZcashConfigure() {
+private fun Preview_BirthdayHeightConfig() {
     ComposeAppTheme(darkTheme = false) {
-        ZcashConfigureScreen({}, {})
+        BirthdayHeightConfigScreen(BlockchainType.Zcash, {}, {})
     }
 }

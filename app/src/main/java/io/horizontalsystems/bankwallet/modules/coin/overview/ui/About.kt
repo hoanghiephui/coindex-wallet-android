@@ -42,7 +42,7 @@ fun About(text: String) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(16.dp)
         ) {
             DescriptionMarkdown(
                 text = text,

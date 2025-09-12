@@ -41,7 +41,7 @@ fun CellMultilineLawrenceSection(
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(16.dp))
     ) {
         composableItems.forEachIndexed { index, composable ->
             CellMultilineLawrence(borderTop = index != 0) {
@@ -66,7 +66,7 @@ fun <T> CellMultilineLawrenceSection(
     Card(
         modifier = Modifier
             .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(16.dp)
     ) {
         items.forEachIndexed { index, marketDataLine ->
             CellMultilineLawrence(borderTop = index != 0) {
@@ -107,7 +107,7 @@ fun <T> CellSingleLineLawrenceSection(
     Card(
         modifier = Modifier
             .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(16.dp)
     ) {
         items.forEachIndexed { index, marketDataLine ->
             CellSingleLineLawrence(borderTop = index != 0) {
@@ -132,7 +132,7 @@ fun CellSingleLineLawrenceSection(
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(16.dp))
     ) {
         composableItems.forEachIndexed { index, composable ->
             CellSingleLineLawrence(borderTop = index != 0) {
@@ -150,7 +150,7 @@ fun HSSectionRounded(
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .clip(RoundedCornerShape(12.dp)),
+            .clip(RoundedCornerShape(16.dp)),
     ) {
         content()
     }
@@ -333,7 +333,7 @@ fun CellFooterPreview() {
 @Composable
 fun RowUniversal(
     modifier: Modifier = Modifier,
-    verticalPadding: Dp = 12.dp,
+    verticalPadding: Dp = 16.dp,
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     onClick: (() -> Unit)? = null,
     content: @Composable RowScope.() -> Unit,
@@ -371,7 +371,7 @@ fun CellUniversalLawrenceSection(
     Card(
         modifier = Modifier
             .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(16.dp)
     ) {
         composableItems.forEachIndexed { index, composable ->
             SectionUniversalItem(
@@ -390,7 +390,7 @@ fun <T> CellUniversalLawrenceSection(
     itemContent: @Composable (T) -> Unit
 ) {
     val frameModifier = if (showFrame) {
-        Modifier.border(0.5.dp, ComposeAppTheme.colors.blade, RoundedCornerShape(12.dp))
+        Modifier.border(0.5.dp, ComposeAppTheme.colors.blade, RoundedCornerShape(16.dp))
     } else {
         Modifier
     }
@@ -399,7 +399,7 @@ fun <T> CellUniversalLawrenceSection(
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .then(frameModifier),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(16.dp)
     ) {
         items.forEachIndexed { index, itemData ->
             SectionUniversalItem(
@@ -417,7 +417,7 @@ fun CellUniversalLawrenceSection(
     content: @Composable () -> Unit
 ) {
     val frameModifier = if (showFrame) {
-        Modifier.border(0.5.dp, ComposeAppTheme.colors.blade, RoundedCornerShape(12.dp))
+        Modifier.border(0.5.dp, ComposeAppTheme.colors.blade, RoundedCornerShape(16.dp))
     } else {
         Modifier
     }
@@ -425,7 +425,7 @@ fun CellUniversalLawrenceSection(
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(16.dp))
             .background(ComposeAppTheme.colors.lawrence)
             .then(frameModifier)
     ) {
@@ -443,7 +443,7 @@ fun <T> CellUniversalLawrenceSection(
     itemContent: @Composable (T) -> Unit
 ) {
     val frameModifier = if (showFrame) {
-        Modifier.border(0.5.dp, ComposeAppTheme.colors.blade, RoundedCornerShape(12.dp))
+        Modifier.border(0.5.dp, ComposeAppTheme.colors.blade, RoundedCornerShape(16.dp))
     } else {
         Modifier
     }
@@ -452,7 +452,7 @@ fun <T> CellUniversalLawrenceSection(
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .then(frameModifier),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(16.dp)
     ) {
         val size = items.size
         items.subList(0, limit.coerceAtMost(size)).forEachIndexed { index, itemData ->

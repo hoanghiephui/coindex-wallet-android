@@ -3,6 +3,7 @@ package io.horizontalsystems.bankwallet.modules.multiswap
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +22,8 @@ import io.horizontalsystems.bankwallet.core.imageUrl
 import io.horizontalsystems.bankwallet.ui.compose.components.B2
 import io.horizontalsystems.bankwallet.ui.compose.components.Badge
 import io.horizontalsystems.bankwallet.ui.compose.components.D1
+import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsImage
 import io.horizontalsystems.bankwallet.ui.compose.components.MultitextM1
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
@@ -42,9 +45,12 @@ fun SelectSwapCoinDialogScreen(
         hint = stringResource(R.string.ManageCoins_Search),
         navigationAction = onClose,
         content = {
-            LazyColumn {
+            LazyColumn(modifier = Modifier.imePadding()) {
+            item {
+                HsDivider()
+            }
                 items(coinBalanceItems) { coinItem ->
-                    SectionUniversalItem(borderTop = true) {
+                    SectionUniversalItem(borderBottom = true) {
                         RowUniversal(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -61,7 +67,7 @@ fun SelectSwapCoinDialogScreen(
                             )
                             Spacer(modifier = Modifier.size(16.dp))
                             MultitextM1(
-                                title = {
+                                modifier = Modifier.weight(1f),title = {
                                     Row {
                                         B2(text = coinItem.token.coin.code)
                                         coinItem.token.badge?.let {
@@ -71,7 +77,7 @@ fun SelectSwapCoinDialogScreen(
                                 },
                                 subtitle = { D1(text = coinItem.token.coin.name) }
                             )
-                            Spacer(modifier = Modifier.weight(1f))
+                            HSpacer(8.dp)
                             MultitextM1(
                                 title = {
                                     coinItem.balance?.let {

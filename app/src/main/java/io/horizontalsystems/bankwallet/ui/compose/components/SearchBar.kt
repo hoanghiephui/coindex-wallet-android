@@ -4,11 +4,18 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -41,6 +48,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.ui.compose.ColoredTextStyle
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 
@@ -188,7 +196,7 @@ fun SearchBar(
                 }
             }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
+                    painter = painterResource(id = R.drawable.ic_arrow_left_24),
                     contentDescription = stringResource(R.string.Button_Back),
                 )
             }
@@ -283,6 +291,60 @@ fun SearchBar(
                     }
                 }
             }
-        })
+        }
+    )
+}
 
+@Composable
+fun SearchCell(
+    modifier: Modifier = Modifier,
+    onSearchQueryChange: (String) -> Unit = {},
+    placeholder: String = stringResource(R.string.Balance_ReceiveHint_Search),
+    onSearchClick: () -> Unit = {}
+) {
+    var searchText by remember { mutableStateOf("") }
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp)
+            .background(
+                color = ComposeAppTheme.colors.blade,
+                shape = RoundedCornerShape(24.dp)
+            )
+            .clickable { onSearchClick() }
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_search),
+            contentDescription = "Search",
+            tint = ComposeAppTheme.colors.grey,
+        )
+
+        HSpacer(16.dp)
+
+        BasicTextField(
+            value = searchText,
+            onValueChange = {
+                searchText = it
+                onSearchQueryChange.invoke(it)
+            },
+            modifier = Modifier.weight(1f),
+            textStyle = ColoredTextStyle(
+                color = ComposeAppTheme.colors.leah,
+                textStyle = ComposeAppTheme.typography.body
+            ),
+            singleLine = true,
+            decorationBox = { innerTextField ->
+                if (searchText.isEmpty()) {
+                    body_andy(
+                        text = placeholder,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                innerTextField()
+            }
+        )
+    }
 }

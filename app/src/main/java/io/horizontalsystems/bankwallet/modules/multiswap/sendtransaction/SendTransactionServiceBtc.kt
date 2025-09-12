@@ -52,7 +52,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
-class SendTransactionServiceBtc(private val token: Token) : AbstractSendTransactionService() {
+class SendTransactionServiceBtc(private val token: Token) : AbstractSendTransactionService(true) {
     private val adapter = App.adapterManager.getAdapterForToken<ISendBitcoinAdapter>(token)!!
     private val provider = FeeRateProviderFactory.provider(token.blockchainType)!!
     private val feeService = SendBitcoinFeeService(adapter)
@@ -152,7 +152,7 @@ class SendTransactionServiceBtc(private val token: Token) : AbstractSendTransact
         extraFees = extraFees
     )
 
-    override fun setSendTransactionData(data: SendTransactionData) {
+    override suspend fun setSendTransactionData(data: SendTransactionData) {
         check(data is SendTransactionData.Btc)
 
         memo = data.memo
@@ -187,7 +187,7 @@ class SendTransactionServiceBtc(private val token: Token) : AbstractSendTransact
         SendBtcFeeSettingsScreen(navController, sendSettingsViewModel)
     }
 
-    override suspend fun sendTransaction(): SendTransactionResult.Btc {
+    override suspend fun sendTransaction(mevProtectionEnabled: Boolean): SendTransactionResult.Btc {
         val transactionRecord = adapter.send(
             amount = amountState.amount!!,
             address = addressState.validAddress?.hex!!,
@@ -225,7 +225,7 @@ fun SendBtcFeeSettingsScreen(
             navigationIcon = {
                 HsIconButton(onClick = { navController.popBackStack() }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_back),
+                        painter = painterResource(id = R.drawable.ic_arrow_left_24),
                         contentDescription = "back button",
                         tint = ComposeAppTheme.colors.jacob
                     )

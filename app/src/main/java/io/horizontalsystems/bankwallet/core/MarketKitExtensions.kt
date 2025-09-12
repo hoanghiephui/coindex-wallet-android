@@ -56,7 +56,12 @@ val Token.swappable: Boolean
         BlockchainType.ArbitrumOne,
         BlockchainType.Bitcoin,
         BlockchainType.BitcoinCash,
-        BlockchainType.Litecoin -> true
+        BlockchainType.Litecoin,
+        BlockchainType.Stellar,
+        BlockchainType.Solana,
+        BlockchainType.Tron,
+            -> true
+
         else -> false
     }
 
@@ -156,6 +161,9 @@ val TokenQuery.isSupported: Boolean
         BlockchainType.Stellar -> {
             tokenType is TokenType.Native || tokenType is TokenType.Asset
         }
+        BlockchainType.Monero -> {
+            tokenType is TokenType.Native
+        }
         is BlockchainType.Unsupported -> false
     }
 
@@ -181,6 +189,7 @@ val Blockchain.description: String
         BlockchainType.Tron -> "TRX, TRC20 tokens"
         BlockchainType.Ton -> "TON"
         BlockchainType.Stellar -> "XLM, Stellar assets"
+        BlockchainType.Monero -> "XMR"
         else -> ""
     }
 
@@ -194,6 +203,7 @@ val BlockchainType.imageUrl: String
 
 val BlockchainType.restoreSettingTypes: List<RestoreSettingType>
     get() = when (this) {
+        BlockchainType.Monero,
         BlockchainType.Zcash -> listOf(RestoreSettingType.BirthdayHeight)
         else -> listOf()
     }
@@ -203,8 +213,10 @@ private val blockchainOrderMap: Map<BlockchainType, Int> by lazy {
     listOf(
         BlockchainType.Bitcoin,
         BlockchainType.Ethereum,
-        BlockchainType.Tron,
         BlockchainType.BinanceSmartChain,
+        BlockchainType.Litecoin,
+        BlockchainType.Monero,
+        BlockchainType.Tron,
         BlockchainType.Polygon,
         BlockchainType.Stellar,
         BlockchainType.ArbitrumOne,
@@ -216,7 +228,6 @@ private val blockchainOrderMap: Map<BlockchainType, Int> by lazy {
         BlockchainType.ZkSync,
         BlockchainType.Ton,
         BlockchainType.Gnosis,
-        BlockchainType.Litecoin,
         BlockchainType.BitcoinCash,
         BlockchainType.Dash,
         BlockchainType.Fantom,
@@ -270,6 +281,7 @@ val BlockchainType.title: String
     BlockchainType.Tron -> "Tron"
     BlockchainType.Ton -> "Ton"
     BlockchainType.Stellar -> "Stellar"
+    BlockchainType.Monero -> "Monero"
     is BlockchainType.Unsupported -> this.uid
 }
 
@@ -300,6 +312,35 @@ val BlockchainType.feePriceScale: FeePriceScale
     get() = when (this) {
         BlockchainType.Avalanche -> FeePriceScale.Navax
         else -> FeePriceScale.Gwei
+    }
+
+val BlockchainType.isEvm: Boolean
+    get() = when (this) {
+        BlockchainType.ArbitrumOne,
+        BlockchainType.Avalanche,
+        BlockchainType.Base,
+        BlockchainType.BinanceSmartChain,
+        BlockchainType.Ethereum,
+        BlockchainType.Fantom,
+        BlockchainType.Gnosis,
+        BlockchainType.Optimism,
+        BlockchainType.Polygon,
+        BlockchainType.ZkSync,
+            -> true
+
+        BlockchainType.Bitcoin,
+        BlockchainType.BitcoinCash,
+        BlockchainType.Dash,
+        BlockchainType.ECash,
+        BlockchainType.Litecoin,
+        BlockchainType.Solana,
+        BlockchainType.Stellar,
+        BlockchainType.Ton,
+        BlockchainType.Tron,
+        is BlockchainType.Unsupported,
+        BlockchainType.Zcash,
+        BlockchainType.Monero,
+            -> false
     }
 
 fun BlockchainType.supports(accountType: AccountType): Boolean {
@@ -591,6 +632,7 @@ val BlockchainType.Companion.supported: List<BlockchainType>
         BlockchainType.Tron,
         BlockchainType.Ton,
         BlockchainType.Stellar,
+        BlockchainType.Monero,
     )
 
 val CoinPrice.diff: BigDecimal?

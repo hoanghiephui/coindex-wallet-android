@@ -29,8 +29,8 @@ android {
         compileSdk compile_sdk_version
         minSdkVersion min_sdk_version
         targetSdkVersion compile_sdk_version
-        versionCode 138
-        versionName "0.43.2"
+        versionCode 141
+        versionName "0.44.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ['de', 'es', 'en', 'fa', 'fr', 'ko', 'pt', 'pt-rBR', 'ru', 'tr', 'zh']
 
@@ -351,15 +351,19 @@ dependencies {
     //appcenterdebugImplementation leakCanary
     //debugImplementation leakCanary
 
+    //Logging
+    implementation "com.jakewharton.timber:timber:5.0.1"
+
     // Wallet kits
-    implementation 'com.github.horizontalsystems:stellar-kit-android:c27e3a5'
+    implementation 'com.github.horizontalsystems:monero-kit-android:9b57b9f'
+    implementation 'com.github.horizontalsystems:stellar-kit-android:519533b'
     implementation 'com.github.horizontalsystems:ton-kit-android:dcddd90'
-    implementation 'com.github.horizontalsystems:bitcoin-kit-android:7826bf5'
-    implementation 'com.github.horizontalsystems:ethereum-kit-android:1.2.0'
+    implementation 'com.github.horizontalsystems:bitcoin-kit-android:5d94bfe'
+    implementation 'com.github.horizontalsystems:ethereum-kit-android:3b88c12'
     implementation 'com.github.horizontalsystems:blockchain-fee-rate-kit-android:1d3bd49'
-    implementation 'com.github.horizontalsystems:market-kit-android:f1286c8'
-    implementation 'com.github.horizontalsystems:solana-kit-android:ce738d8'
-    implementation 'com.github.horizontalsystems:tron-kit-android:bdd7602'
+    implementation 'com.github.horizontalsystems:market-kit-android:ef89ba0'
+    implementation 'com.github.horizontalsystems:solana-kit-android:eae6858'
+    implementation 'com.github.horizontalsystems:tron-kit-android:16ae04a'
     // Zcash SDK
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
     implementation "cash.z.ecc.android:zcash-android-sdk:2.2.12"
@@ -453,11 +457,11 @@ dependencies {
     testRuntimeOnly "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     //Android Tor
-    implementation 'info.guardianproject:tor-android:0.4.8.12'
+    implementation 'info.guardianproject:tor-android:0.4.8.17'
     implementation 'info.guardianproject:jtorctl:0.4.5.7'
 
     api 'com.jaredrummler:android-shell:1.0.0'
-    api 'com.offbynull.portmapper:portmapper:2.0.5'
+    api 'com.offbynull.portmapper:portmapper:2.0.6'
     implementation("com.applovin:applovin-sdk:13.3.1")
     //implementation 'com.applovin.mediation:bytedance-adapter:7.3.0.3.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
@@ -481,5 +485,7 @@ dependencies {
 }
 
 configurations.configureEach {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy {
+        cacheChangingModulesFor 0, 'seconds'
+    }
 }

@@ -1,22 +1,19 @@
 package io.horizontalsystems.bankwallet.modules.balance.ui
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,7 +22,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -33,59 +29,45 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.Caution
-import io.horizontalsystems.bankwallet.analytics.TrackScreenViewEvent
 import io.horizontalsystems.bankwallet.core.providers.Translator
 import io.horizontalsystems.bankwallet.core.slideFromBottom
-import io.horizontalsystems.bankwallet.core.stats.StatEntity
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.core.utils.ModuleField
-import io.horizontalsystems.bankwallet.entities.Account
 import io.horizontalsystems.bankwallet.entities.ViewState
 import io.horizontalsystems.bankwallet.modules.backupalert.BackupAlert
 import io.horizontalsystems.bankwallet.modules.balance.AccountViewItem
 import io.horizontalsystems.bankwallet.modules.balance.BalanceModule
 import io.horizontalsystems.bankwallet.modules.balance.BalanceViewModel
 import io.horizontalsystems.bankwallet.modules.contacts.screen.ConfirmationBottomSheet
-import io.horizontalsystems.bankwallet.modules.main.MainViewModel
 import io.horizontalsystems.bankwallet.modules.manageaccount.dialogs.BackupRequiredDialog
 import io.horizontalsystems.bankwallet.modules.manageaccounts.ManageAccountsModule
 import io.horizontalsystems.bankwallet.modules.qrscanner.QRScannerActivity
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCAccountTypeNotSupportedDialog
 import io.horizontalsystems.bankwallet.modules.walletconnect.WCManager
 import io.horizontalsystems.bankwallet.modules.walletconnect.list.WalletConnectListViewModel
-import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
-import io.horizontalsystems.bankwallet.ui.compose.components.title3_leah
-import io.horizontalsystems.bankwallet.ui.extensions.WalletSwitchBottomSheet
 import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BalanceForAccount(
-    navController: NavController, accountViewItem: AccountViewItem,
-    mainViewModel: MainViewModel,
-) {
+fun BalanceForAccount(navController: NavController, accountViewItem: AccountViewItem) {
     val viewModel = viewModel<BalanceViewModel>(factory = BalanceModule.Factory())
-    var showSwitchWalletBottomSheet by remember { mutableStateOf(false) }
-    var showInvalidUrlBottomSheet by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
-    val invalidUrlBottomSheetState = androidx.compose.material3.rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val modalBottomSheetState = androidx.compose.material3.rememberModalBottomSheetState()
+    var isBottomSheetVisible by remember { mutableStateOf(false) }
+
     val coroutineScope = rememberCoroutineScope()
     val qrScannerLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -101,18 +83,14 @@ fun BalanceForAccount(
         HudHelper.showErrorMessage(view, text = message)
         viewModel.errorShown()
     }
-    val (adState, reloadAd) = rememberAdNativeView(
-        BuildConfig.HOME_MARKET_NATIVE,
-        adPlacements = "BalanceForAccount", viewModel
-    )
 
     when (viewModel.connectionResult) {
         WalletConnectListViewModel.ConnectionResult.Error -> {
             LaunchedEffect(viewModel.connectionResult) {
                 coroutineScope.launch {
                     delay(300)
-                    showInvalidUrlBottomSheet = true
-                    invalidUrlBottomSheetState.show()
+                    modalBottomSheetState.show()
+                    isBottomSheetVisible = true
                 }
             }
             viewModel.onHandleRoute()
@@ -123,70 +101,46 @@ fun BalanceForAccount(
 
 
     BackupAlert(navController)
-
     Scaffold(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.background,
         topBar = {
             AppBar(
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent,
-                ),
-                title = {
-                    BalanceTitleRow(navController, accountViewItem.name)
-                },
+                title = accountViewItem.name,
                 menuItems = buildList {
-                    if (accountViewItem.type.supportsWalletConnect) {
+                    if (!viewModel.uiState.balanceTabButtonsEnabled && !accountViewItem.isWatchAccount) {
                         add(
                             MenuItem(
                                 title = TranslatableString.ResString(R.string.WalletConnect_NewConnect),
                                 icon = R.drawable.ic_qr_scan_20,
                                 onClick = {
-                                    when (val state =
-                                        viewModel.getWalletConnectSupportState()) {
-                                        WCManager.SupportState.Supported -> {
-                                            qrScannerLauncher.launch(
-                                                QRScannerActivity.getScanQrIntent(
-                                                    context,
-                                                    true
-                                                )
-                                            )
-
-                                            stat(
-                                                page = StatPage.Balance,
-                                                event = StatEvent.Open(StatPage.ScanQrCode)
-                                            )
-                                        }
-
-                                        WCManager.SupportState.NotSupportedDueToNoActiveAccount -> {
-                                            navController.slideFromBottom(R.id.wcErrorNoAccountFragment)
-                                        }
-
-                                        is WCManager.SupportState.NotSupportedDueToNonBackedUpAccount -> {
-                                            val text =
-                                                Translator.getString(R.string.WalletConnect_Error_NeedBackup)
-                                            navController.slideFromBottom(
-                                                R.id.backupRequiredDialog,
-                                                BackupRequiredDialog.Input(state.account, text)
-                                            )
-
-                                            stat(
-                                                page = StatPage.Balance,
-                                                event = StatEvent.Open(StatPage.BackupRequired)
-                                            )
-                                        }
-
-                                        is WCManager.SupportState.NotSupported -> {
-                                            navController.slideFromBottom(
-                                                R.id.wcAccountTypeNotSupportedDialog,
-                                                WCAccountTypeNotSupportedDialog.Input(state.accountTypeDescription)
-                                            )
-                                        }
-                                    }
+                                    onScanClick(
+                                        viewModel,
+                                        qrScannerLauncher,
+                                        context,
+                                        navController
+                                    )
                                 }
                             )
                         )
                     }
+                    add(
+                        MenuItem(
+                            title = TranslatableString.ResString(R.string.ManageAccounts_Title),
+                            icon = R.drawable.ic_wallet_switch_24,
+                            onClick = {
+                                navController.slideFromBottom(
+                                    R.id.manageAccountsFragment,
+                                    ManageAccountsModule.Mode.Switcher
+                                )
+
+                                stat(
+                                    page = StatPage.Balance,
+                                    event = StatEvent.Open(StatPage.ManageWallets)
+                                )
+                            }
+                        )
+                    )
                 }
             )
         }
@@ -196,7 +150,7 @@ fun BalanceForAccount(
         Crossfade(
             targetState = uiState.viewState,
             modifier = Modifier
-                .padding(paddingValues)
+                .padding(top = paddingValues.calculateTopPadding())
                 .fillMaxSize(),
             label = ""
         ) { viewState ->
@@ -210,11 +164,9 @@ fun BalanceForAccount(
                         navController,
                         uiState,
                         viewModel.totalUiState,
-                        adState,
-                        onClickSwitchWallet = {
-                            showSwitchWalletBottomSheet = true
-                        }
-                    )
+                    ) {
+                        onScanClick(viewModel, qrScannerLauncher, context, navController)
+                    }
                 }
 
                 ViewState.Loading,
@@ -224,32 +176,12 @@ fun BalanceForAccount(
             }
         }
     }
-
-
-    if (showSwitchWalletBottomSheet) {
-        SwitchWalletBottomSheet(
-            wallets = mainViewModel.wallets,
-            watchingAddresses = mainViewModel.watchWallets,
-            selectedAccount = mainViewModel.uiState.activeWallet,
-            hideBottomSheet = { showSwitchWalletBottomSheet = false },
-            bottomSheetState = androidx.compose.material3.rememberModalBottomSheetState(
-                skipPartiallyExpanded = true
-            ),
-            onSelect = {
-                mainViewModel.onSelect(it)
-                showSwitchWalletBottomSheet = false
-            }
-        )
-    }
-
-    if (showInvalidUrlBottomSheet) {
+    if (isBottomSheetVisible) {
         ModalBottomSheet(
             onDismissRequest = {
-                coroutineScope.launch {
-                    invalidUrlBottomSheetState.hide()
-                }
+                isBottomSheetVisible = false
             },
-            sheetState = invalidUrlBottomSheetState,
+            sheetState = modalBottomSheetState,
             containerColor = ComposeAppTheme.colors.transparent
         ) {
             ConfirmationBottomSheet(
@@ -262,90 +194,64 @@ fun BalanceForAccount(
                 cancelText = stringResource(R.string.Button_Cancel),
                 onConfirm = {
                     coroutineScope.launch {
-                        invalidUrlBottomSheetState.hide()
+                        modalBottomSheetState.hide()
+                        isBottomSheetVisible = false
                         qrScannerLauncher.launch(QRScannerActivity.getScanQrIntent(context, true))
                     }
-                    showInvalidUrlBottomSheet = false
                 },
                 onClose = {
-                    coroutineScope.launch { invalidUrlBottomSheetState.hide() }
-                    showInvalidUrlBottomSheet = false
+                    coroutineScope.launch {
+                        modalBottomSheetState.hide()
+                        isBottomSheetVisible = false
+                    }
                 }
             )
         }
     }
-    TrackScreenViewEvent("BalanceForAccount")
 }
 
-@Composable
-fun BalanceTitleRow(
-    navController: NavController,
-    title: String
+private fun onScanClick(
+    viewModel: BalanceViewModel,
+    qrScannerLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    context: Context,
+    navController: NavController
 ) {
-    Row(
-        modifier = Modifier
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                navController.slideFromBottom(
-                    R.id.manageAccountsFragment,
-                    ManageAccountsModule.Mode.Switcher
-                )
+    when (val state =
+        viewModel.getWalletConnectSupportState()) {
+        WCManager.SupportState.Supported -> {
+            qrScannerLauncher.launch(
+                QRScannerActivity.getScanQrIntent(context, true)
+            )
 
-                stat(page = StatPage.Balance, event = StatEvent.Open(StatPage.ManageWallets))
-            },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        title3_leah(
-            text = title,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(weight = 1f, fill = false)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Icon(
-            painter = painterResource(id = R.drawable.ic_down_24),
-            contentDescription = null,
-            tint = ComposeAppTheme.colors.grey
-        )
-    }
-}
+            stat(
+                page = StatPage.Balance,
+                event = StatEvent.Open(StatPage.ScanQrCode)
+            )
+        }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SwitchWalletBottomSheet(
-    wallets: List<Account>,
-    watchingAddresses: List<Account>,
-    selectedAccount: Account?,
-    hideBottomSheet: () -> Unit,
-    bottomSheetState: SheetState,
-    onSelect: (Account) -> Unit,
-) {
-    val coroutineScope = rememberCoroutineScope()
-    ModalBottomSheet(
-        onDismissRequest = hideBottomSheet,
-        sheetState = bottomSheetState,
-        containerColor = ComposeAppTheme.colors.transparent
-    ) {
-        WalletSwitchBottomSheet(
-            wallets = wallets,
-            watchingAddresses = watchingAddresses,
-            selectedAccount = selectedAccount,
-            onSelectListener = {
-                hideBottomSheet()
-                onSelect(it)
-                coroutineScope.launch {
-                    bottomSheetState.hide()
-                }
-                stat(page = StatPage.SwitchWallet, event = StatEvent.Select(StatEntity.Wallet))
-            },
-            onCancelClick = {
-                hideBottomSheet()
-                coroutineScope.launch {
-                    bottomSheetState.hide()
-                }
-            }
-        )
+        WCManager.SupportState.NotSupportedDueToNoActiveAccount -> {
+            navController.slideFromBottom(R.id.wcErrorNoAccountFragment)
+        }
+
+        is WCManager.SupportState.NotSupportedDueToNonBackedUpAccount -> {
+            val text =
+                Translator.getString(R.string.WalletConnect_Error_NeedBackup)
+            navController.slideFromBottom(
+                R.id.backupRequiredDialog,
+                BackupRequiredDialog.Input(state.account, text)
+            )
+
+            stat(
+                page = StatPage.Balance,
+                event = StatEvent.Open(StatPage.BackupRequired)
+            )
+        }
+
+        is WCManager.SupportState.NotSupported -> {
+            navController.slideFromBottom(
+                R.id.wcAccountTypeNotSupportedDialog,
+                WCAccountTypeNotSupportedDialog.Input(state.accountTypeDescription)
+            )
+        }
     }
 }

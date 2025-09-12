@@ -66,14 +66,13 @@ import io.horizontalsystems.bankwallet.modules.enablecoin.restoresettings.Restor
 import io.horizontalsystems.bankwallet.modules.managewallets.ManageWalletsModule
 import io.horizontalsystems.bankwallet.modules.managewallets.ManageWalletsViewModel
 import io.horizontalsystems.bankwallet.modules.markdown.MarkdownFragment
-import io.horizontalsystems.bankwallet.modules.zcashconfigure.ZcashConfigure
+import io.horizontalsystems.bankwallet.modules.restoreconfig.BirthdayHeightConfig
 import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ChartBinance
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.HSSwipeRefresh
 import io.horizontalsystems.bankwallet.ui.compose.ListenerChart
 import io.horizontalsystems.bankwallet.ui.compose.TitlePrice
-import io.horizontalsystems.bankwallet.ui.compose.animations.CrossSlide
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryCircle
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryDefault
 import io.horizontalsystems.bankwallet.ui.compose.components.CellFooter
@@ -154,10 +153,10 @@ fun CoinOverviewScreen(
     val manageWalletsViewModel = viewModel<ManageWalletsViewModel>(factory = vmFactory1)
     val restoreSettingsViewModel = viewModel<RestoreSettingsViewModel>(factory = vmFactory1)
 
-    if (restoreSettingsViewModel.openZcashConfigure != null) {
-        restoreSettingsViewModel.zcashConfigureOpened()
+    if (restoreSettingsViewModel.openBirthdayHeightConfig != null) {
+        restoreSettingsViewModel.birthdayHeightConfigOpened()
 
-        navController.slideFromBottomForResult<ZcashConfigure.Result>(R.id.zcashConfigure) {
+        navController.slideFromBottomForResult<BirthdayHeightConfig.Result>(R.id.zcashConfigure) {
             if (it.config != null) {
                 restoreSettingsViewModel.onEnter(it.config)
             } else {
@@ -222,7 +221,6 @@ fun CoinOverviewScreen(
                                 CellUniversalLawrenceSection {
                                     RowUniversal(
                                         modifier = Modifier
-                                            .height(52.dp)
                                             .fillMaxWidth()
                                             .padding(horizontal = 16.dp),
                                     ) {
@@ -263,7 +261,7 @@ fun CoinOverviewScreen(
                                                     })
                                                 } else {
                                                     ButtonSecondaryDefault(
-                                                        title = stringResource(id = R.string.Button_Show),
+                                                        modifier = Modifier.height(28.dp),title = stringResource(id = R.string.Button_Show),
                                                         onClick = {
                                                             viewModel.enableChartIndicators()
                                                             stat(
@@ -276,6 +274,7 @@ fun CoinOverviewScreen(
                                                 HSpacer(width = 8.dp)
                                             }
                                             ButtonSecondaryCircle(
+                                                modifier = Modifier.height(28.dp),
                                                 icon = R.drawable.ic_setting_20
                                             ) {
                                                 navController.slideFromRight(R.id.indicatorsFragment)

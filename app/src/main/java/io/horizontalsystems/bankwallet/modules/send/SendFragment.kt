@@ -15,6 +15,9 @@ import io.horizontalsystems.bankwallet.modules.send.bitcoin.SendBitcoinModule
 import io.horizontalsystems.bankwallet.modules.send.bitcoin.SendBitcoinNavHost
 import io.horizontalsystems.bankwallet.modules.send.bitcoin.SendBitcoinViewModel
 import io.horizontalsystems.bankwallet.modules.send.evm.SendEvmScreen
+import io.horizontalsystems.bankwallet.modules.send.monero.SendMoneroModule
+import io.horizontalsystems.bankwallet.modules.send.monero.SendMoneroScreen
+import io.horizontalsystems.bankwallet.modules.send.monero.SendMoneroViewModel
 import io.horizontalsystems.bankwallet.modules.send.solana.SendSolanaModule
 import io.horizontalsystems.bankwallet.modules.send.solana.SendSolanaScreen
 import io.horizontalsystems.bankwallet.modules.send.solana.SendSolanaViewModel
@@ -155,19 +158,34 @@ class SendFragment : BaseComposeFragment() {
                 )
             }
 
-            BlockchainType.Stellar -> {
-                val factory = SendStellarModule.Factory(wallet, address, hideAddress)
-                val sendStellarViewModel by navGraphViewModels<SendStellarViewModel>(R.id.sendXFragment) { factory }
-                SendStellarScreen(
-                    title,
-                    findNavController(),
-                    sendStellarViewModel,
-                    amountInputModeViewModel,
-                    sendEntryPointDestId,
-                    amount,
-                    riskyAddress = riskyAddress
-                )
-            }
+                    BlockchainType.Stellar -> {
+                        val factory = SendStellarModule.Factory(wallet, address, hideAddress)
+                        val sendStellarViewModel by navGraphViewModels<SendStellarViewModel>(R.id.sendXFragment) { factory }
+                        SendStellarScreen(
+                            title,
+                            findNavController(),
+                            sendStellarViewModel,
+                            amountInputModeViewModel,
+                            sendEntryPointDestId,
+                            amount,
+                            riskyAddress = riskyAddress
+                        )
+                    }
+
+                    BlockchainType.Monero -> {
+                        val factory = SendMoneroModule.Factory(wallet, address, hideAddress)
+                        val sendMoneroViewModel by navGraphViewModels<SendMoneroViewModel>(R.id.sendXFragment) { factory }
+                        SendMoneroScreen(
+                            title,
+                            findNavController(),
+                            sendMoneroViewModel,
+                            amountInputModeViewModel,
+                            sendEntryPointDestId,
+                            amount,
+                            riskyAddress = riskyAddress
+                        )
+                    }
+
 
             else -> {}
         }

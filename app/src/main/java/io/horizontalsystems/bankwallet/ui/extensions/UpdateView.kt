@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,7 +36,8 @@ import se.warting.inappupdate.compose.findActivity
 fun HeaderUpdate(
     updateState: InAppUpdateState,
     context: Context,
-    sheetState: ModalBottomSheetState,
+    onShow: () -> Unit,
+    onHide: () -> Unit,
     rememberCoroutineScope: CoroutineScope
 ) {
     BottomSheetHeader(
@@ -47,9 +46,7 @@ fun HeaderUpdate(
         iconTint = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
         title = "Software update",
         onCloseClick = {
-            rememberCoroutineScope.launch {
-                sheetState.hide()
-            }
+            onHide()
         }
     ) {
         when (val result = updateState.appUpdateResult) {
@@ -72,14 +69,14 @@ fun HeaderUpdate(
                             result.startFlexibleUpdate(
                                 context.findActivity(), APP_UPDATE_REQUEST_CODE
                             )
-                            sheetState.hide()
                         }
+                        onHide()
                     }
                 )
 
                 Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
                 LaunchedEffect(key1 = Unit, block = {
-                    sheetState.show()
+                    onShow()
                 })
             }
 
@@ -120,7 +117,7 @@ fun HeaderUpdate(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 LaunchedEffect(key1 = Unit, block = {
-                    sheetState.show()
+                    onShow()
                 })
             }
 
@@ -139,19 +136,19 @@ fun HeaderUpdate(
                     title = stringResource(R.string.install_now),
                     onClick = {
                         rememberCoroutineScope.launch {
-                            sheetState.hide()
+                            onHide()
                             result.completeUpdate()
                         }
                     }
                 )
                 LaunchedEffect(key1 = Unit, block = {
-                    sheetState.show()
+                    onShow()
                 })
             }
 
             else -> {
                 LaunchedEffect(key1 = Unit, block = {
-                    sheetState.hide()
+                    onHide()
                 })
             }
         }

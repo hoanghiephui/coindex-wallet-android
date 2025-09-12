@@ -69,6 +69,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.TextImportantError
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
+import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_lucian
@@ -270,11 +271,11 @@ fun AddressCheck(
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 16.dp)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .border(
                     0.5.dp,
                     ComposeAppTheme.colors.blade,
-                    RoundedCornerShape(12.dp)
+                    RoundedCornerShape(16.dp)
                 )
         ) {
             checkResults.forEach { (addressCheckType, checkData) ->
@@ -398,18 +399,18 @@ fun AddressSuggestions(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .border(
                     0.5.dp,
                     ComposeAppTheme.colors.blade,
-                    RoundedCornerShape(12.dp)
+                    RoundedCornerShape(16.dp)
                 )
                 .clickable {
                     onClick.invoke(recentContact.address)
                 }
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-            body_leah(recentContact.name)
+            headline2_leah(recentContact.name)
             subhead2_grey(recentContact.address.shortAddress)
         }
     } else recent?.let { address ->
@@ -418,11 +419,11 @@ fun AddressSuggestions(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .border(
                     0.5.dp,
                     ComposeAppTheme.colors.blade,
-                    RoundedCornerShape(12.dp)
+                    RoundedCornerShape(16.dp)
                 )
                 .clickable {
                     onClick.invoke(address)
@@ -439,11 +440,11 @@ fun AddressSuggestions(
                 .padding(bottom = 24.dp)
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .border(
                     0.5.dp,
                     ComposeAppTheme.colors.blade,
-                    RoundedCornerShape(12.dp)
+                    RoundedCornerShape(16.dp)
                 )
         ) {
             contacts.forEachIndexed { index, contact ->
@@ -458,7 +459,7 @@ fun AddressSuggestions(
                         }
                         .padding(horizontal = 16.dp, vertical = 12.dp)
                 ) {
-                    body_leah(contact.name)
+                    headline2_leah(contact.name)
                     subhead2_grey(contact.address.shortAddress)
                 }
             }

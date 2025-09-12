@@ -1,22 +1,27 @@
 package io.horizontalsystems.bankwallet.modules.receive.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wallet.blockchain.bitcoin.R
-import io.horizontalsystems.bankwallet.analytics.TrackScreenViewEvent
 import io.horizontalsystems.bankwallet.core.alternativeImageUrl
 import io.horizontalsystems.bankwallet.core.iconPlaceholder
 import io.horizontalsystems.bankwallet.core.imageUrl
@@ -24,15 +29,19 @@ import io.horizontalsystems.bankwallet.entities.Account
 import io.horizontalsystems.bankwallet.entities.Wallet
 import io.horizontalsystems.bankwallet.modules.receive.viewmodels.CoinForReceiveType
 import io.horizontalsystems.bankwallet.modules.receive.viewmodels.ReceiveTokenSelectViewModel
+import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
+import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
+import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsImage
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
-import io.horizontalsystems.bankwallet.ui.compose.components.SearchBar
+import io.horizontalsystems.bankwallet.ui.compose.components.SearchCell
 import io.horizontalsystems.bankwallet.ui.compose.components.SectionUniversalItem
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
-import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
+import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReceiveTokenSelectScreen(
     activeAccount: Account,
@@ -47,62 +56,75 @@ fun ReceiveTokenSelectScreen(
     )
     val fullCoins = viewModel.uiState.fullCoins
     val coroutineScope = rememberCoroutineScope()
-    SearchBar(
-        title = stringResource(R.string.Balance_ReceiveHint_Search),
-        onSearchTextChanged = { text ->
-            viewModel.updateFilter(text)
-        },
-        hint = "",
-        navigationAction = onBackPress,
-        content = {
-            LazyColumn {
-                item {
-                    VSpacer(12.dp)
+
+    Scaffold(
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            AppBar(
+                title = stringResource(id = R.string.Balance_Receive),
+                navigationIcon = {
+                    HsBackButton(onClick = onBackPress)
                 }
-                itemsIndexed(fullCoins) { index, fullCoin ->
-                    val coin = fullCoin.coin
-                    val lastItem = index == fullCoins.size - 1
-                    SectionUniversalItem(borderTop = true, borderBottom = lastItem) {
-                        ReceiveCoin(
-                            coinName = coin.name,
-                            coinCode = coin.code,
-                            coinIconUrl = coin.imageUrl,
-                            alternativeCoinIconUrl = coin.alternativeImageUrl,
+            )
+        }
+    ) { paddingValues ->
+        LazyColumn(
+            contentPadding = paddingValues,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(ComposeAppTheme.colors.lawrence)
+        ) {
+            stickyHeader {
+                SearchCell(
+                    modifier = Modifier
+                        .background(ComposeAppTheme.colors.tyler)
+                        .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 16.dp),
+                    onSearchQueryChange = { text ->
+                        viewModel.updateFilter(text)
+                    }
+                )
+            }
+            items(fullCoins) { fullCoin ->
+                SectionUniversalItem(borderBottom = true) {
+                    ReceiveCoin(
+                        coinName = fullCoin.coin.name,
+                        coinCode = fullCoin.coin.code,
+                        coinIconUrl = fullCoin.coin.imageUrl,
+                        alternativeCoinIconUrl = fullCoin.coin.alternativeImageUrl,
                         coinIconPlaceholder = fullCoin.iconPlaceholder,
-                            onClick = {
-                                coroutineScope.launch {
-                                    when (val coinActiveWalletsType =
-                                        viewModel.getCoinForReceiveType(fullCoin)) {
-                                        CoinForReceiveType.MultipleAddressTypes -> {
-                                            onMultipleAddressesClick.invoke(coin.uid)
-                                        }
-
-                                        CoinForReceiveType.MultipleDerivations -> {
-                                            onMultipleDerivationsClick.invoke(coin.uid)
-                                        }
-
-                                        CoinForReceiveType.MultipleBlockchains -> {
-                                            onMultipleBlockchainsClick.invoke(coin.uid)
-                                        }
-
-                                        is CoinForReceiveType.Single -> {
-                                            onCoinClick.invoke(coinActiveWalletsType.wallet)
-                                        }
-
-                                        else -> Unit
+                        onClick = {
+                            coroutineScope.launch {
+                                when (val coinActiveWalletsType =
+                                    viewModel.getCoinForReceiveType(fullCoin)) {
+                                    CoinForReceiveType.MultipleAddressTypes -> {
+                                        onMultipleAddressesClick.invoke(fullCoin.coin.uid)
                                     }
+
+                                    CoinForReceiveType.MultipleDerivations -> {
+                                        onMultipleDerivationsClick.invoke(fullCoin.coin.uid)
+                                    }
+
+                                    CoinForReceiveType.MultipleBlockchains -> {
+                                        onMultipleBlockchainsClick.invoke(fullCoin.coin.uid)
+                                    }
+
+                                    is CoinForReceiveType.Single -> {
+                                        onCoinClick.invoke(coinActiveWalletsType.wallet)
+                                    }
+
+                                    null -> Unit
                                 }
                             }
-                        )
-                    }
-                }
-                item {
-                    VSpacer(32.dp)
+                        }
+                    )
                 }
             }
+            item {
+                VSpacer(32.dp)
+            }
         }
-    )
-    TrackScreenViewEvent(screenName = "ReceiveTokenSelectScreen")
+    }
 }
 
 @Composable
@@ -132,7 +154,7 @@ fun ReceiveCoin(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                body_leah(
+                headline2_leah(
                     modifier = Modifier
                         .weight(1f)
                         .padding(end = 16.dp),

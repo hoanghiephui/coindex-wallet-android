@@ -1,7 +1,6 @@
 package io.horizontalsystems.bankwallet.modules.balance.ui
 
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,10 +22,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults.iconButtonColors
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -46,14 +42,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.wallet.blockchain.bitcoin.R
-import io.horizontalsystems.bankwallet.AdNativeUiState
-import io.horizontalsystems.bankwallet.core.AdType
-import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
 import io.horizontalsystems.bankwallet.core.managers.FaqManager
 import io.horizontalsystems.bankwallet.core.providers.Translator
 import io.horizontalsystems.bankwallet.core.slideFromBottom
@@ -73,22 +65,20 @@ import io.horizontalsystems.bankwallet.modules.manageaccount.dialogs.BackupRequi
 import io.horizontalsystems.bankwallet.modules.rateapp.RateAppModule
 import io.horizontalsystems.bankwallet.modules.rateapp.RateAppViewModel
 import io.horizontalsystems.bankwallet.modules.sendtokenselect.SendTokenSelectFragment
-import io.horizontalsystems.bankwallet.ui.CollapsingLayout
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.HSSwipeRefresh
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryCircle
-import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryDefault
-import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
+import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryJacobCircle
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryCircle
-import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryTransparent
+import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryWithIcon
 import io.horizontalsystems.bankwallet.ui.compose.components.DoubleText
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
-import io.horizontalsystems.bankwallet.ui.compose.components.HeaderSorting
 import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.SelectorDialogCompose
 import io.horizontalsystems.bankwallet.ui.compose.components.SelectorItem
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
+import io.horizontalsystems.bankwallet.ui.compose.components.caption_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_leah
 import io.horizontalsystems.core.helpers.HudHelper
@@ -146,8 +136,8 @@ fun Note(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .border(0.5.dp, borderColor, RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(16.dp))
+            .border(0.5.dp, borderColor, RoundedCornerShape(16.dp))
             .background(backgroundColor)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -193,8 +183,7 @@ fun BalanceItems(
     navController: NavController,
     uiState: BalanceUiState,
     totalState: TotalUIState,
-    nativeAd: AdNativeUiState,
-    onClickSwitchWallet: () -> Unit = {}
+    onScanClick: () -> Unit,
 ) {
     val rateAppViewModel = viewModel<RateAppViewModel>(factory = RateAppModule.Factory())
     DisposableEffect(true) {
@@ -240,10 +229,20 @@ fun BalanceItems(
         refreshing = uiState.isRefreshing,
         onRefresh = viewModel::onRefresh
     ) {
-        CollapsingLayout(
-            expandedContent = { modifier ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            state = rememberSaveable(
+                accountViewItem.id,
+                uiState.sortType,
+                saver = LazyListState.Saver
+            ) {
+                LazyListState()
+            }
+        ) {
+            item {
                 TotalBalanceRow(
-                    modifier = modifier,
                     totalState = totalState,
                     onClickTitle = remember {
                         {
@@ -262,31 +261,26 @@ fun BalanceItems(
                         }
                     }
                 )
-            },
-            collapsedContent = { modifier ->
-                if (uiState.balanceTabButtonsEnabled && !accountViewItem.isWatchAccount) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 24.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        ButtonPrimaryYellow(
-                            modifier = Modifier.weight(1f),
-                            title = stringResource(R.string.Balance_Send),
-                            onClick = {
-                                navController.slideFromRight(R.id.sendTokenSelectFragment)
+            }
 
-                                stat(
-                                    page = StatPage.Balance,
-                                    event = StatEvent.Open(StatPage.SendTokenList)
-                                )
-                            }
-                        )
-                        HSpacer(8.dp)
-                        ButtonPrimaryDefault(
-                            modifier = Modifier.weight(1f),
+            if (uiState.balanceTabButtonsEnabled && !accountViewItem.isWatchAccount) {
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(ComposeAppTheme.colors.tyler)
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 24.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        BalanceActionOrangeButton(
+                            icon = R.drawable.ic_arrow_down_24,
                             title = stringResource(R.string.Balance_Receive),
+                            enabled = true,
                             onClick = {
-                                when (val receiveAllowedState = viewModel.getReceiveAllowedState()) {
+                                when (val receiveAllowedState =
+                                    viewModel.getReceiveAllowedState()) {
                                     ReceiveAllowedState.Allowed -> {
                                         navController.slideFromRight(R.id.receiveChooseCoinFragment)
 
@@ -317,11 +311,22 @@ fun BalanceItems(
                                 }
                             }
                         )
+                        BalanceActionButton(
+                            icon = R.drawable.ic_arrow_up_24,
+                            title = stringResource(R.string.Balance_Send),
+                            onClick = {
+                                navController.slideFromRight(R.id.sendTokenSelectFragment)
+
+                                stat(
+                                    page = StatPage.Balance,
+                                    event = StatEvent.Open(StatPage.SendTokenList)
+                                )
+                            }
+                        )
                         if (viewModel.isSwapEnabled) {
-                            HSpacer(8.dp)
-                            ButtonPrimaryCircle(
-                                icon = R.drawable.ic_swap_24,
-                                contentDescription = stringResource(R.string.Swap),
+                            BalanceActionButton(
+                                icon = R.drawable.ic_swap_circle_24,
+                                title = stringResource(R.string.Swap),
                                 onClick = {
                                     navController.slideFromRight(R.id.multiswap)
 
@@ -332,23 +337,27 @@ fun BalanceItems(
                                 }
                             )
                         }
+                        if (accountViewItem.type.supportsWalletConnect) {
+                            BalanceActionButton(
+                                icon = R.drawable.ic_scan_24,
+                                title = stringResource(R.string.Button_ScanQr),
+                                onClick = onScanClick
+                            )
+                        }
                     }
                 }
             }
-        ) { modifier ->
-            LazyColumn(
-                modifier = modifier.fillMaxSize(),
-                state = rememberSaveable(
-                    accountViewItem.id,
-                    uiState.sortType,
-                    saver = LazyListState.Saver
-                ) {
-                    LazyListState()
-                }
-            ) {
-                item {
-                    VSpacer(12.dp)
-                    HeaderSorting(background = Color.Transparent) {
+
+            stickyHeader {
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .height(48.dp)
+                            .fillMaxWidth()
+                            .background(ComposeAppTheme.colors.lawrence),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        HSpacer(16.dp)
                         BalanceSortingSelector(
                             sortType = uiState.sortType,
                             sortTypes = uiState.sortTypes
@@ -356,18 +365,9 @@ fun BalanceItems(
                             viewModel.setSortType(it)
                         }
 
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        if (accountViewItem.isWatchAccount) {
-                            Image(
-                                painter = painterResource(R.drawable.icon_binocule_24),
-                                contentDescription = "binoculars icon"
-                            )
-                            HSpacer(16.dp)
-                        }
-
+                        HSpacer(12.dp)
                         ButtonSecondaryCircle(
-                            icon = R.drawable.ic_manage_2,
+                            icon = R.drawable.ic_manage_20,
                             contentDescription = stringResource(R.string.ManageCoins_title),
                             onClick = {
                                 navController.slideFromRight(R.id.manageWalletsFragment)
@@ -379,92 +379,86 @@ fun BalanceItems(
                             }
                         )
 
+                        Spacer(modifier = Modifier.weight(1f))
+                        if (accountViewItem.isWatchAccount) {
+                            HSpacer(12.dp)
+                            Image(
+                                painter = painterResource(R.drawable.icon_binocule_20),
+                                contentDescription = "binoculars icon"
+                            )
+                        }
                         HSpacer(16.dp)
                     }
+                    HsDivider()
                 }
+            }
 
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    MaxTemplateNativeAdViewComposable(nativeAd, AdType.SMALL, navController)
-                }
-
-                item {
-                    when (uiState.headerNote) {
-                        HeaderNote.None -> Unit
-                        HeaderNote.NonStandardAccount -> {
-                            NoteError(
-                                modifier = Modifier.padding(
-                                    start = 16.dp,
-                                    end = 16.dp,
-                                    top = 12.dp,
-                                    bottom = 24.dp
-                                ),
-                                text = stringResource(R.string.AccountRecovery_MigrationRequired),
-                                onClick = {
-                                    FaqManager.showFaqPage(
-                                        navController,
-                                        FaqManager.faqPathMigrationRequired
-                                    )
-                                }
-                            )
-                        }
-
-                        HeaderNote.NonRecommendedAccount -> {
-                            NoteWarning(
-                                modifier = Modifier.padding(
-                                    start = 16.dp,
-                                    end = 16.dp,
-                                    top = 12.dp,
-                                    bottom = 24.dp
-                                ),
-                                text = stringResource(R.string.AccountRecovery_MigrationRecommended),
-                                onClick = {
-                                    FaqManager.showFaqPage(
-                                        navController,
-                                        FaqManager.faqPathMigrationRecommended
-                                    )
-                                },
-                                onClose = {
-                                    viewModel.onCloseHeaderNote(HeaderNote.NonRecommendedAccount)
-                                }
-                            )
-                        }
-                    }
-                }
-
-                if (balanceViewItems.isEmpty()) {
-                    item {
-                        NoCoinsBlock()
-                    }
-                } else {
-                    wallets(
-                        items = balanceViewItems,
-                        key = {
-                            it.wallet.hashCode()
-                        }
-                    ) { item ->
-                        BalanceCardSwipable(
-                            viewItem = item,
-                            revealed = revealedCardId == item.wallet.hashCode(),
-                            onReveal = { walletHashCode ->
-                                if (revealedCardId != walletHashCode) {
-                                    revealedCardId = walletHashCode
-                                }
-                            },
-                            onConceal = {
-                                revealedCardId = null
-                            },
+            item {
+                when (uiState.headerNote) {
+                    HeaderNote.None -> Unit
+                    HeaderNote.NonStandardAccount -> {
+                        NoteError(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 24.dp),
+                            text = stringResource(R.string.AccountRecovery_MigrationRequired),
                             onClick = {
-                                navigateToTokenBalance.invoke(item)
-                            },
-                            onClickSyncError = {
-                                onClickSyncError.invoke(item)
-                            },
-                            onDisable = {
-                                onDisable.invoke(item)
+                                FaqManager.showFaqPage(
+                                    navController,
+                                    FaqManager.faqPathMigrationRequired
+                                )
                             }
                         )
                     }
+
+                    HeaderNote.NonRecommendedAccount -> {
+                        NoteWarning(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 24.dp),
+                            text = stringResource(R.string.AccountRecovery_MigrationRecommended),
+                            onClick = {
+                                FaqManager.showFaqPage(
+                                    navController,
+                                    FaqManager.faqPathMigrationRecommended
+                                )
+                            },
+                            onClose = {
+                                viewModel.onCloseHeaderNote(HeaderNote.NonRecommendedAccount)
+                            }
+                        )
+                    }
+                }
+            }
+
+            if (balanceViewItems.isEmpty()) {
+                item {
+                    NoCoinsBlock()
+                }
+            } else {
+                wallets(
+                    items = balanceViewItems,
+                    key = {
+                        it.wallet.hashCode()
+                    }
+                ) { item ->
+                    BalanceCardSwipable(
+                        viewItem = item,
+                        revealed = revealedCardId == item.wallet.hashCode(),
+                        onReveal = { walletHashCode ->
+                            if (revealedCardId != walletHashCode) {
+                                revealedCardId = walletHashCode
+                            }
+                        },
+                        onConceal = {
+                            revealedCardId = null
+                        },
+                        onClick = {
+                            navigateToTokenBalance.invoke(item)
+                        },
+                        onClickSyncError = {
+                            onClickSyncError.invoke(item)
+                        },
+                        onDisable = {
+                            onDisable.invoke(item)
+                        }
+                    )
                 }
             }
         }
@@ -480,6 +474,48 @@ fun BalanceItems(
             )
         )
         viewModel.onSendOpened()
+    }
+}
+
+@Composable
+fun BalanceActionButton(
+    @DrawableRes icon: Int,
+    title: String,
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ButtonPrimaryCircle(
+            icon = icon,
+            contentDescription = title,
+            enabled = enabled,
+            onClick = onClick
+        )
+        VSpacer(8.dp)
+        caption_grey(title)
+    }
+}
+
+@Composable
+fun BalanceActionOrangeButton(
+    @DrawableRes icon: Int,
+    title: String,
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ButtonPrimaryJacobCircle(
+            icon = icon,
+            contentDescription = title,
+            enabled = enabled,
+            onClick = onClick
+        )
+        VSpacer(8.dp)
+        caption_grey(title)
     }
 }
 
@@ -525,9 +561,9 @@ fun BalanceSortingSelector(
 ) {
     var showSortTypeSelectorDialog by remember { mutableStateOf(false) }
 
-    ButtonSecondaryTransparent(
+    ButtonSecondaryWithIcon(
         title = stringResource(sortType.getTitleRes()),
-        iconRight = R.drawable.ic_down_arrow_20,
+        iconRight = painterResource(R.drawable.ic_arrow_down_filled_16),
         onClick = {
             showSortTypeSelectorDialog = true
         }
@@ -549,52 +585,29 @@ fun BalanceSortingSelector(
 
 @Composable
 fun TotalBalanceRow(
-    modifier: Modifier = Modifier,
     totalState: TotalUIState,
     onClickTitle: () -> Unit,
     onClickSubtitle: () -> Unit
 ) {
-    Surface(
-        modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min),
-        shape = RoundedCornerShape(12.dp),
-        shadowElevation = 5.dp,
-        tonalElevation = 5.dp,
-        color = Color(0xFF698FF6)
-    ) {
-        Column {
-            Text(
-                text = stringResource(R.string.Send_DialogAvailableBalance),
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 16.dp),
-                style = ComposeAppTheme.typography.subhead,
-                color = Color(0xFFBBCDFF)
+    when (totalState) {
+        TotalUIState.Hidden -> {
+            DoubleText(
+                title = "------",
+                body = "",
+                dimmed = false,
+                onClickTitle = onClickTitle,
+                onClickSubtitle = onClickSubtitle
             )
+        }
 
-            when (totalState) {
-                TotalUIState.Hidden -> {
-                    DoubleText(
-                        title = "*****",
-                        body = "*****",
-                        dimmed = false,
-                        onClickTitle = onClickTitle,
-                        onClickSubtitle = onClickSubtitle
-                    )
-                }
-
-                is TotalUIState.Visible -> {
-                    DoubleText(
-                        title = totalState.primaryAmountStr,
-                        body = totalState.secondaryAmountStr,
-                        dimmed = totalState.dimmed,
-                        onClickTitle = onClickTitle,
-                        onClickSubtitle = onClickSubtitle,
-                    )
-                }
-            }
+        is TotalUIState.Visible -> {
+            DoubleText(
+                title = totalState.primaryAmountStr,
+                body = totalState.secondaryAmountStr,
+                dimmed = totalState.dimmed,
+                onClickTitle = onClickTitle,
+                onClickSubtitle = onClickSubtitle,
+            )
         }
     }
 }
@@ -604,110 +617,16 @@ fun <T> LazyListScope.wallets(
     key: ((item: T) -> Any)? = null,
     itemContent: @Composable (LazyItemScope.(item: T) -> Unit),
 ) {
-    item {
-        VSpacer(height = 8.dp)
-    }
     items(items = items, key = key, itemContent = {
-        Row(modifier = Modifier.padding(bottom = 8.dp)) {
-            itemContent(it)
+        Column {
+            Row {
+                itemContent(it)
+            }
+            HsDivider()
         }
     })
     item {
         VSpacer(height = 10.dp)
-    }
-}
-
-@Composable
-private fun BalanceAction(
-    modifier: Modifier,
-    isSwapEnabled: Boolean = true,
-    onClickSend: () -> Unit = {},
-    onClickReceive: () -> Unit = {},
-    onClickSwap: () -> Unit = {},
-    onClickSwitchWallet: () -> Unit = {}
-) {
-    Surface(
-        modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min),
-        color = Color.Transparent
-    ) {
-        Row(
-            modifier = Modifier.padding(0.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BalanceButton(
-                modifier = Modifier.weight(1f),
-                onClick = onClickSend,
-                buttonIconRes = R.drawable.ic_arrow_up_right_12,
-                buttonTitleRes = R.string.Balance_Send
-            )
-
-            BalanceButton(
-                modifier = Modifier.weight(1f),
-                onClick = onClickReceive,
-                buttonIconRes = R.drawable.ic_add_to_wallet_2_24,
-                buttonTitleRes = R.string.Balance_Receive
-            )
-            if (isSwapEnabled) {
-                BalanceButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = onClickSwap,
-                    buttonIconRes = R.drawable.ic_swap_24,
-                    buttonTitleRes = R.string.Swap
-                )
-            }
-
-            BalanceButton(
-                modifier = Modifier.weight(1f),
-                onClick = onClickSwitchWallet,
-                buttonIconRes = R.drawable.ic_switch_wallet_24,
-                buttonTitleRes = R.string.ManageAccount_SwitchWallet_Title
-            )
-        }
-    }
-}
-
-@Composable
-private fun BalanceButton(
-    modifier: Modifier,
-    onClick: () -> Unit,
-    @StringRes
-    buttonTitleRes: Int,
-    @DrawableRes
-    buttonIconRes: Int
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        FilledTonalIconButton(
-            onClick = onClick,
-            colors = iconButtonColors(
-                containerColor = Color(0xFF698FF6),
-            ),
-            content = {
-                Icon(
-                    painter = painterResource(buttonIconRes),
-                    contentDescription = null
-                )
-            }
-        )
-        subhead2_leah(
-            modifier = Modifier.padding(top = 6.dp),
-            text = stringResource(buttonTitleRes),
-            textAlign = TextAlign.Center,
-            overflow = TextOverflow.Ellipsis,
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-private fun BalanceActionPreview() {
-    ComposeAppTheme {
-        BalanceAction(modifier = Modifier)
     }
 }
 

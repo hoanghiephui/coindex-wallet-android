@@ -50,6 +50,7 @@ import io.horizontalsystems.bankwallet.core.stats.statTab
 import io.horizontalsystems.bankwallet.entities.Currency
 import io.horizontalsystems.bankwallet.modules.coin.CoinFragment
 import io.horizontalsystems.bankwallet.modules.market.MarketModule.Tab
+import io.horizontalsystems.bankwallet.modules.market.earn.MarketEarnScreen
 import io.horizontalsystems.bankwallet.modules.market.favorites.MarketFavoritesScreen
 import io.horizontalsystems.bankwallet.modules.market.posts.MarketPostsScreen
 import io.horizontalsystems.bankwallet.modules.market.topcoins.TopCoins
@@ -151,7 +152,12 @@ fun TabsSection(
         stat(page = StatPage.Markets, event = StatEvent.SwitchTab(selectedTab.statTab))
     })
     val tabItems = tabs.map {
-        TabItem(stringResource(id = it.titleResId), it == selectedTab, it)
+        TabItem(
+            title = stringResource(id = it.titleResId),
+            selected = it == selectedTab,
+            item = it,
+            premium = it.premium
+        )
     }
 
     ScrollableTabs(
@@ -179,6 +185,7 @@ fun TabsSection(
                 onSetRefreshCallback = onSetRefreshCallback
             )
 
+            Tab.Earn -> MarketEarnScreen(navController)
             Tab.Posts -> MarketPostsScreen(
                 isRefreshing = isRefreshing,
                 onSetRefreshCallback = onSetRefreshCallback
@@ -224,13 +231,13 @@ fun MetricsBoard(
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         shadowElevation = 5.dp,
         tonalElevation = 3.dp
     ) {
         Row {
             MarketTotalCard(
-                title = stringResource(R.string.MarketGlobalMetrics_TotalMarketCap),
+                title = stringResource(R.string.MarketGlobalMetrics_TotalMarketCapShort),
                 value = marketGlobal?.marketCap,
                 changePercentage = marketGlobal?.marketCapChange,
                 currency = currency,
@@ -242,7 +249,7 @@ fun MetricsBoard(
             VDivider()
 
             MarketTotalCard(
-                title = stringResource(R.string.MarketGlobalMetrics_Volume),
+                title = stringResource(R.string.MarketGlobalMetrics_VolumeShort),
                 value = marketGlobal?.volume,
                 changePercentage = marketGlobal?.volumeChange,
                 currency = currency,

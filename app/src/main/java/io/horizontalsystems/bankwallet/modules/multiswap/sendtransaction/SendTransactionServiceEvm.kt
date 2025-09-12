@@ -68,7 +68,7 @@ class SendTransactionServiceEvm(
     blockchainType: BlockchainType,
     initialGasPrice: GasPrice? = null,
     initialNonce: Long? = null
-) : AbstractSendTransactionService() {
+) : AbstractSendTransactionService(true) {
     private val token by lazy { App.evmBlockchainManager.getBaseToken(blockchainType)!! }
     private val evmKitWrapper by lazy { App.evmBlockchainManager.getEvmKitManager(blockchainType).evmKitWrapper!! }
     private val gasPriceService: IEvmGasPriceService by lazy {
@@ -115,6 +115,7 @@ class SendTransactionServiceEvm(
         SendTransactionSettings.Evm(null, evmKitWrapper.evmKit.receiveAddress)
     )
     override val sendTransactionSettingsFlow = _sendTransactionSettingsFlow.asStateFlow()
+    override val mevProtectionAvailable = evmKitWrapper.merkleTransactionAdapter != null
 
     private var transaction: SendEvmSettingsService.Transaction? = null
     private var feeAmountData: SendModule.AmountData? = null
@@ -209,7 +210,7 @@ class SendTransactionServiceEvm(
         emitState()
     }
 
-    override fun setSendTransactionData(data: SendTransactionData) {
+    override suspend fun setSendTransactionData(data: SendTransactionData) {
         check(data is SendTransactionData.Evm)
 
         feeService.setGasLimit(data.gasLimit)
@@ -218,7 +219,7 @@ class SendTransactionServiceEvm(
         setExtraFeesMap(data.feesMap)
     }
 
-    override suspend fun sendTransaction() : SendTransactionResult.Evm {
+    override suspend fun sendTransaction(mevProtectionEnabled: Boolean): SendTransactionResult.Evm {
         val transaction = transaction ?: throw Exception()
         if (transaction.errors.isNotEmpty()) throw Exception()
 
@@ -228,7 +229,7 @@ class SendTransactionServiceEvm(
         val nonce = transaction.nonce
 
         val fullTransaction = evmKitWrapper
-            .sendSingle(transactionData, gasPrice, gasLimit, nonce).await()
+            .sendSingle(transactionData, gasPrice, gasLimit, nonce, mevProtectionEnabled).await()
         return SendTransactionResult.Evm(fullTransaction)
     }
 
@@ -284,7 +285,7 @@ fun SendEvmFeeSettingsScreen(
             navigationIcon = {
                 HsIconButton(onClick = { navController.popBackStack() }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_back),
+                        painter = painterResource(id = R.drawable.ic_arrow_left_24),
                         contentDescription = "back button",
                         tint = ComposeAppTheme.colors.grey
                     )

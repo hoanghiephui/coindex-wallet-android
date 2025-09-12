@@ -2,9 +2,11 @@ package io.horizontalsystems.bankwallet.modules.receive.ui
 
 import android.os.Parcelable
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -32,16 +34,16 @@ import io.horizontalsystems.bankwallet.core.UsedAddress
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryCircle
-import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.TabItem
 import io.horizontalsystems.bankwallet.ui.compose.components.Tabs
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
-import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
-import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_leah
+import io.horizontalsystems.bankwallet.ui.compose.components.subheadSB_grey
+import io.horizontalsystems.bankwallet.ui.compose.components.subhead_leah
 import io.horizontalsystems.bankwallet.ui.helpers.LinkHelper
 import io.horizontalsystems.bankwallet.ui.helpers.TextHelper
 import io.horizontalsystems.core.helpers.HudHelper
@@ -84,14 +86,20 @@ fun UsedAddressScreen(
         Column(
             modifier = Modifier
                 .padding(it)
-                .fillMaxWidth()
+                .fillMaxSize()
+                .background(ComposeAppTheme.colors.lawrence)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-            InfoText(text = stringResource(id = R.string.Balance_Receive_UsedAddressesDescriptoin, params.coinName))
-
-            VSpacer(12.dp)
+            InfoText(
+                modifier = Modifier.background(ComposeAppTheme.colors.tyler),
+                text = stringResource(
+                    id = R.string.Balance_Receive_UsedAddressesDescriptoin,
+                    params.coinName
+                ),
+                paddingBottom = 24.dp
+            )
 
             LaunchedEffect(key1 = selectedTab, block = {
                 pagerState.scrollToPage(selectedTab.ordinal)
@@ -100,8 +108,6 @@ fun UsedAddressScreen(
                 TabItem(stringResource(id = it.titleResId), it == selectedTab, it)
             }
             Tabs(tabItems, onClick = { selectedTab = it })
-
-            VSpacer(12.dp)
 
             HorizontalPager(
                 state = pagerState,
@@ -122,18 +128,16 @@ fun UsedAddressScreen(
 
 @Composable
 private fun AddressList(usedAddresses: List<UsedAddress>) {
-    CellUniversalLawrenceSection(
-        buildList {
-            for (item in usedAddresses)
-                add {
-                    TransactionInfoAddressCell(
-                        index = item.index.plus(1).toString(),
-                        address = item.address,
-                        explorerUrl = item.explorerUrl
-                    )
-                }
+    Column {
+        usedAddresses.forEach { item ->
+            TransactionInfoAddressCell(
+                index = item.index.plus(1).toString(),
+                address = item.address,
+                explorerUrl = item.explorerUrl
+            )
+            HsDivider()
         }
-    )
+    }
 }
 
 @Composable
@@ -147,13 +151,16 @@ fun TransactionInfoAddressCell(
     RowUniversal(
         modifier = Modifier.padding(horizontal = 16.dp),
     ) {
-        subhead2_grey(text = index)
+        subheadSB_grey(
+            modifier = Modifier.width(32.dp),
+            textAlign = TextAlign.Center,
+            text = index
+        )
 
         HSpacer(16.dp)
-        subhead2_leah(
+        subhead_leah(
             modifier = Modifier.weight(1f),
             text = address,
-            textAlign = TextAlign.Right
         )
 
         HSpacer(16.dp)
