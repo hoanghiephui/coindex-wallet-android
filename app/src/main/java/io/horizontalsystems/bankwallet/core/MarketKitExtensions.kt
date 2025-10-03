@@ -57,6 +57,7 @@ val Token.swappable: Boolean
         BlockchainType.Bitcoin,
         BlockchainType.BitcoinCash,
         BlockchainType.Litecoin,
+        BlockchainType.Dash,
         BlockchainType.Stellar,
         BlockchainType.Solana,
         BlockchainType.Tron,
@@ -213,23 +214,23 @@ private val blockchainOrderMap: Map<BlockchainType, Int> by lazy {
     listOf(
         BlockchainType.Bitcoin,
         BlockchainType.Ethereum,
-        BlockchainType.BinanceSmartChain,
-        BlockchainType.Litecoin,
         BlockchainType.Monero,
         BlockchainType.Tron,
+        BlockchainType.Zcash,
+        BlockchainType.Dash,
+        BlockchainType.Litecoin,
+        BlockchainType.BinanceSmartChain,
         BlockchainType.Polygon,
-        BlockchainType.Stellar,
+        BlockchainType.Base,
+        BlockchainType.Solana,
         BlockchainType.ArbitrumOne,
         BlockchainType.Optimism,
-        BlockchainType.Base,
         BlockchainType.Avalanche,
-        BlockchainType.Solana,
-        BlockchainType.Zcash,
+        BlockchainType.Stellar,
+        BlockchainType.Gnosis,
         BlockchainType.ZkSync,
         BlockchainType.Ton,
-        BlockchainType.Gnosis,
         BlockchainType.BitcoinCash,
-        BlockchainType.Dash,
         BlockchainType.Fantom,
         BlockchainType.ECash,
     ).forEachIndexed { index, blockchainType ->
@@ -271,7 +272,7 @@ val BlockchainType.title: String
     BlockchainType.BinanceSmartChain -> "BNB Smart Chain"
     BlockchainType.Polygon -> "Polygon"
     BlockchainType.Avalanche -> "Avalanche"
-    BlockchainType.ArbitrumOne -> "ArbitrumOne"
+    BlockchainType.ArbitrumOne -> "Arbitrum"
     BlockchainType.Optimism -> "Optimism"
     BlockchainType.Base -> "Base"
     BlockchainType.ZkSync -> "ZKsync"
@@ -399,6 +400,9 @@ fun BlockchainType.supports(accountType: AccountType): Boolean {
 
         is AccountType.StellarSecretKey ->
             this == BlockchainType.Stellar
+
+        is AccountType.MoneroWatchAccount ->
+            this == BlockchainType.Monero
     }
 }
 
@@ -543,7 +547,7 @@ val Token.badge: String?
             tokenType.type.bitcoinCashCoinType.value.uppercase()
         }
         else -> {
-            protocolType?.uppercase()
+            protocolType?.replaceFirstChar(Char::uppercase)
         }
     }
 

@@ -2,10 +2,12 @@ package io.horizontalsystems.bankwallet.modules.manageaccount
 
 import android.content.ClipData
 import android.os.Parcelable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -44,8 +46,6 @@ import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.entities.Account
 import io.horizontalsystems.bankwallet.modules.balance.HeaderNote
-import io.horizontalsystems.bankwallet.modules.balance.ui.NoteError
-import io.horizontalsystems.bankwallet.modules.balance.ui.NoteWarning
 import io.horizontalsystems.bankwallet.modules.manageaccount.ManageAccountModule.BackupItem
 import io.horizontalsystems.bankwallet.modules.manageaccount.ManageAccountModule.KeyAction
 import io.horizontalsystems.bankwallet.rememberAdNativeView
@@ -66,6 +66,9 @@ import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_jacob
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.body_lucian
+import io.horizontalsystems.bankwallet.uiv3.components.AlertCard
+import io.horizontalsystems.bankwallet.uiv3.components.AlertFormat
+import io.horizontalsystems.bankwallet.uiv3.components.AlertType
 import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -152,8 +155,13 @@ fun ManageAccountScreen(navController: NavController, accountId: String) {
 
                 when (viewModel.viewState.headerNote) {
                     HeaderNote.NonStandardAccount -> {
-                        NoteError(
-                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 32.dp),
+                        AlertCard(
+                            modifier = Modifier
+                                .background(ComposeAppTheme.colors.tyler)
+                                .padding(start = 16.dp, end = 16.dp, top = 32.dp)
+                                .fillMaxWidth(),
+                            format = AlertFormat.Structured,
+                            type = AlertType.Critical,
                             text = stringResource(R.string.AccountRecovery_MigrationRequired),
                             onClick = {
                                 FaqManager.showFaqPage(
@@ -165,8 +173,10 @@ fun ManageAccountScreen(navController: NavController, accountId: String) {
                     }
 
                     HeaderNote.NonRecommendedAccount -> {
-                        NoteWarning(
+                        AlertCard(
                             modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 32.dp),
+                            format = AlertFormat.Structured,
+                            type = AlertType.Caution,
                             text = stringResource(R.string.AccountRecovery_MigrationRecommended),
                             onClick = {
                                 FaqManager.showFaqPage(
@@ -174,7 +184,6 @@ fun ManageAccountScreen(navController: NavController, accountId: String) {
                                     FaqManager.faqPathMigrationRecommended
                                 )
                             },
-                            onClose = null
                         )
                     }
 

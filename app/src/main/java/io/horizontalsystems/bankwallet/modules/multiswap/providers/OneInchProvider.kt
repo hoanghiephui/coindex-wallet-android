@@ -30,7 +30,6 @@ import java.math.BigDecimal
 object OneInchProvider : IMultiSwapProvider {
     override val id = "oneinch"
     override val title = "1inch"
-    override val url = "https://app.1inch.io/"
     override val icon = R.drawable.oneinch
     override val priority = 100
     private val oneInchKit by lazy { OneInchKit.getInstance(App.appConfigProvider.oneInchApiKey) }
@@ -83,9 +82,7 @@ object OneInchProvider : IMultiSwapProvider {
             settingRecipient.value?.let {
                 add(DataFieldRecipient(it))
             }
-            settingSlippage.value?.let {
-                add(DataFieldSlippage(it))
-            }
+            add(DataFieldSlippage(settingSlippage.value))
             if (allowance != null && allowance < amountIn) {
                 add(DataFieldAllowance(allowance, tokenIn))
             }
@@ -128,7 +125,7 @@ object OneInchProvider : IMultiSwapProvider {
 
         val settingRecipient = SwapSettingRecipient(swapSettings, tokenOut)
         val settingSlippage = SwapSettingSlippage(swapSettings, BigDecimal("1"))
-        val slippage = settingSlippage.valueOrDefault()
+        val slippage = settingSlippage.value
 
         val swap = oneInchKit.getSwapAsync(
             chain = evmBlockchainHelper.chain,
@@ -152,9 +149,7 @@ object OneInchProvider : IMultiSwapProvider {
             settingRecipient.value?.let {
                 add(DataFieldRecipientExtended(it, tokenOut.blockchainType))
             }
-            settingSlippage.value?.let {
-                add(DataFieldSlippage(it))
-            }
+            add(DataFieldSlippage(settingSlippage.value))
         }
 
         return SwapFinalQuoteEvm(

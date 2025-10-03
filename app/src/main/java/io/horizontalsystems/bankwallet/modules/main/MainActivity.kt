@@ -6,6 +6,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import com.wallet.blockchain.bitcoin.R
 import com.walletconnect.web3.wallet.client.Wallet
@@ -22,6 +25,7 @@ import io.horizontalsystems.bankwallet.ui.helpers.LinkHelper
 import io.horizontalsystems.bankwallet.worker.NewsNotificationWorker.Companion.INTENT_NEWS_NOTIFICATION
 import io.horizontalsystems.bankwallet.worker.Sync
 import io.horizontalsystems.core.hideKeyboard
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -112,8 +116,15 @@ class MainActivity : BaseActivity() {
         }
         Sync.initialize(this, viewModel.isShowNotificationPrice, viewModel.isShowNotificationNews)
 
-        viewModel.contentHidden.observe(this) { hidden ->
-            hideContent.visibility = if (hidden) View.VISIBLE else View.GONE
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.contentHidden.collect { hidden ->
+                    hideContent.visibility = if (hidden) View.VISIBLE else View.GONE
+                    if (hidden) {
+                        LockScreenActivity.start(this@MainActivity)
+                    }
+                }
+            }
         }
 
         viewModel.setIntent(intent)
@@ -149,8 +160,6 @@ class MainActivity : BaseActivity() {
     } catch (e: MainScreenValidationError.Welcome) {
         IntroActivity.start(this)
         finish()
-    } catch (e: MainScreenValidationError.Unlock) {
-        LockScreenActivity.start(this)
     } catch (e: MainScreenValidationError.UseAppNotWallet) {
         onUseAppNotWallet()
     } catch (e: MainScreenValidationError.UseAppWallet) {

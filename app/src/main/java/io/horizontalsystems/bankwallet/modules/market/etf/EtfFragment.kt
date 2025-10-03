@@ -39,7 +39,6 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
@@ -63,17 +62,14 @@ import io.horizontalsystems.bankwallet.ui.compose.Select
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.AlertGroup
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
-import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryWithIcon
 import io.horizontalsystems.bankwallet.ui.compose.components.DescriptionCard
 import io.horizontalsystems.bankwallet.ui.compose.components.GraphicBarsWithNegative
 import io.horizontalsystems.bankwallet.ui.compose.components.HFillSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderSorting
 import io.horizontalsystems.bankwallet.ui.compose.components.ListErrorView
-import io.horizontalsystems.bankwallet.ui.compose.components.MarketCoinClear
+import io.horizontalsystems.bankwallet.ui.compose.components.MarketCoin
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
-import io.horizontalsystems.bankwallet.ui.compose.components.TabItem
-import io.horizontalsystems.bankwallet.ui.compose.components.Tabs
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.cell.CellUniversalFixedHeight
 import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
@@ -84,6 +80,12 @@ import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_remus
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.title3_leah
 import io.horizontalsystems.bankwallet.ui.compose.hsRememberLazyListState
+import io.horizontalsystems.bankwallet.uiv3.components.BoxBordered
+import io.horizontalsystems.bankwallet.uiv3.components.controls.ButtonVariant
+import io.horizontalsystems.bankwallet.uiv3.components.controls.HSDropdownButton
+import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabItem
+import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabsTop
+import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabsTopType
 import io.horizontalsystems.core.helpers.DateHelper
 import io.horizontalsystems.core.helpers.HudHelper
 import io.horizontalsystems.marketkit.models.EtfPoint
@@ -142,7 +144,9 @@ fun EtfPage(
                 .padding(it)
                 .fillMaxSize(),
         ) {
-            Tabs(tabItems, onClick = { selectedTab = it })
+            TabsTop(TabsTopType.Fitted, tabItems) {
+                selectedTab = it
+            }
             HorizontalPager(
                 state = pagerState,
                 userScrollEnabled = false
@@ -216,36 +220,36 @@ fun EtfByChain(
                         stickyHeader {
                             HeaderSorting(borderBottom = true, borderTop = true) {
                                 HSpacer(width = 16.dp)
-                                ButtonSecondaryWithIcon(
-                                    modifier = Modifier.height(28.dp),
+                                HSDropdownButton(
+                                    variant = ButtonVariant.Secondary,
+                                    title = stringResource(uiState.sortBy.titleResId),
                                     onClick = {
                                         openSortingSelector = true
                                     },
-                                    title = stringResource(uiState.sortBy.titleResId),
-                                    iconRight = painterResource(R.drawable.ic_down_arrow_20),
                                 )
                                 HSpacer(width = 8.dp)
-                                ButtonSecondaryWithIcon(
-                                    modifier = Modifier.height(28.dp),
+                                HSDropdownButton(
+                                    variant = ButtonVariant.Secondary,
+                                    title = stringResource(uiState.listTimePeriod.titleResId),
                                     onClick = {
                                         openPeriodSelector = true
                                     },
-                                    title = stringResource(uiState.listTimePeriod.titleResId),
-                                    iconRight = painterResource(R.drawable.ic_down_arrow_20),
                                 )
                                 HSpacer(width = 16.dp)
                             }
                         }
                         items(uiState.viewItems) { viewItem ->
-                            MarketCoinClear(
-                                title = viewItem.title,
-                                subtitle = viewItem.subtitle,
-                                coinIconUrl = viewItem.iconUrl,
-                                coinIconPlaceholder = R.drawable.ic_platform_placeholder_24,
-                                value = viewItem.value,
-                                marketDataValue = viewItem.subvalue,
-                                label = viewItem.rank,
-                            )
+                            BoxBordered(bottom = true) {
+                                MarketCoin(
+                                    title = viewItem.title,
+                                    subtitle = viewItem.subtitle,
+                                    coinIconUrl = viewItem.iconUrl,
+                                    coinIconPlaceholder = R.drawable.ic_platform_placeholder_24,
+                                    value = viewItem.value,
+                                    marketDataValue = viewItem.subvalue,
+                                    label = viewItem.rank,
+                                )
+                            }
                         }
                     }
                 }

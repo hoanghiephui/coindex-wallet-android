@@ -176,7 +176,7 @@ private fun MainScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val modalBottomSheetState = androidx.compose.material3.rememberModalBottomSheetState()
+    val modalBottomSheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isBottomSheetVisible by remember { mutableStateOf(false) }
     val updateState = rememberInAppUpdateState()
     val inAppReviewManager = rememberInAppReviewManager()
@@ -423,7 +423,8 @@ private fun MainScreen(
                 openSend.blockchainTypes,
                 openSend.tokenTypes,
                 openSend.address,
-                openSend.amount
+                openSend.amount,
+                openSend.memo,
             )
         )
         viewModel.onSendOpened()

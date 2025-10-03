@@ -18,9 +18,9 @@ object MarketSearchModule {
                 App.marketFavoritesManager,
                 MarketSearchService(App.marketKit),
                 MarketDiscoveryService(App.marketKit, App.localStorage),
-                TopSectorsRepository(App.marketKit),
-                App.currencyManager,
-                App.numberFormatter
+                //TopSectorsRepository(App.marketKit),
+                ///App.currencyManager,
+                //App.numberFormatter TODO
             ) as T
         }
     }

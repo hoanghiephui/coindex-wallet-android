@@ -1,7 +1,6 @@
 package io.horizontalsystems.bankwallet.core.adapters
 
 import android.content.Context
-import android.util.Log
 import cash.z.ecc.android.sdk.ext.collectWith
 import io.horizontalsystems.bankwallet.core.AdapterState
 import io.horizontalsystems.bankwallet.core.App
@@ -18,8 +17,11 @@ import io.horizontalsystems.bankwallet.entities.AccountType
 import io.horizontalsystems.bankwallet.entities.Wallet
 import io.horizontalsystems.core.BackgroundManager
 import io.horizontalsystems.core.BackgroundManagerState
+import io.horizontalsystems.monerokit.Balance
 import io.horizontalsystems.monerokit.MoneroKit
+import io.horizontalsystems.monerokit.Seed
 import io.horizontalsystems.monerokit.SyncState
+import io.horizontalsystems.monerokit.data.Subaddress
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.subjects.PublishSubject
@@ -37,20 +39,19 @@ class MoneroAdapter(
     private val transactionsProvider: MoneroTransactionsProvider,
     private val transactionsAdapter: MoneroTransactionsAdapter,
     private val backgroundManager: BackgroundManager,
-) : IAdapter, IBalanceAdapter, IReceiveAdapter, ISendMoneroAdapter,
-    ITransactionsAdapter by transactionsAdapter {
+) : IAdapter, IBalanceAdapter, IReceiveAdapter, ISendMoneroAdapter, ITransactionsAdapter by transactionsAdapter {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     private val balanceUpdatedSubject: PublishSubject<Unit> = PublishSubject.create()
     private val balanceStateUpdatedSubject: PublishSubject<Unit> = PublishSubject.create()
 
-    private var totalBalance = BigDecimal.ZERO
+    private var balance = Balance(0, 0)
 
     override var balanceState: AdapterState = kit.syncStateFlow.value.toAdapterState()
 
     override val balanceData: BalanceData
-        get() = BalanceData(totalBalance)
+        get() = balance.toBalanceData()
 
     override val balanceStateUpdatedFlowable: Flowable<Unit>
         get() = balanceUpdatedSubject.toFlowable(BackpressureStrategy.BUFFER)
@@ -66,7 +67,7 @@ class MoneroAdapter(
 
     override fun start() {
         kit.balanceFlow.collectWith(coroutineScope) {
-            totalBalance = it.scaledDown(DECIMALS)
+            balance = it
 
             balanceUpdatedSubject.onNext(Unit)
         }
@@ -79,11 +80,13 @@ class MoneroAdapter(
 
         kit.allTransactionsFlow.collectWith(coroutineScope, transactionsProvider::onTransactions)
 
-        kit.start()
+        coroutineScope.launch {
+            kit.start()
+        }
 
         coroutineScope.launch {
-            backgroundManager.stateFlow.collect { state ->
-                if (state == BackgroundManagerState.EnterBackground) {
+            backgroundManager.stateFlow.collect {
+                if (it == BackgroundManagerState.EnterBackground) {
                     kit.saveState()
                 }
             }
@@ -91,16 +94,23 @@ class MoneroAdapter(
     }
 
     override fun stop() {
-        Log.e("AAA", "moneroAdapter: stop()")
-        kit.stop()
+        val job = coroutineScope.launch {
+            kit.saveState()
+            kit.stop()
+        }
 
-        coroutineScope.cancel()
+        job.invokeOnCompletion {
+            coroutineScope.cancel()
+        }
     }
 
     override fun refresh() {
-        Log.e("AAA", "moneroAdapter: refresh()")
-        kit.stop()
-        kit.start()
+        if (kit.syncStateFlow.value is SyncState.NotSynced) {
+            coroutineScope.launch {
+                kit.stop()
+                kit.start()
+            }
+        }
     }
 
     override val debugInfo: String
@@ -120,6 +130,13 @@ class MoneroAdapter(
         return kit.estimateFee(amountInPiconero, address, memo).scaledDown(DECIMALS)
     }
 
+    fun getSubaddresses(): List<Subaddress> {
+        return kit.getSubaddresses()
+    }
+
+    val statusInfo: Map<String, Any>
+        get() = kit.statusInfo()
+
     companion object {
         const val DECIMALS = 12
 
@@ -129,23 +146,39 @@ class MoneroAdapter(
             restoreSettings: RestoreSettings,
             node: MoneroNode
         ): MoneroAdapter {
-            val mnemonic = (wallet.account.type as? AccountType.Mnemonic)
-                ?: throw IllegalStateException("Unsupported account type: ${wallet.account.type.javaClass.simpleName}")
+            val birthdayHeightStr: String?
+            val seed: Seed
+            when (val accountType = wallet.account.type) {
+                is AccountType.Mnemonic -> {
+                    birthdayHeightStr = restoreSettings.birthdayHeight?.toString()
+                    seed = Seed.Bip39(accountType.words, accountType.passphrase)
+                }
 
-            val birthdayHeightOrDate: String = when (wallet.account.origin) {
-                AccountOrigin.Created -> LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                AccountOrigin.Restored -> (restoreSettings.birthdayHeight ?: 0).toString()
+                is AccountType.MoneroWatchAccount -> {
+                    birthdayHeightStr = accountType.restoreHeight.toString()
+                    seed = Seed.WatchOnly(accountType.address, accountType.privateViewKey)
+                }
+
+                else -> throw IllegalStateException("Unsupported account type: ${wallet.account.type.javaClass.simpleName}")
             }
 
-            Log.e("eee", "birthdayHeightOrDate: $birthdayHeightOrDate, node: ${node.serialized}")
+            val birthdayHeightOrDate: String = when (wallet.account.origin) {
+                AccountOrigin.Created -> {
+                    birthdayHeightStr ?: LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                }
+
+                AccountOrigin.Restored -> {
+                    birthdayHeightStr ?: "1"
+                }
+            }
 
             val kit = MoneroKit.getInstance(
                 context,
-                mnemonic.words,
-                mnemonic.passphrase,
+                seed,
                 birthdayHeightOrDate,
                 wallet.account.id,
-                node.serialized
+                node.serialized,
+                node.trusted
             )
 
             val transactionsProvider = MoneroTransactionsProvider()
@@ -158,6 +191,10 @@ class MoneroAdapter(
                 App.backgroundManager
             )
         }
+
+        fun clear(walletId: String) {
+            MoneroKit.deleteWallet(App.instance, walletId)
+        }
     }
 }
 
@@ -168,7 +205,19 @@ fun Long.scaledDown(decimals: Int): BigDecimal {
 fun SyncState.toAdapterState(): AdapterState = when (this) {
     is SyncState.NotSynced -> AdapterState.NotSynced(error)
     is SyncState.Synced -> AdapterState.Synced
+    is SyncState.Connecting -> AdapterState.Syncing(connecting = true)
     is SyncState.Syncing -> AdapterState.Syncing(progress?.let {
         (it * 100).roundToInt().coerceAtMost(100)
     })
+}
+
+fun AccountType.toMoneroSeed() = when (this) {
+    is AccountType.Mnemonic -> Seed.Bip39(words, passphrase)
+    else -> throw IllegalArgumentException("Account type ${this.javaClass.simpleName} can not be converted to Monero Seed")
+}
+
+fun Balance.toBalanceData(): BalanceData {
+    val available = unlocked.scaledDown(MoneroAdapter.DECIMALS)
+    val pending = (all - unlocked).coerceAtLeast(0).scaledDown(MoneroAdapter.DECIMALS)
+    return BalanceData(available, pending = pending)
 }

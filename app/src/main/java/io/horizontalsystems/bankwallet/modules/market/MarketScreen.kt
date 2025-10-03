@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -27,16 +29,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.R
-import io.horizontalsystems.bankwallet.AdNativeUiState
 import io.horizontalsystems.bankwallet.analytics.TrackScreenViewEvent
 import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.core.slideFromBottom
@@ -58,22 +60,20 @@ import io.horizontalsystems.bankwallet.modules.market.toppairs.TopPairsScreen
 import io.horizontalsystems.bankwallet.modules.market.topplatforms.TopPlatforms
 import io.horizontalsystems.bankwallet.modules.market.topsectors.TopSectorsScreen
 import io.horizontalsystems.bankwallet.modules.metricchart.MetricsType
-import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.CollapsingLayout
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
-import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
-import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.HSSwipeRefresh
-import io.horizontalsystems.bankwallet.ui.compose.components.ScrollableTabs
-import io.horizontalsystems.bankwallet.ui.compose.components.TabItem
+import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
+import io.horizontalsystems.bankwallet.ui.compose.components.body_andy
 import io.horizontalsystems.bankwallet.ui.compose.components.caption_bran
 import io.horizontalsystems.bankwallet.ui.compose.components.caption_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.caption_lucian
 import io.horizontalsystems.bankwallet.ui.compose.components.caption_remus
 import io.horizontalsystems.bankwallet.ui.compose.components.micro_grey
+import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabItem
+import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabsTop
+import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabsTopType
 import io.horizontalsystems.marketkit.models.MarketGlobal
 import java.math.BigDecimal
 
@@ -129,6 +129,40 @@ fun MarketScreen(
                     }
                 )
             }
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(ComposeAppTheme.colors.blade)
+                        .height(48.dp)
+                        .clickable {
+                            navController.slideFromBottom(R.id.marketSearchFragment)
+                            stat(
+                                page = StatPage.Markets,
+                                event = StatEvent.Open(StatPage.MarketSearch)
+                            )
+                        }
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_search),
+                        contentDescription = "Search",
+                        tint = ComposeAppTheme.colors.andy,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    HSpacer(8.dp)
+                    body_andy(
+                        text = stringResource(R.string.Balance_ReceiveHint_Search),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
         }
     }
 
@@ -160,10 +194,7 @@ fun TabsSection(
         )
     }
 
-    ScrollableTabs(
-        modifier = Modifier,
-        tabs = tabItems
-    ) {
+    TabsTop(TabsTopType.Scrolled, tabItems) {
         onTabClick(it)
     }
 

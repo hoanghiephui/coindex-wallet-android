@@ -62,7 +62,6 @@ class DonateTokenSelectFragment : BaseComposeFragment() {
 
             },
             viewModel = viewModel(factory = TokenSelectViewModel.FactoryForSend()),
-            emptyItemsText = stringResource(R.string.Balance_NoAssetsToSend)
         ) {
             DonateHeader(
                 onClick = {

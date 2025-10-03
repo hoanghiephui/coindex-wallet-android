@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -35,7 +37,6 @@ import io.horizontalsystems.bankwallet.ui.compose.components.FormsInput
 import io.horizontalsystems.bankwallet.ui.compose.components.FormsInputMultiline
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderText
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
-import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.coroutines.delay
@@ -144,6 +145,7 @@ fun WatchAddressScreen(navController: NavController, popUpToInclusiveId: Int, in
             Spacer(Modifier.height(32.dp))
             FormsInputMultiline(
                 modifier = Modifier.padding(horizontal = 16.dp),
+                initial = uiState.inputState?.dataOrNull,
                 hint = stringResource(id = R.string.Watch_Address_Hint),
                 qrScannerEnabled = true,
                 state = uiState.inputState,
@@ -160,9 +162,28 @@ fun WatchAddressScreen(navController: NavController, popUpToInclusiveId: Int, in
                     stat(page = StatPage.WatchWallet, event = StatEvent.Paste(StatEntity.Key))
                 }
             )
-            InfoText(
-                text = stringResource(R.string.Watch_InfoText),
-            )
+
+            if (uiState.addressType == WatchAddressViewModel.Type.MoneroAddress) {
+                FormsInput(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                    initial = uiState.viewKeyState?.dataOrNull,
+                    pasteEnabled = true,
+                    hint = stringResource(R.string.Watch_ViewKey),
+                    onValueChange = viewModel::onEnterViewKey,
+                    state = uiState.viewKeyState
+                )
+
+                FormsInput(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    initial = uiState.birthdayHeightState?.dataOrNull,
+                    pasteEnabled = true,
+                    hint = stringResource(R.string.Watch_BirthdayHeight),
+                    onValueChange = viewModel::onEnterBirthdayHeight,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    state = uiState.birthdayHeightState
+                )
+            }
+
             Spacer(Modifier.height(32.dp))
         }
     }

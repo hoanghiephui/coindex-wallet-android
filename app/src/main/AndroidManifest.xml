@@ -169,45 +169,6 @@
         </activity-alias>
 
         <activity-alias
-            android:name="${applicationId}.LeoLauncherAlias"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@mipmap/launcher_leo"
-            android:label="@string/App_Name"
-            android:targetActivity="io.horizontalsystems.bankwallet.modules.main.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-
-        <activity-alias
-            android:name="${applicationId}.MustangLauncherAlias"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@mipmap/launcher_mustang"
-            android:label="@string/App_Name"
-            android:targetActivity="io.horizontalsystems.bankwallet.modules.main.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-
-        <activity-alias
-            android:name="${applicationId}.YakLauncherAlias"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@mipmap/launcher_yak"
-            android:label="@string/App_Name"
-            android:targetActivity="io.horizontalsystems.bankwallet.modules.main.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-
-        <activity-alias
             android:name="${applicationId}.PunkLauncherAlias"
             android:enabled="false"
             android:exported="true"
@@ -303,6 +264,85 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/launcher_yeschad"
+            android:label="@string/App_Name"
+            android:targetActivity="io.horizontalsystems.bankwallet.modules.main.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="${applicationId}.MoneroLauncherAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/launcher_monero"
+            android:label="@string/App_Name"
+            android:targetActivity="io.horizontalsystems.bankwallet.modules.main.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="${applicationId}.ZCashLauncherAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/launcher_zcash"
+            android:label="@string/App_Name"
+            android:targetActivity="io.horizontalsystems.bankwallet.modules.main.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="${applicationId}.SinwarLauncherAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/launcher_sinwar"
+            android:label="@string/App_Name"
+            android:targetActivity="io.horizontalsystems.bankwallet.modules.main.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!--Deprecated -->
+        <activity-alias
+            android:name="${applicationId}.LeoLauncherAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/launcher_leo"
+            android:label="@string/App_Name"
+            android:targetActivity="io.horizontalsystems.bankwallet.modules.main.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="${applicationId}.MustangLauncherAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/launcher_mustang"
+            android:label="@string/App_Name"
+            android:targetActivity="io.horizontalsystems.bankwallet.modules.main.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="${applicationId}.YakLauncherAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/launcher_yak"
             android:label="@string/App_Name"
             android:targetActivity="io.horizontalsystems.bankwallet.modules.main.MainActivity">
             <intent-filter>

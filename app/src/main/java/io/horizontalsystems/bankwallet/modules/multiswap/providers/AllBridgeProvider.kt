@@ -19,8 +19,6 @@ import io.horizontalsystems.bankwallet.modules.multiswap.ui.DataFieldAllowance
 import io.horizontalsystems.bankwallet.modules.multiswap.ui.DataFieldRecipient
 import io.horizontalsystems.bankwallet.modules.multiswap.ui.DataFieldRecipientExtended
 import io.horizontalsystems.bankwallet.modules.multiswap.ui.DataFieldSlippage
-import io.horizontalsystems.bankwallet.modules.multiswap.ui.DataFieldSlippageNotAvailable
-import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.ethereumkit.models.Address
 import io.horizontalsystems.ethereumkit.models.TransactionData
 import io.horizontalsystems.marketkit.models.BlockchainType
@@ -37,32 +35,31 @@ import java.math.BigInteger
 object AllBridgeProvider : IMultiSwapProvider {
     override val id = "allbridge"
     override val title = "AllBridge"
-    override val url = "https://allbridge.io/"
     override val icon = R.drawable.allbridge
     override val priority = 0
     private val feePaymentMethod = FeePaymentMethod.StableCoin
 
     private val proxies = mapOf(
         //Ethereum
-        "0x609c690e8F7D68a59885c9132e812eEbDaAf0c9e" to null,
+        "0x609c690e8F7D68a59885c9132e812eEbDaAf0c9e" to "0x6153F92eF47A97046820714233956f0B0F99d886",
         //BNB Chain
-        "0x3C4FA639c8D7E65c603145adaD8bD12F2358312f" to "0xdb7A84411507FA4cFE460ddAE0df8c411AB9DFa2",
+        "0x3C4FA639c8D7E65c603145adaD8bD12F2358312f" to "0x6153F92eF47A97046820714233956f0B0F99d886",
         //Tron
         "TAuErcuAtU6BPt6YwL51JZ4RpDCPQASCU2" to null,
         //Solana
         "BrdgN2RPzEMWF96ZbnnJaUtQDQx7VRXYaHHbYCBvceWB" to null,
         //Polygon
-        "0x7775d63836987f444E2F14AA0fA2602204D7D3E0" to null,
+        "0x7775d63836987f444E2F14AA0fA2602204D7D3E0" to "0x6153F92eF47A97046820714233956f0B0F99d886",
         //Arbitrum
-        "0x9Ce3447B58D58e8602B7306316A5fF011B92d189" to null,
+        "0x9Ce3447B58D58e8602B7306316A5fF011B92d189" to "0x6153F92eF47A97046820714233956f0B0F99d886",
         //Stellar
         "CBQ6GW7QCFFE252QEVENUNG45KYHHBRO4IZIWFJOXEFANHPQUXX5NFWV" to null,
         //Avalanche
-        "0x9068E1C28941D0A680197Cc03be8aFe27ccaeea9" to null,
+        "0x9068E1C28941D0A680197Cc03be8aFe27ccaeea9" to "0x6153F92eF47A97046820714233956f0B0F99d886",
         //Base
-        "0x001E3f136c2f804854581Da55Ad7660a2b35DEf7" to null,
+        "0x001E3f136c2f804854581Da55Ad7660a2b35DEf7" to "0x6153F92eF47A97046820714233956f0B0F99d886",
         //OP Mainnet
-        "0x97E5BF5068eA6a9604Ee25851e6c9780Ff50d5ab" to null,
+        "0x97E5BF5068eA6a9604Ee25851e6c9780Ff50d5ab" to "0x6153F92eF47A97046820714233956f0B0F99d886",
         //Celo
         "0x80858f5F8EFD2Ab6485Aba1A0B9557ED46C6ba0e" to null,
         //Sui
@@ -180,9 +177,7 @@ object AllBridgeProvider : IMultiSwapProvider {
         }
 
         val crosschain = tokenIn.blockchainType != tokenOut.blockchainType
-        if (crosschain) {
-            cautions.add(SlippageNotAvailable())
-        } else {
+        if (!crosschain) {
             settingSlippage = SwapSettingSlippage(settings, BigDecimal("1"))
         }
 
@@ -195,9 +190,6 @@ object AllBridgeProvider : IMultiSwapProvider {
             }
             if (allowance != null && allowance < amountIn) {
                 add(DataFieldAllowance(allowance, tokenIn))
-            }
-            if (crosschain) {
-                add(DataFieldSlippageNotAvailable)
             }
         }
 
@@ -280,13 +272,11 @@ object AllBridgeProvider : IMultiSwapProvider {
         var settingSlippage: SwapSettingSlippage? = null
 
         val crosschain = tokenIn.blockchainType != tokenOut.blockchainType
-        if (crosschain) {
-            cautions.add(SlippageNotAvailable())
-        } else {
+        if (!crosschain) {
             settingSlippage = SwapSettingSlippage(swapSettings, BigDecimal("1"))
         }
 
-        val slippage = settingSlippage?.valueOrDefault()
+        val slippage = settingSlippage?.value
 
         val amountOut = estimateAmountOut(tokenIn, tokenOut, amountIn)
 
@@ -308,9 +298,6 @@ object AllBridgeProvider : IMultiSwapProvider {
             }
             settingSlippage?.value?.let {
                 add(DataFieldSlippage(it))
-            }
-            if (crosschain) {
-                add(DataFieldSlippageNotAvailable)
             }
         }
 
@@ -513,11 +500,11 @@ interface AllBridgeAPI {
             val decimals: Int,
             val tokenAddress: String,
             val originTokenAddress: String?,
-            val confirmations: Int,
+//            val confirmations: Int,
             val chainSymbol: String,
-            val chainId: String,
-            val chainType: String,
-            val chainName: String,
+//            val chainId: String,
+//            val chainType: String,
+//            val chainName: String,
             val bridgeAddress: String,
             //    "poolAddress": "string",
             //    "cctpAddress": "string",
@@ -534,9 +521,3 @@ interface AllBridgeAPI {
 }
 
 data class AllBridgeTokenPair(val abToken: Response.Token, val token: Token)
-
-class SlippageNotAvailable() : HSCaution(
-    TranslatableString.ResString(R.string.SwapWarning_SlippageNotAvailable_Title),
-    Type.Warning,
-    TranslatableString.ResString(R.string.SwapWarning_SlippageNotAvailable_Description),
-)

@@ -486,6 +486,27 @@ fun subheadR_leah(
 }
 
 @Composable
+fun subheadR_grey(
+    text: String,
+    modifier: Modifier = Modifier,
+    textAlign: TextAlign? = null,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
+    onTextLayout: (TextLayoutResult) -> Unit = {}
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        textAlign = textAlign,
+        overflow = overflow,
+        maxLines = maxLines,
+        onTextLayout = onTextLayout,
+        style = ComposeAppTheme.typography.subheadR,
+        color = ComposeAppTheme.colors.grey,
+    )
+}
+
+@Composable
 fun C1(
     text: String,
     modifier: Modifier = Modifier,
@@ -602,6 +623,27 @@ fun subheadSB_grey(
         onTextLayout = onTextLayout,
         style = ComposeAppTheme.typography.subheadSB,
         color = ComposeAppTheme.colors.grey,
+    )
+}
+
+@Composable
+fun subheadSB_lucian(
+    text: String,
+    modifier: Modifier = Modifier,
+    textAlign: TextAlign? = null,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
+    onTextLayout: (TextLayoutResult) -> Unit = {}
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        textAlign = textAlign,
+        overflow = overflow,
+        maxLines = maxLines,
+        onTextLayout = onTextLayout,
+        style = ComposeAppTheme.typography.subheadSB,
+        color = ComposeAppTheme.colors.lucian,
     )
 }
 

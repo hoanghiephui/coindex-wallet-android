@@ -17,6 +17,7 @@ import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.entities.Wallet
+import io.horizontalsystems.bankwallet.modules.receive.monero.ReceiveMoneroScreen
 import io.horizontalsystems.bankwallet.modules.receive.ui.ReceiveAddressScreen
 import io.horizontalsystems.bankwallet.modules.receive.ui.UsedAddressesParams
 import io.horizontalsystems.bankwallet.modules.receive.viewmodels.ReceiveAddressViewModel
@@ -49,6 +50,9 @@ class ReceiveFragment : BaseComposeFragment() {
                             ReceiveScreen(navController, wallet, it.receiveEntryPointDestId)
                         }
                     }
+                BlockchainType.Monero -> {
+                    ReceiveMoneroScreen(navController, wallet, it.receiveEntryPointDestId)
+                }
 //        BlockchainType.ArbitrumOne -> TODO()
 //        BlockchainType.Avalanche -> TODO()
 //        BlockchainType.Base -> TODO()

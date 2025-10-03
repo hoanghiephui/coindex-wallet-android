@@ -54,6 +54,7 @@ import io.horizontalsystems.bankwallet.core.managers.LanguageManager
 import io.horizontalsystems.bankwallet.core.managers.LocalStorageManager
 import io.horizontalsystems.bankwallet.core.managers.MarketFavoritesManager
 import io.horizontalsystems.bankwallet.core.managers.MarketKitWrapper
+import io.horizontalsystems.bankwallet.core.managers.MoneroBirthdayProvider
 import io.horizontalsystems.bankwallet.core.managers.MoneroNodeManager
 import io.horizontalsystems.bankwallet.core.managers.NetworkManager
 import io.horizontalsystems.bankwallet.core.managers.NftAdapterManager
@@ -141,13 +142,13 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlinx.coroutines.withContext
 import java.security.MessageDigest
 import java.util.logging.Level
 import java.util.logging.Logger
 import javax.inject.Inject
 import androidx.work.Configuration as WorkConfiguration
-import timber.log.Timber
 
 @HiltAndroidApp
 class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
@@ -180,6 +181,7 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
         lateinit var backupManager: IBackupManager
         lateinit var proFeatureAuthorizationManager: ProFeaturesAuthorizationManager
         lateinit var zcashBirthdayProvider: ZcashBirthdayProvider
+        lateinit var moneroBirthdayProvider: MoneroBirthdayProvider
 
         lateinit var connectivityManager: ConnectivityManager
         lateinit var appDatabase: AppDatabase
@@ -226,6 +228,7 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
         lateinit var tonConnectManager: TonConnectManager
         lateinit var recentAddressManager: RecentAddressManager
         lateinit var roiManager: RoiManager
+        lateinit var appIconService: AppIconService
         var trialExpired: Boolean = false
     }
 
@@ -386,8 +389,9 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
         connectivityManager = ConnectivityManager(backgroundManager)
 
         zcashBirthdayProvider = ZcashBirthdayProvider(this)
+        moneroBirthdayProvider = MoneroBirthdayProvider()
         restoreSettingsManager =
-            RestoreSettingsManager(restoreSettingsStorage, zcashBirthdayProvider)
+            RestoreSettingsManager(restoreSettingsStorage, zcashBirthdayProvider, moneroBirthdayProvider)
 
         evmLabelManager = EvmLabelManager(
             EvmLabelProvider(),
@@ -487,6 +491,8 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
         chartIndicatorManager =
             ChartIndicatorManager(appDatabase.chartIndicatorSettingsDao(), localStorage)
 
+        appIconService = AppIconService(localStorage)
+
         backupProvider = BackupProvider(
             localStorage = localStorage,
             languageManager = languageManager,
@@ -500,7 +506,7 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
             evmBlockchainManager = evmBlockchainManager,
             marketFavoritesManager = marketFavoritesManager,
             balanceViewTypeManager = balanceViewTypeManager,
-            appIconService = AppIconService(localStorage),
+            appIconService = appIconService,
             themeService = ThemeService(localStorage),
             chartIndicatorManager = chartIndicatorManager,
             chartIndicatorSettingsDao = appDatabase.chartIndicatorSettingsDao(),
@@ -512,6 +518,8 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
             evmSyncSourceManager = evmSyncSourceManager,
             evmSyncSourceStorage = evmSyncSourceStorage,
             solanaRpcSourceManager = solanaRpcSourceManager,
+            moneroNodeManager = moneroNodeManager,
+            moneroNodeStorage = moneroNodeStorage,
             contactsRepository = contactsRepository
         )
 
@@ -664,6 +672,7 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
             evmLabelManager.sync()
             contactsRepository.initialize()
             trialExpired = !UserSubscriptionManager.hasFreeTrial()
+            appIconService.validateAndFixCurrentIcon()
         }
 
         coroutineScope.launch {

@@ -57,6 +57,8 @@
     <string name="Button_Apply">Apply</string>
     <string name="Button_SetAmount">Set Amount</string>
     <string name="Button_ContinueAnyway">Continue Anyway</string>
+    <string name="Button_CopyAddress">Copy Address</string>
+    <string name="Button_HideCoin">Hide Coin</string>
 
     <string name="Attention_Title">Attention</string>
 
@@ -68,6 +70,7 @@
     <string name="Idle" translatable="false">-</string>
     <string name="Any">Any</string>
     <string name="SyncError">Sync error. Try Again</string>
+    <string name="Search_NotFounded">Not Founded</string>
 
     <string name="FooterText" translatable="false">© CoinDex %d</string>
 
@@ -75,7 +78,7 @@
 
     <string name="AccountRecovery_Note">Note</string>
     <string name="AccountRecovery_MigrationRecommended">This wallet seems to use a non-standard character in its recovery phrase and/or a passphrase. If you do not see a balance or transactions please read below for details.\n\nCLICK TO GET MORE INFO</string>
-    <string name="AccountRecovery_MigrationRequired">This is a non-standard wallet. \n\nCLICK TO GET MORE INFO</string>
+    <string name="AccountRecovery_MigrationRequired">This is a non-standard wallet. Please migrate to a standard wallet to avoid risk of fund loss. \n\nCLICK TO GET MORE INFO</string>
 
     <!--Intro-->
 
@@ -105,7 +108,7 @@
     <string name="CreateWallet_Error_EmptyPassphrase">Passphrase cannot be empty</string>
     <string name="CreateWallet_Error_PassphraseForbiddenSymbols">Please use only supported symbols: <![CDATA[A-Z a-z 0-9 \' " ` & / ? ! : ; . , ~ * $ = + - [ ](){} <> \ _ # @ | % ]]></string>
     <string name="CreateWallet_Error_InvalidConfirmation">Passphrase confirmation does not match</string>
-    <string name="CreateWallet_PassphraseDescription">Passphrases add additional security layer for wallets. To restore such wallet a user required both a recovery phrase as well as a passphrase.\n\nPassphrases also make it easy for users to have many multi-coin wallets using a single mnemonic but different passwords.</string>
+    <string name="CreateWallet_PassphraseDescription">Passphrases provide an additional layer of security for wallets.When restoring a wallet protected by a passphrase, the user must provide both the recovery phrase and the passphrase.\n\nPassphrases also allow users to create multiple independent multi-coin wallets from the same mnemonic, simply by using different passphrases.</string>
 
     <!--Languages-->
     <string name="Language_English">English</string>
@@ -149,6 +152,7 @@
     <string name="SelectContacts_All">All</string>
 
     <string name="Restore_BirthdayHeight">Birthday Height</string>
+    <string name="Restore_BirthdayHeight_Invalid">Invalid Birthday Height</string>
     <string name="Restore_ZCash">Zcash</string>
     <string name="Restore_ZCash_BirthdayHeight_Hint">Enter wallet\'s birthday height for faster synchronization.</string>
     <string name="Restore_ZCash_Birthday_Hint">000000000 (optional)</string>
@@ -392,6 +396,7 @@
 
     <!--Balance-->
 
+    <string name="Wallet_Title">Wallet</string>
     <string name="Balance_Withdraw">Withdraw</string>
     <string name="Balance_Title">Balance</string>
     <string name="Balance_Send">Send</string>
@@ -432,6 +437,7 @@
     <string name="Balance_Receive_UsedAddresses">Used Addresses</string>
     <string name="Balance_Receive_UsedAddressesDescriptoin">%s addresses change for privacy and security. Below a list of used addresses in this wallet.</string>
     <string name="Balance_Receive_ReceiveAddresses">Receive Addresses</string>
+    <string name="Balance_ReceiveAddress">Receive Address</string>
     <string name="Balance_Receive_ChangeAddresses">Change Addresses</string>
     <string name="Balance_SendHint_CoinName">Coin Name</string>
     <string name="Balance_ReceiveHint_Search">Search</string>
@@ -439,6 +445,9 @@
     <string name="Balance_Receive_Trustline">Trustline</string>
     <string name="Balance_Reserved_Title">Reserved</string>
     <string name="Balance_WalletAddress">Wallet Address</string>
+    <string name="Balance_Receive_Subaddresses">Subadresses</string>
+    <string name="Balance_Receive_SubaddressesInfo">Subaddresses let you use multiple unique addresses within one wallet for convenience and enhanced privacy.</string>
+    <string name="Balance_Receive_SubaddressesTransactions">Transactions: %s</string>
 
     <string name="Balance_Zcash_UnshieldedBalance_Title">Transparent</string>
     <string name="Balance_Zcash_UnshieldedBalance_Info_Title">Transparent amount</string>
@@ -456,7 +465,7 @@
     <string name="Send_Hint_Address">Address or Domain</string>
 
     <string name="Send_Fee">Fee</string>
-    <string name="Send_Fee_Info">Blockchains require users to pay network fees when sending transactions. The fees are higher when a lot of transactions are taking place on the network.</string>
+    <string name="Send_Fee_Info">The estimated cost of processing this transaction on the blockchain.</string>
     <string name="Send_Button_Paste">Paste</string>
     <string name="Send_Button_Max">Max</string>
     <string name="Send_Advanced">Advanced</string>
@@ -584,11 +593,9 @@
     <string name="FeeSettings_Overpricing">The set transaction fee is higher than necessary for processing this transaction now.</string>
     <string name="FeeSettings_FeeRate">Fee Rate (SAT/BYTE)</string>
     <string name="FeeSettings_FeeRate_RecommendedInfo">Here is the recommended value for hitting the next 2 blocks</string>
-    <string name="FeeSettings_FeeRate_Info">Blockchains require users to pay network fees when sending transactions. The fees are higher when a lot of transactions are taking place on the network.
-        \n\nThe CoinDex wallet estimates fee based on the current blockchain activity and recommends the optimal value in order for the transaction to be processed within reasonable amount of time.
-        \n\nThe recommended fee rate shown as the amount of satoshi user needs to pay for a single byte of the transaction. Thus, the total fee depends on the total size of the transaction which is measured in bytes.
-        \n\nUsers may use provided controls to increase or decrease the fee rate value. The change in fee rate changes the total fee for the transaction the user will pay.
-        \n\nSetting fee rate below recommended value may result in a transaction being held as pending for hours, or being rejected. The lower the value, the longer it will take for the transaction to confirm. For transactions where priority is important, we recommend setting higher fee rate.</string>
+    <string name="FeeSettings_FeeRate_Info">When sending a transaction, you must pay a network fee. The busier the network, the higher the fee.
+        \n\CoinDex Wallet suggests an optimal fee to help your transaction confirm in a reasonable time. You can increase or decrease this value.
+        \n\nSetting the fee too low may cause your transaction to stay pending for a long time or even be rejected. For faster confirmation, use a higher fee.</string>
 
 
     <!--Fee Info -->
@@ -644,7 +651,7 @@
     <string name="WalletConnect_SignMessageRequest_ShowMessageTitle">Message to sign</string>
     <string name="WalletConnect_SignMessageRequest_ButtonSign">Sign</string>
     <string name="WalletConnect_Error_NoWallet">You need to create or import a wallet before you can use WalletConnect</string>
-    <string name="WalletConnect_Error_NeedBackup">Create a backup copy of the recovery phrase and the associated password that will allow you to recover your wallet if your phone is lost, stolen, broken, etc.</string>
+    <string name="WalletConnect_Error_NeedBackup">Create a backup of your recovery phrase and the associated passphrase. These will allow you to restore your wallet if your phone is lost, stolen, or damaged.</string>
     <string name="WalletConnect_Error_UnsupportedChainId">Unsupported Blockchain</string>
     <string name="WalletConnect_Error_NoSuitableAccount">No suitable account</string>
     <string name="WalletConnect_Error_NoSuitableEvmKit">No suitable evm kit</string>
@@ -655,7 +662,7 @@
     <string name="WalletConnect_Error_RequestNotFoundError">Request not found error</string>
     <string name="WalletConnect_NoConnection">You don\’t have any connected dapps</string>
     <string name="WalletConnect_PendingRequests">Pending Requests</string>
-    <string name="WalletConnect_ActiveWallet">Active Wallet</string>
+    <string name="WalletConnect_ActiveWallet">Wallet</string>
     <string name="WalletConnect_NotSupportedDescription">You current wallet type %s does not support WalletConnect</string>
     <string name="WalletConnect_Unnamed">Unnamed</string>
     <string name="WalletConnect_Pairings">Pairings</string>
@@ -664,6 +671,12 @@
     <string name="WalletConnect_Pairings_ConfirmationDeleteAll">Do you want to delete all paired dApss?</string>
     <string name="WalletConnect_Pairings_Delete">Delete</string>
     <string name="WalletConnect_DeleteAllPairs">Delete All Pairs</string>
+    <string name="WalletConnect_Networks">Networks</string>
+    <string name="WalletConnect_ConnectTo">Connect to %s</string>
+    <string name="WalletConnect_ConnectedTo">Connected to %s</string>
+    <string name="WalletConnect_WhiteListDeactivatedWarning">Scam Protection is deactivated. Domain verification is unavailable. Upgrade to Premium to protect against unverified or phishing websites.</string>
+    <string name="WalletConnect_NotInWhiteListAlert">This website is not verified and may lead to phishing or loss of funds. Connecting is strongly discouraged.</string>
+    <string name="WalletConnect_ConnectWarning">By clicking connect, you allow this app to view your public address.</string>
 
     <!--EthereumTransaction-->
     <string name="EthereumTransaction_Warning_Title">Warning</string>
@@ -731,11 +744,11 @@
     <!-- Swap Settings -->
     <string name="SwapSettings_Title">Swap Settings</string>
     <string name="SwapSettings_SlippageTitle">Slippage Tolerance</string>
-    <string name="SwapSettings_SlippageDescription">Your transaction will revert if the price changes unfavorably by more than this percentage</string>
+    <string name="SwapSettings_SlippageDescription">If the price moves beyond this percentage, the swap won’t go through.</string>
     <string name="SwapSettings_DeadlineTitle">Transaction Deadline</string>
     <string name="SwapSettings_DeadlineDescription">Your transaction will revert if it is pending for more than this long.</string>
     <string name="SwapSettings_RecipientAddressTitle">Recipient Address</string>
-    <string name="SwapSettings_RecipientAddressDescription">After the exchange operation, the amount will be transferred to the specified address</string>
+    <string name="SwapSettings_RecipientAddressDescription">The swapped amount will be sent to the specified address.</string>
     <string name="SwapSettings_Apply">Apply</string>
     <string name="SwapSettings_DeadlineMinute">%s min</string>
 
@@ -776,7 +789,7 @@
     <!--Uniswap Info -->
 
     <string name="SwapInfo_AllowanceTitle">Allowance</string>
-    <string name="SwapInfo_AllowanceDescription">The amount an exchange can spend on a user\’s behalf when executing token swaps. A proceeding transaction setting sufficient allowance is required before an actual swap transaction can take place.</string>
+    <string name="SwapInfo_AllowanceDescription">Allowance is the amount you let the exchange use on your behalf for swaps. Before making a swap, you first need to approve an allowance transaction.</string>
     <string name="SwapInfo_PriceImpactTitle">Price Impact</string>
     <string name="SwapInfo_PriceImpactDescription">The expected price deviation from a shown price, typically increases with the swap amount.</string>
 
@@ -787,7 +800,7 @@
     <!--Transactions-->
 
     <string name="Transactions_Title">Transactions</string>
-    <string name="Transactions_EmptyList">You don\’t have any pending or past transactions yet</string>
+    <string name="Transactions_EmptyList">No pending or past transactions yet.</string>
     <string name="Transactions_WaitForSync">Please wait for the sync to finish.</string>
     <string name="Transactions_Pending">Pending</string>
     <string name="Transactions_Receive">Received</string>
@@ -951,6 +964,7 @@
     <string name="Settings_TonConnect" translatable="false">TON Connect</string>
     <string name="Settings_RateUs">Rate Us</string>
     <string name="Settings_LaunchScreen">Launch Screen</string>
+    <string name="Settings_LaunchScreen_Tip">Choose which screen the app opens on by default.</string>
     <string name="Settings_Appearance">Appearance</string>
     <string name="Settings_AppSettings">App Settings</string>
     <string name="Settings_Subscription">Subscription</string>
@@ -976,7 +990,7 @@
     <string name="Settings_PersonalSupport_Requestfailed">Request failed</string>
     <string name="Settings_PersonalSupport_OpenTelegram">Open Telegram</string>
     <string name="Settings_VipSupport_StartChat">Join VIP Group</string>
-    <string name="Settings_VipSupport_Description">Get exclusive access to our VIP Group, where premium users and the Unstoppable Wallet team collaborate. Receive direct assistance, discuss future updates, and help shape the wallet’s evolution.</string>
+    <string name="Settings_VipSupport_Description">Join our VIP Group to get direct support, take part in discussions about upcoming updates, and connect more closely with the Unstoppable team.</string>
 
     <string name="Settings_Donate_Info">Together, with your support, we can make this app even better!</string>
     <string name="Settings_Donate">Donate</string>
@@ -1001,7 +1015,7 @@
     <!--Address Checker-->
     <string name="SettingsAddressChecker_Title">Address Checker</string>
     <string name="SettingsAddressChecker_RecipientCheck">Recipient Check</string>
-    <string name="SettingsAddressChecker_CheckTheRecipientInfo">Checks the recipient address for risks before sending.</string>
+    <string name="SettingsAddressChecker_CheckTheRecipientInfo">Scans the recipient address for security risks prior to sending.</string>
     <string name="SettingsAddressChecker_CheckAddress">Check Address</string>
     <string name="SettingsAddressChecker_SelectBlockchain">Select Blockchain</string>
     <string name="SettingsAddressChecker_SelectCoin">Select Coin</string>
@@ -1126,14 +1140,19 @@
     <string name="Appearance_MarketsTab">MARKETS TAB</string>
     <string name="Appearance_BalanceTab">BALANCE TAB</string>
     <string name="Appearance_AppIcon">APP ICON</string>
-    <string name="Appearance_BalanceValue">Balance Value</string>
+    <string name="Appearance_BalanceValue">Coin Balances</string>
+    <string name="Appearance_BalanceValue_Tip">Show balances highlighted in either crypto or fiat.</string>
     <string name="Appearance_Warning_CloseApplication">Changing icon will close application</string>
     <string name="Appearance_HideMarketsTab">Hide Markets</string>
+    <string name="Appearance_HideMarketsTab_Tip">Hide the Markets tab completely.</string>
     <string name="Appearance_HideBalanceTabButtons">Hide Buttons</string>
+    <string name="Appearance_HideBalanceTabButtons_Tip">Hide Send, Receive, and Swap buttons in Balance</string>
     <string name="Appearance_AmountRounding">Amount Rounding</string>
-    <string name="Appearance_BalanceAutoHide">Balance Auto Hide</string>
-    <string name="Appearance_BalanceAutoHide_Description">Automatically hides balance each time the app is opened, regardless of previous preferences.</string>
+    <string name="Appearance_AmountRounding_Tip">Display rounded balances and transaction amounts.</string>
+    <string name="Appearance_BalanceAutoHide">Balance Tab</string>
+    <string name="Appearance_BalanceAutoHide_Description">Hide the Send, Receive, and Swap buttons from the Balance tab.</string>
     <string name="Appearance_PriceChangeInterval">Price Change %</string>
+    <string name="Appearance_PriceChangeInterval_Tip">Select the time period for token price change display.</string>
     <string name="Appearance_HideButtonsInfo">The “Hide Buttons” configuration hides the Send, Receive, and Swap buttons on Balance tab.</string>
 
     <string name="BalanceViewType_CoinValue">Coin Value</string>
@@ -1173,12 +1192,12 @@
 
     <!-- Privacy  -->
 
-    <string name="Privacy_Information">CoinDex doesn\'t collect personal data that expose your private information i.e. coin balances or addresses. While we gather some UI usage statistics, it\'s solely for understanding our user base and app usage trends. That can be disabled if you wish.</string>
+    <string name="Privacy_Information">CoinDex doesn\’t collect personal data like your balances or wallet addresses. We only use anonymous data to improve the app.</string>
     <string name="Privacy_BulletedText1">The wallet does not gather any personal data.</string>
     <string name="Privacy_BulletedText2">There are no user accounts or databases storing user data.</string>
-    <string name="Privacy_BulletedText3">If allowed the wallet will share app usage habits with CoinDex team. This is to understand which features are being used (or not) by our users. Being a privacy focused app we need some way to evaluate our efforts and without this we have no idea whether the features we built are being used or not.</string>
+    <string name="Privacy_BulletedText3">If allowed, the wallet will share app usage habits with the CoinDex team. This is to understand which features are being used (or not) by our users. Being a privacy focused app we need some way to evaluate our efforts and without this we have no idea whether the features we built are being used or not.</string>
     <string name="ShareUiData">Share UI data</string>
-    <string name="ShareUiDataDescription">This setting allows you to disable UI/UX analytics and ensure complete confidentiality.</string>
+    <string name="ShareUiDataDescription">This setting lets you turn off analytics and keep your activity fully private.</string>
 
     <!-- Security Center -->
 
@@ -1203,8 +1222,11 @@
     <string name="AddMoneroNode_Pasword">Password (optional)</string>
     <string name="AddMoneroNode_Warning_UrlExists">Node with this url already exists</string>
     <string name="AddMoneroNode_Error_InvalidUrl">Entered url is invalid. Valid url must have one of the following schemes: https</string>
-
-
+    <string name="MoneroNodeSettings_TrustedTitle">Node Preferences</string>
+    <string name="MoneroNodeSettings_TrustedDescription">Trusted node — the wallet trusts the selected node and uses its data without extra verification.
+        \n\nOn → transactions instantly appear as Pending when broadcast (faster sync, but lower privacy and reliance on the node).
+        \n\nOff → transactions are shown only after confirmations from the network (slower, but safer and more private).</string>
+    <string name="MoneroNodeSettings_Trusted">Trusted</string>
     <!--Btc Blockchain Settings -->
     <string name="BtcBlockchainSettings_RestoreSourceChangeWarning">After changing source the wallet will have to resync itself.</string>
     <string name="BtcBlockchainSettings_RestoreSourceSettingsDescription">Choose the source CoinDex app should use for synchronizing wallet(s).</string>
@@ -1231,7 +1253,7 @@
     <string name="SettingsSecurity_SetDuressPin">Set Duress Mode</string>
     <string name="SettingsSecurity_EditDuressPin">Edit Duress Passcode</string>
     <string name="SettingsSecurity_DisableDuressPin">Disable Duress Passcode</string>
-    <string name="SettingsSecurity_DuressPinDescription">A specialized mode designed to keep selected wallets safe under coercion.</string>
+    <string name="SettingsSecurity_DuressPinDescription">A special mode that protects selected wallets in case of coercion.</string>
     <string name="SettingsSecurity_ManageKeys">Manage Wallets</string>
     <string name="SettingsSecurity_AppRestartWarning">This action will restart CoinDex Wallet.</string>
     <string name="SettingsSecurity_TorConnectionDescription">Fully anonymize your internet while using this app. Note, in some cases WalletConnect feature for DeFi apps may be very slow or not work at all.</string>
@@ -1332,6 +1354,7 @@
 
     <string name="Hud_Text_NoInternet">No Internet</string>
     <string name="Hud_Text_Copied">Copied</string>
+    <string name="Hud_Text_AddressCopied">Address copied</string>
     <string name="Hud_Text_Created">Created</string>
     <string name="Hud_Text_Restored">Imported</string>
     <string name="Hud_Text_AddressAdded">Address Added</string>
@@ -1388,7 +1411,7 @@
     <string name="ImportWallet_BackupFile">from File</string>
     <string name="ImportWallet_BackupFile_Description">Import a backup file from your local folder.</string>
     <string name="ImportWallet_RecoveryPhrase">from Recovery Phrase</string>
-    <string name="ImportWallet_RecoveryPhrase_Description">Import using recovery phrase or private key.</string>
+    <string name="ImportWallet_RecoveryPhrase_Description">Import a wallet using a recovery phrase or a private key.</string>
     <string name="ImportWallet_ExchangeWallet">from Exchange Wallet</string>
     <string name="ImportWallet_ExchangeWallet_Description">Connect to a wallet on centralized exchange.</string>
     <string name="ImportWallet_WarningInvalidJson">Invalid Json File</string>
@@ -1401,12 +1424,15 @@
     <string name="ImportBackupFile_Error_InvalidPassword">Invalid Password</string>
     <string name="ImportBackupFile_BackupPassword">Backup Password</string>
 
-    <string name="Watch_Address_Hint">Paste public address or XPUB</string>
+    <string name="WatchWallet">Watch Wallet</string>
+    <string name="Watch_Address_Hint">Paste your address (EVM, Tron, TON, Stellar, Monero, BTC, LTC, BCH, Dash) or XPUB</string>
     <string name="Watch_Address_Watch">Watch</string>
+    <string name="Watch_ViewKey">Private View Key</string>">
+    <string name="Watch_BirthdayHeight">Restore Height</string>">
     <string name="Watch_Select_Blockchains">Choose Blockchains</string>
     <string name="Watch_Select_Coins">Choose Coins</string>
-    <string name="Watch_InfoText">Supports addresses from EVM, Tron, TON, Stellar, Bitcoin-family (BTC, LTC, BCH, Dash) and XPUB keys.</string>
     <string name="Watch_Error_InvalidAddressFormat">Address format is not supported</string>
+    <string name="Watch_Monero_Warning">Monero watch wallet shows only incoming transactions. The balance displayed may be incorrect.</string>
 
     <!--Manage Account-->
     <string name="ManageAccount_Name">Name</string>
@@ -1440,7 +1466,7 @@
 
     <!-- Backup Recovery Phrase -->
     <string name="BackupRecoveryPhrase_Title">Backup Recovery Phrase</string>
-    <string name="BackupRecoveryPhrase_Description">Create a backup copy of the recovery phrase and the associated password that will allow you to recover your wallet if your phone is lost, stolen, broken, etc.</string>
+    <string name="BackupRecoveryPhrase_Description">Create a backup of your recovery phrase and the associated passphrase. These will allow you to restore your wallet if your phone is lost, stolen, or damaged.</string>
     <string name="BackupRecoveryPhrase_ManualBackup">Manual Backup</string>
     <string name="BackupRecoveryPhrase_LocalBackup">Local Backup</string>
     <string name="BackupRecoveryPhrase_Later">Later</string>
@@ -1460,7 +1486,7 @@
 
     <!-- Recovery Phrase -->
     <string name="RecoveryPhrase_Title">Recovery Phrase</string>
-    <string name="RecoveryPhrase_Description">Write these words down in the correct order and keep them in a safe place</string>
+    <string name="RecoveryPhrase_Description">Write these words down in order and keep them safe.</string>
     <string name="RecoveryPhrase_ShowPhrase">Tap to show recovery phrase</string>
     <string name="RecoveryPhrase_Verify">Verify</string>
     <string name="RecoveryPhrase_CopyWarning_Title">Risk of Copying</string>
@@ -1489,14 +1515,21 @@
     <!-- Private Keys -->
     <string name="PrivateKeys_Title">Private Keys</string>
     <string name="PrivateKeys_EvmPrivateKey">EVM Private Key</string>
-    <string name="PrivateKeys_EvmPrivateKeyDescription">Grants full control over EVM based crypto i.e Ethereum, Binance Smart Chain etc. within respective wallet.</string>
+    <string name="PrivateKeys_EvmPrivateKeyDescription">Grants full control over assets on EVM-based networks (e.g., Ethereum, BNB Smart Chain, Polygon, Avalanche) within this wallet.</string>
     <string name="PrivateKeys_StellarSecretKey">Stellar Secret Key</string>
-    <string name="PrivateKeys_StellarSecretKeyDescription">Grants full control over Stellar account within respective wallet.</string>
+    <string name="PrivateKeys_StellarSecretKeyDescription">Grants full control over assets on the Stellar network within this wallet.</string>
     <string name="PrivateKeys_Bip32RootKey" translatable="false">BIP32 Root Key</string>
-    <string name="PrivateKeys_Bip32RootKeyDescription">Grants full control over the assets on the respective wallet.</string>
+    <string name="PrivateKeys_Bip32RootKeyDescription">The master private key of the wallet. Grants full control over all derived accounts and assets.</string>
     <string name="PrivateKeys_AccountExtendedPrivateKey">Account Extended Private Key</string>
-    <string name="PrivateKeys_AccountExtendedPrivateKeyDescription">Grants full control over Bitcoin and other UTXO based crypto i.e. Litecoin, Bitcoin Cash, Dash etc. within respective wallet.</string>
+    <string name="PrivateKeys_AccountExtendedPrivateKeyDescription">Grants full control over Bitcoin and other UTXO-based assets (e.g., Litecoin, Bitcoin Cash, Dash) within this wallet.</string>
     <string name="PrivateKeys_NeverShareWarning">Never share this key with anyone. CoinDex Wallet support team will never ask for it.</string>
+    <string name="PrivateKeys_MoneroPrivateKey">Monero Private Keys</string>
+    <string name="PrivateKeys_MoneroPrivateKeyDescription">Grants full control over Monero (XMR) assets within this wallet, including the ability to spend funds.</string>
+    <string name="MoneroKeyType">Type</string>
+    <string name="MoneroKeyType_Spend">Spend</string>
+    <string name="MoneroKeyType_View">View</string>
+    <string name="MoneroKeyType_Private">Monero Private Keys</string>
+    <string name="MoneroKeyType_Public">Monero Public Keys</string>
 
     <!-- Public Keys -->
     <string name="PublicKeys_Title">Public Keys</string>
@@ -1504,6 +1537,8 @@
     <string name="PublicKeys_AccountExtendedPublicKey" translatable="false">Account Extended Public Key</string>
     <string name="PublicKeys_EvmAddress_Description">Allows read-only monitoring of wallets holding assets on Ethereum, Binance Smart Chain and other EVM based blockchains.</string>
     <string name="PublicKeys_AccountExtendedPublicKeyDescription">Allows read-only monitoring of wallets holding Bitcoin and other UTXO based crypto (i.e Litecoin, Bitcoin Cash, Dash etc.).</string>
+    <string name="PublicKeys_MoneroPublicKey">Monero Public Keys</string>
+    <string name="PublicKeys_MoneroPublicKeyDescription">Allows read-only monitoring of wallets holding Monero (XMR) assets without granting spending access.</string>
 
     <!-- Recovery Phrase Verify -->
     <string name="RecoveryPhraseVerify_Title">Verify</string>
@@ -1570,6 +1605,7 @@
 
     <!--Coin Page-->
 
+    <string name="Coin_Chart">Chart</string>
     <string name="Coin_Info">Coin Info</string>
     <string name="Coin_Tab_Overview">Price</string>
     <string name="Coin_Tab_Market">Markets</string>
@@ -1958,7 +1994,7 @@
     <string name="Contacts_DiscardChanges">Discard Changes</string>
     <string name="Contacts_KeepEditing">Keep Editing</string>
     <string name="Contacts_DiscardChanges_Warning">Are you sure you want to discard these new changes?</string>
-    <string name="Contacts_NoContacts">You do not have an added contact</string>
+    <string name="Contacts_NoContacts">No contacts added yet</string>
     <string name="Contacts_ActionMore">More</string>
     <string name="Contacts_Error_DefinedAddress">This address is already used for %s</string>
     <string name="Contacts_Error_DefinedName">The name already exists</string>

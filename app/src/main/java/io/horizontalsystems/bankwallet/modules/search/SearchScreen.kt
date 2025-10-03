@@ -55,10 +55,8 @@ import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
 import io.horizontalsystems.bankwallet.core.slideFromBottom
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.modules.coin.CoinFragment
-import io.horizontalsystems.bankwallet.modules.market.search.MarketSearchResults
 import io.horizontalsystems.bankwallet.modules.market.search.MarketSearchSection
 import io.horizontalsystems.bankwallet.modules.market.search.MarketSearchViewModel
-import io.horizontalsystems.bankwallet.modules.market.search.MarketSearchViewModel.MainPage
 import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.components.ListErrorView
@@ -72,9 +70,9 @@ fun SearchScreen(
     searchViewModel: MarketSearchViewModel,
     navController: NavController,
 ) {
-    var text by rememberSaveable { mutableStateOf("") }
+    /*var text by rememberSaveable { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
-    val mainState by searchViewModel.mainState.collectAsStateWithLifecycle()
+    //val mainState by searchViewModel.mainState.collectAsStateWithLifecycle()
     val (adState, reloadAd) = rememberAdNativeView(
         BuildConfig.HOME_MARKET_NATIVE,
         adPlacements = "Search",
@@ -232,9 +230,10 @@ fun SearchScreen(
             }
 
         }
-    }
+    }*/
 }
 
+/*
 private fun LazyListScope.discovery(
     interestsItemModifier: Modifier = Modifier,
     mainState: MainPage,
@@ -316,4 +315,4 @@ private fun LazyListScope.discovery(
             }
         }
     }
-}
+}*/

@@ -16,7 +16,7 @@ import io.horizontalsystems.bankwallet.model.DataChart
 import io.horizontalsystems.bankwallet.modules.coin.overview.ui.ChartTab
 import io.horizontalsystems.bankwallet.modules.theme.ThemeType
 import io.horizontalsystems.bankwallet.ui.ChartBinanceView
-import io.horizontalsystems.bankwallet.ui.compose.components.TabItem
+import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 

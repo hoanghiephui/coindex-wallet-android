@@ -48,7 +48,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
-import java.math.RoundingMode
 import java.util.Date
 
 abstract class BitcoinBaseAdapter(
@@ -61,8 +60,6 @@ abstract class BitcoinBaseAdapter(
 
     private val scope = CoroutineScope(Dispatchers.Default)
     private var transactionConfirmationsThreshold = 3
-
-    abstract val satoshisInBitcoin: BigDecimal
 
     //
     // Adapter implementation
@@ -288,7 +285,6 @@ abstract class BitcoinBaseAdapter(
         pluginData: Map<Byte, IPluginData>?,
         transactionSorting: TransactionDataSortMode?,
         rbfEnabled: Boolean,
-        dustThreshold: Int?,
         changeToFirstInput: Boolean,
         utxoFilters: UtxoFilters
     ): BitcoinTransactionRecord? {
@@ -297,14 +293,13 @@ abstract class BitcoinBaseAdapter(
         val fullTransaction = kit.send(
             address = address,
             memo = memo,
-            value = (amount * satoshisInBitcoin).toLong(),
+            value = amount.movePointRight(decimal).toLong(),
             senderPay = true,
             feeRate = feeRate,
             sortType = sortingType,
             unspentOutputs = unspentOutputs,
             pluginData = pluginData ?: mapOf(),
             rbfEnabled = rbfEnabled,
-            dustThreshold = dustThreshold,
             changeToFirstInput = changeToFirstInput,
             filters = utxoFilters,
         )
@@ -323,7 +318,6 @@ abstract class BitcoinBaseAdapter(
         memo: String?,
         unspentOutputs: List<UnspentOutputInfo>?,
         pluginData: Map<Byte, IPluginData>?,
-        dustThreshold: Int?,
         changeToFirstInput: Boolean,
         utxoFilters: UtxoFilters
     ): BigDecimal {
@@ -334,19 +328,18 @@ abstract class BitcoinBaseAdapter(
                 feeRate = feeRate,
                 unspentOutputInfos = unspentOutputs,
                 pluginData = pluginData ?: mapOf(),
-                dustThreshold = dustThreshold,
                 changeToFirstInput = changeToFirstInput,
                 filters = utxoFilters,
             )
-            satoshiToBTC(maximumSpendableValue, RoundingMode.CEILING)
+            satoshiToBTC(maximumSpendableValue)
         } catch (e: Exception) {
             BigDecimal.ZERO
         }
     }
 
-    override fun minimumSendAmount(address: String?, dustThreshold: Int?): BigDecimal? {
+    override fun minimumSendAmount(address: String?): BigDecimal? {
         return try {
-            satoshiToBTC(kit.minimumSpendableValue(address, dustThreshold).toLong(), RoundingMode.CEILING)
+            satoshiToBTC(kit.minimumSpendableValue(address).toLong())
         } catch (e: Exception) {
             null
         }
@@ -359,12 +352,11 @@ abstract class BitcoinBaseAdapter(
         memo: String?,
         unspentOutputs: List<UnspentOutputInfo>?,
         pluginData: Map<Byte, IPluginData>?,
-        dustThreshold: Int?,
         changeToFirstInput: Boolean,
         filters: UtxoFilters
     ): BitcoinFeeInfo? {
         return try {
-            val satoshiAmount = (amount * satoshisInBitcoin).toLong()
+            val satoshiAmount = amount.movePointRight(decimal).toLong()
             kit.sendInfo(
                 value = satoshiAmount,
                 address = address,
@@ -373,14 +365,13 @@ abstract class BitcoinBaseAdapter(
                 feeRate = feeRate,
                 unspentOutputs = unspentOutputs,
                 pluginData = pluginData ?: mapOf(),
-                dustThreshold = dustThreshold,
                 changeToFirstInput = changeToFirstInput,
                 filters = filters
             ).let {
                 BitcoinFeeInfo(
                     unspentOutputs = it.unspentOutputs,
                     fee = satoshiToBTC(it.fee),
-                    changeValue = satoshiToBTC(it.changeValue),
+                    changeValue = it.changeValue?.let { satoshiToBTC(it) },
                     changeAddress = it.changeAddress
                 )
             }
@@ -425,7 +416,7 @@ abstract class BitcoinBaseAdapter(
                         blockHeight = transaction.blockHeight,
                         confirmationsThreshold = transactionConfirmationsThreshold,
                         timestamp = transaction.timestamp,
-                        fee = satoshiToBTC(transaction.fee),
+                        fee = transaction.fee?.let { satoshiToBTC(it) },
                         failed = transaction.status == TransactionStatus.INVALID,
                         lockInfo = transactionLockInfo,
                         conflictingHash = transaction.conflictingTxHash,
@@ -446,7 +437,7 @@ abstract class BitcoinBaseAdapter(
                     blockHeight = transaction.blockHeight,
                     confirmationsThreshold = transactionConfirmationsThreshold,
                     timestamp = transaction.timestamp,
-                    fee = satoshiToBTC(transaction.fee),
+                    fee = transaction.fee?.let { satoshiToBTC(it) },
                     failed = transaction.status == TransactionStatus.INVALID,
                     lockInfo = transactionLockInfo,
                     conflictingHash = transaction.conflictingTxHash,
@@ -469,7 +460,7 @@ abstract class BitcoinBaseAdapter(
                     blockHeight = transaction.blockHeight,
                     confirmationsThreshold = transactionConfirmationsThreshold,
                     timestamp = transaction.timestamp,
-                    fee = satoshiToBTC(transaction.fee),
+                    fee = transaction.fee?.let { satoshiToBTC(it) },
                     failed = transaction.status == TransactionStatus.INVALID,
                     lockInfo = transactionLockInfo,
                     conflictingHash = transaction.conflictingTxHash,
@@ -488,12 +479,8 @@ abstract class BitcoinBaseAdapter(
     val statusInfo: Map<String, Any>
         get() = kit.statusInfo()
 
-    private fun satoshiToBTC(value: Long, roundingMode: RoundingMode = RoundingMode.HALF_EVEN): BigDecimal {
-        return BigDecimal(value).divide(satoshisInBitcoin, decimal, roundingMode)
-    }
-
-    private fun satoshiToBTC(value: Long?): BigDecimal? {
-        return satoshiToBTC(value ?: return null)
+    override fun satoshiToBTC(value: Long): BigDecimal {
+        return BigDecimal(value).movePointLeft(decimal)
     }
 
     companion object {

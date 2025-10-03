@@ -19,8 +19,8 @@ import io.horizontalsystems.bankwallet.model.DataChart
 import io.horizontalsystems.bankwallet.model.Subscribe
 import io.horizontalsystems.bankwallet.repository.BinanceRepository
 import io.horizontalsystems.bankwallet.repository.convertToTimeUTC
-import io.horizontalsystems.bankwallet.ui.compose.components.TabItem
 import io.horizontalsystems.bankwallet.ui.toSymbolKlineUseSocketBinance
+import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabItem
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

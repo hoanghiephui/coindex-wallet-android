@@ -32,6 +32,8 @@ import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 
 sealed class IMenuItem
 
+data object MenuItemLoading : IMenuItem()
+
 data class MenuItemTimeoutIndicator(
     val progress: Float
 ) : IMenuItem()
@@ -170,6 +172,8 @@ fun AppBar(
                             }
                         }
                     }
+
+                    is MenuItemLoading -> TODO()
                 }
             }
         },
@@ -177,7 +181,7 @@ fun AppBar(
 }
 
 @Composable
-private fun MenuItemSimple(menuItem: MenuItem) {
+fun MenuItemSimple(menuItem: MenuItem) {
     val color = if (menuItem.enabled) {
         if (menuItem.tint == Color.Unspecified)
             MaterialTheme.colorScheme.onSurface

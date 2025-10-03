@@ -96,6 +96,7 @@ class EnterAddressFragment : BaseComposeFragment() {
         val sendEntryPointDestId: Int? = null,
         val address: String? = null,
         val amount: BigDecimal? = null,
+        val memo: String? = null,
     ) : Parcelable
 
     override val logScreen: String
@@ -217,7 +218,8 @@ fun EnterAddressScreen(navController: NavController, input: EnterAddressFragment
                                     title = input.title,
                                     address = it,
                                     riskyAddress = uiState.checkResults.any { result -> result.value.checkResult == AddressCheckResult.Detected },
-                                    amount = amount
+                                    amount = amount,
+                                    memo = input.memo,
                                 )
                             )
                         }

@@ -7,6 +7,7 @@ import io.horizontalsystems.bankwallet.core.adapters.zcash.ZcashAdapter
 import io.horizontalsystems.bankwallet.core.managers.ActiveAccountState
 import io.horizontalsystems.bankwallet.core.managers.EvmKitWrapper
 import io.horizontalsystems.bankwallet.core.managers.MiniAppRegisterService.RegisterAppResponse
+import io.horizontalsystems.bankwallet.core.managers.ServiceWCWhitelist
 import io.horizontalsystems.bankwallet.core.providers.FeeRates
 import io.horizontalsystems.bankwallet.core.utils.AddressUriResult
 import io.horizontalsystems.bankwallet.entities.Account
@@ -127,7 +128,6 @@ interface ILocalStorage {
     val balanceTabButtonsEnabledFlow: StateFlow<Boolean>
     var amountRoundingEnabled: Boolean
     val amountRoundingEnabledFlow: StateFlow<Boolean>
-    var nonRecommendedAccountAlertDismissedAccounts: Set<String>
     var personalSupportEnabled: Boolean
     var hideSuspiciousTransactions: Boolean
     var pinRandomized: Boolean
@@ -229,6 +229,7 @@ interface INetworkManager {
     fun ping(host: String, url: String, isSafeCall: Boolean): Flowable<Any>
     fun getEvmInfo(host: String, path: String): Single<JsonObject>
     suspend fun registerApp(userId: String, referralCode: String): RegisterAppResponse
+    suspend fun getWCWhiteList(host: String, path: String): List<ServiceWCWhitelist.WCWhiteList>
 }
 
 interface IClipboardManager {
@@ -247,14 +248,14 @@ interface IWordsManager {
 
 sealed class AdapterState {
     object Synced : AdapterState()
-    data class Syncing(val progress: Int? = null, val lastBlockDate: Date? = null) : AdapterState()
+    data class Syncing(val progress: Int? = null, val lastBlockDate: Date? = null, val connecting: Boolean = false) : AdapterState()
     data class SearchingTxs(val count: Int) : AdapterState()
     data class NotSynced(val error: Throwable) : AdapterState()
 
     override fun toString(): String {
         return when (this) {
             is Synced -> "Synced"
-            is Syncing -> "Syncing ${progress?.let { "${it * 100}" } ?: ""} lastBlockDate: $lastBlockDate"
+            is Syncing -> "Syncing ${progress?.let { "${it * 100}" } ?: ""} lastBlockDate: $lastBlockDate connecting: $connecting"
             is SearchingTxs -> "SearchingTxs count: $count"
             is NotSynced -> "NotSynced ${error.javaClass.simpleName} - message: ${error.message}"
         }
@@ -301,8 +302,6 @@ interface IBalanceAdapter {
 
     val balanceData: BalanceData
     val balanceUpdatedFlowable: Flowable<Unit>
-
-    fun sendAllowed() = balanceState is AdapterState.Synced
 }
 
 open class BalanceData(
@@ -348,12 +347,11 @@ interface ISendBitcoinAdapter {
         memo: String?,
         unspentOutputs: List<UnspentOutputInfo>?,
         pluginData: Map<Byte, IPluginData>?,
-        dustThreshold: Int?,
         changeToFirstInput: Boolean,
         utxoFilters: UtxoFilters
     ): BigDecimal
 
-    fun minimumSendAmount(address: String?, dustThreshold: Int?): BigDecimal?
+    fun minimumSendAmount(address: String?): BigDecimal?
     fun bitcoinFeeInfo(
         amount: BigDecimal,
         feeRate: Int,
@@ -361,7 +359,6 @@ interface ISendBitcoinAdapter {
         memo: String?,
         unspentOutputs: List<UnspentOutputInfo>?,
         pluginData: Map<Byte, IPluginData>?,
-        dustThreshold: Int?,
         changeToFirstInput: Boolean,
         filters: UtxoFilters
     ): BitcoinFeeInfo?
@@ -376,10 +373,11 @@ interface ISendBitcoinAdapter {
         pluginData: Map<Byte, IPluginData>?,
         transactionSorting: TransactionDataSortMode?,
         rbfEnabled: Boolean,
-        dustThreshold: Int?,
         changeToFirstInput: Boolean,
         utxoFilters: UtxoFilters
     ): BitcoinTransactionRecord?
+
+    fun satoshiToBTC(value: Long): BigDecimal
 }
 
 interface ISendEthereumAdapter {

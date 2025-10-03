@@ -125,7 +125,9 @@ class ZcashAdapter(
             lightWalletEndpoint = lightWalletEndpoint,
             setup = AccountCreateSetup(accountName = wallet.account.name, keySource = null, seed = FirstClassByteArray(seed)),
             birthday = birthday,
-            walletInitMode = walletInitMode
+            walletInitMode = walletInitMode,
+            isTorEnabled = false,
+            isExchangeRateEnabled = false
         )
 
         zcashAccount = runBlocking { synchronizer.getAccounts().first() }
@@ -207,10 +209,6 @@ class ZcashAdapter(
 
     override val lastBlockUpdatedFlowable: Flowable<Unit>
         get() = lastBlockUpdatedSubject.toFlowable(BackpressureStrategy.BUFFER)
-
-    override fun sendAllowed(): Boolean {
-        return balanceState is AdapterState.Synced || balanceState is AdapterState.Syncing
-    }
 
     override fun getTransactionsAsync(
         from: TransactionRecord?,

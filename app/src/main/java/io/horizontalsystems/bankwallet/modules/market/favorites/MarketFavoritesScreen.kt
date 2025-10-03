@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,18 +32,19 @@ import io.horizontalsystems.bankwallet.core.stats.statSortType
 import io.horizontalsystems.bankwallet.entities.ViewState
 import io.horizontalsystems.bankwallet.modules.coin.CoinFragment
 import io.horizontalsystems.bankwallet.modules.coin.overview.ui.Loading
-import io.horizontalsystems.bankwallet.modules.market.filtersresult.SignalButton
-import io.horizontalsystems.bankwallet.modules.market.topcoins.OptionController
-import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.HSSwipeRefresh
 import io.horizontalsystems.bankwallet.ui.compose.Select
 import io.horizontalsystems.bankwallet.ui.compose.components.AlertGroup
-import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryCircle
 import io.horizontalsystems.bankwallet.ui.compose.components.CoinListOrderable
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderSorting
 import io.horizontalsystems.bankwallet.ui.compose.components.ListEmptyView
 import io.horizontalsystems.bankwallet.ui.compose.components.ListErrorView
+import io.horizontalsystems.bankwallet.uiv3.components.controls.ButtonSize
+import io.horizontalsystems.bankwallet.uiv3.components.controls.ButtonStyle
+import io.horizontalsystems.bankwallet.uiv3.components.controls.ButtonVariant
+import io.horizontalsystems.bankwallet.uiv3.components.controls.HSButton
+import io.horizontalsystems.bankwallet.uiv3.components.controls.HSDropdownButton
+import io.horizontalsystems.bankwallet.uiv3.components.controls.HSIconButton
 import io.horizontalsystems.subscriptions.core.TradeSignals
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -68,9 +70,9 @@ fun MarketFavoritesScreen(
         stat(
             page = StatPage.Markets,
 
-            event = StatEvent.Refresh
-        ,
-                section = StatSection.Watchlist)
+            event = StatEvent.Refresh,
+            section = StatSection.Watchlist
+        )
     }
 
     Crossfade(
@@ -105,9 +107,9 @@ fun MarketFavoritesScreen(
                             stat(
                                 page = StatPage.Markets,
 
-                                event = StatEvent.RemoveFromWatchlist(uid)
-                            ,
-                                    section = StatSection.Watchlist)
+                                event = StatEvent.RemoveFromWatchlist(uid),
+                                section = StatSection.Watchlist
+                            )
                         },
                         onCoinClick = { coinUid ->
                             val arguments = CoinFragment.Input(coinUid)
@@ -116,9 +118,9 @@ fun MarketFavoritesScreen(
                             stat(
                                 page = StatPage.Markets,
 
-                                event = StatEvent.OpenCoin(coinUid)
-                            ,
-                                    section = StatSection.Watchlist)
+                                event = StatEvent.OpenCoin(coinUid),
+                                section = StatSection.Watchlist
+                            )
                         },
                         onReorder = { from, to ->
                             viewModel.reorder(from, to)
@@ -134,50 +136,61 @@ fun MarketFavoritesScreen(
                                     borderBottom = true,
                                 ) {
                                     HSpacer(width = 16.dp)
-                                    OptionController(
-                                        uiState.sortingField.titleResId,
-                                        onOptionClick = {
+                                    HSDropdownButton(
+                                        variant = ButtonVariant.Secondary,
+                                        title = stringResource(uiState.sortingField.titleResId),
+                                        onClick = {
                                             openSortingSelector = true
                                         }
                                     )
                                     if (uiState.sortingField == WatchlistSorting.Manual && uiState.viewItems.size >= 2) {
                                         HSpacer(width = 12.dp)
-                                        ButtonSecondaryCircle(
-                                            icon = R.drawable.ic_edit_20,
-                                            tint = if (manualOrderEnabled) ComposeAppTheme.colors.dark else ComposeAppTheme.colors.leah,
-                                            background = if (manualOrderEnabled) ComposeAppTheme.colors.jacob else ComposeAppTheme.colors.blade,
-                                        ) {
-                                            manualOrderEnabled = !manualOrderEnabled
-                                        }
+                                        HSIconButton(
+                                            variant = ButtonVariant.Secondary,
+                                            size = ButtonSize.Small,
+                                            icon = painterResource(R.drawable.ic_edit_20),
+                                            onClick = {
+                                                manualOrderEnabled = !manualOrderEnabled
+                                            }
+                                        )
                                     }
                                     HSpacer(width = 12.dp)
-                                    OptionController(
-                                        uiState.period.titleResId,
-                                        onOptionClick = {
+                                    HSDropdownButton(
+                                        variant = ButtonVariant.Secondary,
+                                        title = stringResource(uiState.period.titleResId),
+                                        onClick = {
                                             openPeriodSelector = true
                                         }
                                     )
                                     HSpacer(width = 12.dp)
-                                    SignalButton(
-                                        turnedOn = uiState.showSignal,
-                                        onToggle = {
-                                            if (it) {
-                                                navController.paidAction(TradeSignals) {navController.slideFromBottomForResult<MarketSignalsFragment.Result>(
-                                                    R.id.marketSignalsFragment
-                                                ) {
-                                                    if (it.enabled) {
-                                                        viewModel.showSignals()}
-                                                    }}
-                                                    stat(
-                                                        page = StatPage.MarketOverview,
-                                                        event = StatEvent.OpenPremium(
-                                                            StatPremiumTrigger.TradingSignal),
-                                                        section = StatSection.Watchlist
+                                    HSButton(
+                                        variant = ButtonVariant.Secondary,
+                                        style = ButtonStyle.Solid,
+                                        size = ButtonSize.Small,
+                                        title = stringResource(id = R.string.Market_Signals),
+                                        onClick = {
+                                            if (!uiState.showSignal) {
+                                                navController.paidAction(TradeSignals) {
+                                                    navController.slideFromBottomForResult<MarketSignalsFragment.Result>(
+                                                        R.id.marketSignalsFragment
+                                                    ) {
+                                                        if (it.enabled) {
+                                                            viewModel.showSignals()
+                                                        }
+                                                    }
+                                                }
+                                                stat(
+                                                    page = StatPage.MarketOverview,
+                                                    event = StatEvent.OpenPremium(
+                                                        StatPremiumTrigger.TradingSignal
+                                                    ),
+                                                    section = StatSection.Watchlist
                                                 )
                                             } else {
                                                 viewModel.hideSignals()
                                             }
-                                        })
+                                        }
+                                    )
                                     HSpacer(width = 16.dp)
                                 }
                             }
@@ -205,8 +218,7 @@ fun MarketFavoritesScreen(
                 stat(
                     page = StatPage.Markets,
 
-                    event = StatEvent.SwitchSortType(selected.statSortType)
-                ,
+                    event = StatEvent.SwitchSortType(selected.statSortType),
                     section = StatSection.Watchlist
                 )
             },
@@ -227,8 +239,7 @@ fun MarketFavoritesScreen(
                 stat(
                     page = StatPage.Markets,
 
-                    event = StatEvent.SwitchPeriod(selected.statPeriod)
-                ,
+                    event = StatEvent.SwitchPeriod(selected.statPeriod),
                     section = StatSection.Watchlist
                 )
             },

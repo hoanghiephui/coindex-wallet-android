@@ -35,6 +35,7 @@ import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.Caution
 import io.horizontalsystems.bankwallet.core.providers.Translator
 import io.horizontalsystems.bankwallet.core.slideFromBottom
+import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.stat
@@ -53,8 +54,9 @@ import io.horizontalsystems.bankwallet.modules.walletconnect.WCManager
 import io.horizontalsystems.bankwallet.modules.walletconnect.list.WalletConnectListViewModel
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
+import io.horizontalsystems.bankwallet.ui.compose.components.MenuItemLoading
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -101,57 +103,53 @@ fun BalanceForAccount(navController: NavController, accountViewItem: AccountView
 
 
     BackupAlert(navController)
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = accountViewItem.name,
-                menuItems = buildList {
-                    if (!viewModel.uiState.balanceTabButtonsEnabled && !accountViewItem.isWatchAccount) {
-                        add(
-                            MenuItem(
-                                title = TranslatableString.ResString(R.string.WalletConnect_NewConnect),
-                                icon = R.drawable.ic_qr_scan_20,
-                                onClick = {
-                                    onScanClick(
-                                        viewModel,
-                                        qrScannerLauncher,
-                                        context,
-                                        navController
-                                    )
-                                }
+    val uiState = viewModel.uiState
+
+    HSScaffold(
+        title = accountViewItem.name,
+        menuItems = buildList {
+            if (uiState.loading) {
+                add(MenuItemLoading)
+            }
+
+            if (!viewModel.uiState.balanceTabButtonsEnabled && !accountViewItem.isWatchAccount) {
+                add(
+                    MenuItem(
+                        title = TranslatableString.ResString(R.string.WalletConnect_NewConnect),
+                        icon = R.drawable.ic_scan_24,
+                        onClick = {
+                            onScanClick(
+                                viewModel,
+                                qrScannerLauncher,
+                                context,
+                                navController
                             )
+                        }
+                    )
+                )
+            }
+            add(
+                MenuItem(
+                    title = TranslatableString.ResString(R.string.ManageAccounts_Title),
+                    icon = R.drawable.ic_wallet_switch_24,
+                    onClick = {
+                        navController.slideFromRight(
+                            R.id.manageAccountsFragment,
+                            ManageAccountsModule.Mode.Switcher
+                        )
+
+                        stat(
+                            page = StatPage.Balance,
+                            event = StatEvent.Open(StatPage.ManageWallets)
                         )
                     }
-                    add(
-                        MenuItem(
-                            title = TranslatableString.ResString(R.string.ManageAccounts_Title),
-                            icon = R.drawable.ic_wallet_switch_24,
-                            onClick = {
-                                navController.slideFromBottom(
-                                    R.id.manageAccountsFragment,
-                                    ManageAccountsModule.Mode.Switcher
-                                )
-
-                                stat(
-                                    page = StatPage.Balance,
-                                    event = StatEvent.Open(StatPage.ManageWallets)
-                                )
-                            }
-                        )
-                    )
-                }
+                )
             )
         }
-    ) { paddingValues ->
-        val uiState = viewModel.uiState
-
+    ) {
         Crossfade(
             targetState = uiState.viewState,
-            modifier = Modifier
-                .padding(top = paddingValues.calculateTopPadding())
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             label = ""
         ) { viewState ->
             when (viewState) {

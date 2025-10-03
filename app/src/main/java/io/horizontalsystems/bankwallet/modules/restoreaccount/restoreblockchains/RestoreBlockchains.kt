@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
@@ -98,12 +99,12 @@ fun ManageWalletsScreen(
 
     mainViewModel.birthdayHeightConfig?.let { config ->
         restoreSettingsViewModel.onEnter(config)
-        mainViewModel.setZCashConfig(null)
+        mainViewModel.setBirthdayHeightConfig(null)
     }
 
-    if (mainViewModel.cancelZCashConfig) {
+    if (mainViewModel.cancelBirthdayHeightConfig) {
         restoreSettingsViewModel.onCancelEnterBirthdayHeight()
-        mainViewModel.cancelZCashConfig = false
+        mainViewModel.cancelBirthdayHeightConfig = false
     }
 
     restoreSettingsViewModel.openBirthdayHeightConfig?.let { token ->
@@ -143,6 +144,7 @@ fun ManageWalletsScreen(
     }
 
     ModalBottomSheetLayout(
+        modifier = Modifier.systemBarsPadding(),
         sheetState = modalBottomSheetState,
         sheetBackgroundColor = ComposeAppTheme.colors.transparent,
         sheetContent = {

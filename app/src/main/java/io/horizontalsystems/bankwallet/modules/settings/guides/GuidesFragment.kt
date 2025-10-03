@@ -35,11 +35,12 @@ import io.horizontalsystems.bankwallet.ui.compose.components.HFillSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.ScreenMessageWithAction
-import io.horizontalsystems.bankwallet.ui.compose.components.ScrollableTabs
-import io.horizontalsystems.bankwallet.ui.compose.components.TabItem
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.cell.CellUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
+import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabItem
+import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabsTop
+import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabsTopType
 import java.net.UnknownHostException
 
 class GuidesFragment : BaseComposeFragment() {
@@ -100,9 +101,8 @@ fun GuidesScreen(navController: NavController) {
                 ViewState.Success -> {
                     if (selectedCategory != null) {
                         Column {
-                            val tabItems =
-                                categories.map { TabItem(it.category, it == selectedCategory, it) }
-                            ScrollableTabs(tabs = tabItems) { tab ->
+                            val tabItems = categories.map { TabItem(it.category, it == selectedCategory, it) }
+                            TabsTop(TabsTopType.Scrolled, tabItems) { tab ->
                                 viewModel.onSelectCategory(tab)
                             }
                             val listState = rememberSaveable(

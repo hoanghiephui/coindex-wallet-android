@@ -46,6 +46,7 @@ class TokenBalanceModule {
                 App.balanceHiddenManager,
                 App.accountManager,
                 App.adapterManager,
+                App.connectivityManager,
             ) as T
         }
     }
@@ -54,9 +55,11 @@ class TokenBalanceModule {
         val title: String,
         val balanceViewItem: BalanceViewItem?,
         val transactions: Map<String, List<TransactionViewItem>>?,
-        val receiveAddressForWatchAccount: String?,
+        val receiveAddress: String?,
         val failedIconVisible: Boolean,
         val error: TokenBalanceError? = null,
+        val failedErrorMessage: String?,
+        val warningMessage: String?,
     )
 
     data class TokenBalanceError(

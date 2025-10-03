@@ -7,7 +7,9 @@ import io.horizontalsystems.bankwallet.core.IAdapterManager
 import io.horizontalsystems.bankwallet.core.ViewModelUiState
 import io.horizontalsystems.bankwallet.core.badge
 import io.horizontalsystems.bankwallet.core.managers.BalanceHiddenManager
+import io.horizontalsystems.bankwallet.core.managers.ConnectivityManager
 import io.horizontalsystems.bankwallet.core.providers.Translator
+import io.horizontalsystems.bankwallet.entities.AccountType
 import io.horizontalsystems.bankwallet.entities.Wallet
 import io.horizontalsystems.bankwallet.modules.balance.BackupRequiredError
 import io.horizontalsystems.bankwallet.modules.balance.BalanceModule
@@ -32,15 +34,18 @@ class TokenBalanceViewModel(
     private val balanceHiddenManager: BalanceHiddenManager,
     private val accountManager: IAccountManager,
     private val adapterManager: IAdapterManager,
+    private val connectivityManager: ConnectivityManager,
 ) : ViewModelUiState<TokenBalanceUiState>() {
 
     private val title = wallet.token.coin.code + wallet.token.badge?.let { " ($it)" }.orEmpty()
 
     private var balanceViewItem: BalanceViewItem? = null
     private var transactions: Map<String, List<TransactionViewItem>>? = null
-    private var addressForWatchAccount: String? = null
+    private var addressForAccount: String? = null
     private var error: TokenBalanceModule.TokenBalanceError? = null
     private var failedIconVisible = false
+    private var failedErrorMessage: String? = null
+    private var waringMessage: String? = null
     private var loadingTransactions = true
 
     init {
@@ -73,19 +78,25 @@ class TokenBalanceViewModel(
             delay(300)
             transactionsService.start()
         }
+
+        if (wallet.account.type is AccountType.MoneroWatchAccount) {
+            waringMessage = Translator.getString(R.string.Watch_Monero_Warning)
+        }
     }
 
     override fun createState() = TokenBalanceUiState(
         title = title,
         balanceViewItem = balanceViewItem,
         transactions = transactions,
-        receiveAddressForWatchAccount = addressForWatchAccount,
+        receiveAddress = addressForAccount,
         failedIconVisible = failedIconVisible,
-        error = error
+        failedErrorMessage = failedErrorMessage,
+        error = error,
+        warningMessage = waringMessage,
     )
 
     private fun setReceiveAddressForWatchAccount() {
-        addressForWatchAccount = adapterManager.getReceiveAdapterForWallet(wallet)?.receiveAddress
+        addressForAccount = adapterManager.getReceiveAdapterForWallet(wallet)?.receiveAddress
         emitState()
     }
 
@@ -106,17 +117,21 @@ class TokenBalanceViewModel(
             balanceService.baseCurrency,
             balanceHiddenManager.balanceHidden,
             wallet.account.isWatchAccount,
-            BalanceViewType.CoinThenFiat
+            BalanceViewType.CoinThenFiat,
+            connectivityManager.isConnected
         )
 
         failedIconVisible = balanceViewItem.failedIconVisible
+        failedErrorMessage = balanceViewItem.errorMessage
 
         if (wallet.account.isWatchAccount) {
             setReceiveAddressForWatchAccount()
         }
 
         this.balanceViewItem = balanceViewItem.copy(
-            primaryValue = balanceViewItem.primaryValue.copy(value = balanceViewItem.primaryValue.value + " " + balanceViewItem.wallet.coin.code)
+            primaryValue = balanceViewItem.primaryValue?.let {
+                it.copy(value = it.value + " " + balanceViewItem.wallet.coin.code)
+            }
         )
 
         updateErrorState()
