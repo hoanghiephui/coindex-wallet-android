@@ -194,9 +194,14 @@ fun TabsSection(
         )
     }
 
-    TabsTop(TabsTopType.Scrolled, tabItems) {
-        onTabClick(it)
-    }
+    TabsTop(
+        type = TabsTopType.Scrolled,
+        tabs = tabItems,
+        containerColor = MaterialTheme.colorScheme.background,
+        onClick = {
+            onTabClick(it)
+        }
+    )
 
     HorizontalPager(
         state = pagerState,

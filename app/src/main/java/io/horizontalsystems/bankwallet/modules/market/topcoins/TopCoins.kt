@@ -63,7 +63,7 @@ fun TopCoins(
         )
     )
     val (adState, reloadAd) = rememberAdNativeView(
-        BuildConfig.HOME_MARKET_NATIVE,
+        "022bd57201dc894a",
         adPlacements = "TopCoins",
         viewModel
     )

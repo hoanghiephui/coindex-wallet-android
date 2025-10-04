@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -98,7 +99,7 @@ fun SectionUniversalLawrence(
     content: @Composable() (ColumnScope.() -> Unit),
 ) {
     SectionUniversal(
-        backgroundColor = ComposeAppTheme.colors.lawrence,
+        backgroundColor = Color.Unspecified,
         content = content
     )
 }
@@ -128,11 +129,11 @@ private fun SectionUniversal(
     backgroundColor: Color,
     content: @Composable() (ColumnScope.() -> Unit),
 ) {
-    Column(
+    Card(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(backgroundColor),
+            .padding(horizontal = 16.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = backgroundColor),
         content = content
     )
 }

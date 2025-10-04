@@ -26,12 +26,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,12 +38,12 @@ import androidx.navigation.NavController
 import com.tradingview.lightweightcharts.api.series.common.SeriesData
 import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.R
-import io.horizontalsystems.bankwallet.core.alternativeImageUrl
 import io.horizontalsystems.bankwallet.BinanceAvailable
 import io.horizontalsystems.bankwallet.BinanceViewModel
 import io.horizontalsystems.bankwallet.CandlestickSeries
 import io.horizontalsystems.bankwallet.core.AdType
 import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
+import io.horizontalsystems.bankwallet.core.alternativeImageUrl
 import io.horizontalsystems.bankwallet.core.iconPlaceholder
 import io.horizontalsystems.bankwallet.core.imageUrl
 import io.horizontalsystems.bankwallet.core.slideFromBottomForResult
@@ -113,8 +112,10 @@ fun CoinOverviewScreen(
     val context = LocalContext.current
 
     val coinSymbol = "${fullCoin.coin.code}USDT"
-    val (adState, reloadAd) = rememberAdNativeView(BuildConfig.HOME_MARKET_NATIVE,
-        adPlacements = "CoinOverviewScreen", viewModel)
+    val (adState, reloadAd) = rememberAdNativeView(
+        BuildConfig.HOME_MARKET_NATIVE,
+        adPlacements = "CoinOverviewScreen", viewModel
+    )
 
     LaunchedEffect(key1 = Unit, block = {
         binanceViewModel.onBinanceAvailable(coinSymbol)
@@ -179,6 +180,7 @@ fun CoinOverviewScreen(
                     ViewState.Loading -> {
                         Loading()
                     }
+
                     ViewState.Success -> {
                         overview?.let { overview ->
                             Column(
@@ -210,7 +212,8 @@ fun CoinOverviewScreen(
                                             fullCoin.coin.name,
                                             overview.marketCapRank,
                                             fullCoin.coin.imageUrl,
-                                            fullCoin.coin.alternativeImageUrl,fullCoin.iconPlaceholder
+                                            fullCoin.coin.alternativeImageUrl,
+                                            fullCoin.iconPlaceholder
                                         )
 
                                         Chart(chartViewModel = chartViewModel)
@@ -254,20 +257,25 @@ fun CoinOverviewScreen(
                                                         onClick = {
                                                             viewModel.disableChartIndicators()
 
-                                                    stat(
-                                                            page = StatPage.CoinOverview,
-                                                            event = StatEvent.ToggleIndicators(false)
-                                                        )
-                                                    })
+                                                            stat(
+                                                                page = StatPage.CoinOverview,
+                                                                event = StatEvent.ToggleIndicators(
+                                                                    false
+                                                                )
+                                                            )
+                                                        })
                                                 } else {
                                                     ButtonSecondaryDefault(
-                                                        modifier = Modifier.height(28.dp),title = stringResource(id = R.string.Button_Show),
+                                                        modifier = Modifier.height(28.dp),
+                                                        title = stringResource(id = R.string.Button_Show),
                                                         onClick = {
                                                             viewModel.enableChartIndicators()
                                                             stat(
-                                                            page = StatPage.CoinOverview,
-                                                            event = StatEvent.ToggleIndicators(true)
-                                                        )
+                                                                page = StatPage.CoinOverview,
+                                                                event = StatEvent.ToggleIndicators(
+                                                                    true
+                                                                )
+                                                            )
                                                         }
                                                     )
                                                 }
@@ -289,7 +297,11 @@ fun CoinOverviewScreen(
                                 }
 
                                 Spacer(modifier = Modifier.height(8.dp))
-                                MaxTemplateNativeAdViewComposable(adState, AdType.SMALL, navController)
+                                MaxTemplateNativeAdViewComposable(
+                                    adState,
+                                    AdType.SMALL,
+                                    navController
+                                )
 
                                 if (overview.marketData.isNotEmpty()) {
                                     Spacer(modifier = Modifier.height(12.dp))
@@ -299,7 +311,12 @@ fun CoinOverviewScreen(
                                 if (overview.roi.isNotEmpty()) {
                                     Spacer(modifier = Modifier.height(24.dp))
                                     CellSingleLineClear(borderTop = true) {
-                                        body_leah(text = stringResource(R.string.CoinPage_ROI_Title, viewModel.fullCoin.coin.code))
+                                        body_leah(
+                                            text = stringResource(
+                                                R.string.CoinPage_ROI_Title,
+                                                viewModel.fullCoin.coin.code
+                                            )
+                                        )
                                     }
                                     Spacer(modifier = Modifier.height(12.dp))
                                     Roi(overview.roi, navController)
@@ -477,28 +494,33 @@ private fun onClick(coinLink: CoinLink, context: Context, navController: NavCont
         else -> LinkHelper.openLinkInAppBrowser(context, absoluteUrl)
     }
 
-    when(coinLink.linkType) {
+    when (coinLink.linkType) {
         LinkType.Guide -> stat(page = StatPage.CoinOverview, event = StatEvent.Open(StatPage.Guide))
         LinkType.Website -> stat(
             page = StatPage.CoinOverview,
             event = StatEvent.Open(StatPage.ExternalCoinWebsite)
         )
+
         LinkType.Whitepaper -> stat(
             page = StatPage.CoinOverview,
             event = StatEvent.Open(StatPage.ExternalCoinWhitePaper)
         )
+
         LinkType.Twitter -> stat(
             page = StatPage.CoinOverview,
             event = StatEvent.Open(StatPage.ExternalTwitter)
         )
+
         LinkType.Telegram -> stat(
             page = StatPage.CoinOverview,
             event = StatEvent.Open(StatPage.ExternalTelegram)
         )
+
         LinkType.Reddit -> stat(
             page = StatPage.CoinOverview,
             event = StatEvent.Open(StatPage.ExternalReddit)
         )
+
         LinkType.Github -> stat(
             page = StatPage.CoinOverview,
             event = StatEvent.Open(StatPage.ExternalGithub)

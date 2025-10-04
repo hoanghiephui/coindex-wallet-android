@@ -4,10 +4,8 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -88,7 +86,13 @@ fun AppBar(
     navigationIcon: @Composable (() -> Unit)? = null,
     menuItems: List<IMenuItem> = listOf(),
     showSpinner: Boolean = false,
-    colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
+    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
+        containerColor = Color.Transparent,
+        scrolledContainerColor = Color.Unspecified,
+        navigationIconContentColor = Color.Unspecified,
+        titleContentColor = Color.Unspecified,
+        actionIconContentColor = Color.Unspecified
+    ),
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     val titleComposable: @Composable () -> Unit = {
@@ -117,7 +121,13 @@ fun AppBar(
     navigationIcon: @Composable (() -> Unit)? = null,
     menuItems: List<IMenuItem> = listOf(),
     stateIcon: @Composable (() -> Unit)? = null,
-    colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
+    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
+        containerColor = Color.Transparent,
+        scrolledContainerColor = Color.Unspecified,
+        navigationIconContentColor = Color.Unspecified,
+        titleContentColor = Color.Unspecified,
+        actionIconContentColor = Color.Unspecified
+    ),
     scrollBehavior: TopAppBarScrollBehavior? = null,
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
 ) {
@@ -131,7 +141,7 @@ fun AppBar(
             navigationIcon?.invoke()
         },
         actions = {
-            stateIcon?.let{
+            stateIcon?.let {
                 Box(
                     modifier = Modifier
                         .padding(start = 24.dp, end = 16.dp)
@@ -204,7 +214,7 @@ fun MenuItemSimple(menuItem: MenuItem) {
         ButtonPrimaryWrapper(
             enabled = menuItem.enabled,
             onClick = menuItem.onClick
-        ){
+        ) {
             Text(
                 text = menuItem.title.getString().uppercase(),
                 color = color

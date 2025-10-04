@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
@@ -24,6 +25,7 @@ import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 fun <T> TabsTop(
     type: TabsTopType,
     tabs: List<TabItem<T>>,
+    containerColor: Color = ComposeAppTheme.colors.tyler,
     onClick: (T) -> Unit
 ) {
     val selectedIndex = tabs.indexOfFirst { it.selected }
@@ -44,6 +46,7 @@ fun <T> TabsTop(
             onClick.invoke(tabs[it].item)
         },
         premiumIndexes = premiumIndexes,
+        containerColor = containerColor
     )
 }
 
@@ -63,6 +66,7 @@ fun TabsTop(
     type: TabsTopType,
     items: List<String>,
     selectedIndex: Int,
+    containerColor: Color = ComposeAppTheme.colors.tyler,
     onSelect: (Int) -> Unit,
     premiumIndexes: List<Int> = listOf()
 ) {
@@ -103,7 +107,7 @@ fun TabsTop(
     when (type) {
         TabsTopType.Scrolled -> {
             SecondaryScrollableTabRow(
-                containerColor = ComposeAppTheme.colors.tyler,
+                containerColor = containerColor,
                 selectedTabIndex = selectedIndex,
                 indicator = {
                     TabRowDefaults.SecondaryIndicator(
@@ -121,10 +125,10 @@ fun TabsTop(
         }
         TabsTopType.Fitted -> {
             SecondaryTabRow(
-                modifier = Modifier.background(ComposeAppTheme.colors.tyler)
+                modifier = Modifier.background(containerColor)
                     .padding(horizontal = 16.dp)
                 ,
-                containerColor = ComposeAppTheme.colors.tyler,
+                containerColor = containerColor,
                 selectedTabIndex = selectedIndex,
                 indicator = {
                     TabRowDefaults.SecondaryIndicator(

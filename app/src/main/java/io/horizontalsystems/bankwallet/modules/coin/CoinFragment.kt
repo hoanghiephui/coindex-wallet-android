@@ -2,7 +2,6 @@ package io.horizontalsystems.bankwallet.modules.coin
 
 import android.os.Parcelable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -49,10 +48,10 @@ import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.ListEmptyView
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
+import io.horizontalsystems.bankwallet.ui.compose.components.body_jacob
 import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabItem
 import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabsTop
 import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabsTopType
-import io.horizontalsystems.bankwallet.ui.compose.components.body_jacob
 import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -142,8 +141,6 @@ fun CoinTabs(
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
         topBar = {
             AppBar(
                 scrollBehavior = scrollBehavior,
@@ -202,7 +199,7 @@ fun CoinTabs(
             val tabItems = tabs.map {
                 TabItem(stringResource(id = it.titleResId), it == selectedTab, it)
             }
-            TabsTop(TabsTopType.Fitted, tabItems) { tab ->
+            TabsTop(TabsTopType.Fitted, tabItems, MaterialTheme.colorScheme.background) { tab ->
                 coroutineScope.launch {
                     pagerState.scrollToPage(tab.ordinal)
 

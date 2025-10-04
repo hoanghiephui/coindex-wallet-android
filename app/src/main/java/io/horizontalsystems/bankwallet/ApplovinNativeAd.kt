@@ -1,5 +1,6 @@
 package io.horizontalsystems.bankwallet
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -15,6 +16,8 @@ import com.applovin.mediation.MaxError
 import com.applovin.mediation.nativeAds.MaxNativeAdListener
 import com.applovin.mediation.nativeAds.MaxNativeAdLoader
 import com.applovin.mediation.nativeAds.MaxNativeAdView
+import com.applovin.mediation.nativeAds.MaxNativeAdViewBinder
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseViewModel.Companion.SHOW_ADS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -38,7 +41,7 @@ fun rememberAdNativeView(
     val maxRetries = 3
     val scope = rememberCoroutineScope()
     val nativeAdLoader = remember(context, adUnitId, adPlacements) {
-        MaxNativeAdLoader(adUnitId, context).apply {
+        MaxNativeAdLoader(adUnitId).apply {
             placement = adPlacements
             setExtraParameter("content_url", "https://play.google.com/store/apps/details?id=com.blockchain.btc.coinhub")
             setRevenueListener(revenueListener)
@@ -85,7 +88,9 @@ fun rememberAdNativeView(
 
                 override fun onNativeAdExpired(nativeAd: MaxAd) {}
             })
-            loadAd()
+            val adView = createNativeAdView(context)
+            render(adView, nativeAd)
+            loadAd(adView)
         }
     }
 
@@ -119,4 +124,18 @@ sealed interface AdNativeUiState {
     data class Success(
         val adsView: MaxNativeAdView?,
     ) : AdNativeUiState
+}
+
+private fun createNativeAdView(context: Context): MaxNativeAdView {
+    val binder: MaxNativeAdViewBinder = MaxNativeAdViewBinder.Builder(R.layout.native_custom_ad_view)
+        .setTitleTextViewId(R.id.title_text_view)
+        .setBodyTextViewId(R.id.body_text_view)
+        .setAdvertiserTextViewId(R.id.advertiser_text_view)
+        .setIconImageViewId(R.id.icon_image_view)
+        .setMediaContentViewGroupId(R.id.media_view_container)
+        .setOptionsContentViewGroupId(R.id.options_view)
+        .setStarRatingContentViewGroupId(R.id.star_rating_view)
+        .setCallToActionButtonId(R.id.cta_button)
+        .build()
+    return MaxNativeAdView(binder, context)
 }
