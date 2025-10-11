@@ -49,8 +49,16 @@ fun MaxTemplateNativeAdViewComposable(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(adType.height)
-                        .then(if (useDefault) Modifier.padding(horizontal = 16.dp) else Modifier),
-                    shape = RoundedCornerShape(12.dp)
+                        .then(
+                            if (useDefault) Modifier.padding(
+                                horizontal = 16.dp,
+                                vertical = 8.dp
+                            ) else Modifier
+                        ),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = ComposeAppTheme.colors.lawrence
+                    )
                 ) {
                     Loading()
                 }
@@ -61,9 +69,17 @@ fun MaxTemplateNativeAdViewComposable(
                     OutlinedCard(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .then(if (useDefault) Modifier.padding(horizontal = 16.dp) else Modifier),
+                            .then(
+                                if (useDefault) Modifier.padding(
+                                    start = 16.dp,
+                                    end = 16.dp,
+                                    top = 8.dp
+                                ) else Modifier
+                            ),
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors()
+                        colors = CardDefaults.cardColors(
+                            containerColor = ComposeAppTheme.colors.lawrence
+                        )
                     ) {
                         AndroidView(
                             factory = {
@@ -84,7 +100,7 @@ fun MaxTemplateNativeAdViewComposable(
     }
 }
 
-val AdType.height get() = if (this == AdType.MEDIUM) 300.dp else 125.dp
+val AdType.height get() = if (this == AdType.MEDIUM) 320.dp else 150.dp
 
 enum class AdType {
     SMALL,

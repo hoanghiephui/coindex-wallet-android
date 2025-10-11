@@ -185,17 +185,15 @@ fun FilterScreen(
                 VSpacer(24.dp)
             }
 
-            ButtonsGroupWithShade {
-                ButtonPrimaryYellow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    title = stringResource(R.string.Button_Apply),
-                    onClick = {
-                        navController.popBackStack()
-                    },
-                )
-            }
+            ButtonPrimaryYellow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, 16.dp),
+                title = stringResource(R.string.Button_Apply),
+                onClick = {
+                    navController.popBackStack()
+                },
+            )
         }
     }
 }

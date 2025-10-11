@@ -1,6 +1,7 @@
 package io.horizontalsystems.bankwallet.modules.send.address
 
 import android.os.Parcelable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,9 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -119,8 +118,10 @@ fun EnterAddressScreen(navController: NavController, input: EnterAddressFragment
         factory = AddressParserModule.Factory(wallet.token, amount)
     )
     val (adState, reloadAd) = rememberAdNativeView(
-        BuildConfig.HOME_MARKET_NATIVE,
-        adPlacements = "EnterAddressScreen", viewModel
+        BuildConfig.NATIVE_MANUAL,
+        adPlacements = "EnterAddressScreen",
+        viewModel,
+        adType = AdType.SMALL
     )
 
     val coroutineScope = rememberCoroutineScope()
@@ -131,7 +132,7 @@ fun EnterAddressScreen(navController: NavController, input: EnterAddressFragment
     val uiState = viewModel.uiState
     Scaffold(
         containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
+        contentColor = ComposeAppTheme.colors.lawrence,
         topBar = {
             AppBar(
                 title = stringResource(R.string.Send_EnterAddress),
@@ -143,7 +144,8 @@ fun EnterAddressScreen(navController: NavController, input: EnterAddressFragment
     ) { innerPaddings ->
         Column(
             modifier = Modifier
-                .padding(innerPaddings)
+                .background(ComposeAppTheme.colors.lawrence)
+                .padding(top = innerPaddings.calculateTopPadding())
                 .windowInsetsPadding(WindowInsets.ime)
         ) {
             Column(

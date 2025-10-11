@@ -70,7 +70,8 @@ fun TopSectorsScreen(
     val (adState, reloadAd) = rememberAdNativeView(
         BuildConfig.HOME_MARKET_NATIVE,
         adPlacements = "TopSectorsScreen",
-        viewModel
+        viewModel,
+        adType = AdType.SMALL
     )
     val state =
         rememberSaveable(uiState.sortingField, uiState.timePeriod, saver = LazyListState.Saver) {

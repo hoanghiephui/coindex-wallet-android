@@ -106,12 +106,46 @@ fun MarketScreen(
         ) {
             CollapsingLayout(
                 expandedContent = { _ ->
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(24.dp))
+                                .background(ComposeAppTheme.colors.blade)
+                                .height(48.dp)
+                                .clickable {
+                                    navController.slideFromBottom(R.id.marketSearchFragment)
+                                    stat(
+                                        page = StatPage.Markets,
+                                        event = StatEvent.Open(StatPage.MarketSearch)
+                                    )
+                                }
+                                .padding(horizontal = 16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_search),
+                                contentDescription = "Search",
+                                tint = ComposeAppTheme.colors.andy,
+                                modifier = Modifier.size(24.dp)
+                            )
+                            HSpacer(8.dp)
+                            body_andy(
+                                text = stringResource(R.string.Balance_ReceiveHint_Search),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+
+                },
+                collapsedContent = { _ ->
                     Crossfade(uiState.marketGlobal, label = "") {
                         MetricsBoard(navController, it, uiState.currency)
                     }
-                },
-                collapsedContent = { _ ->
-
                 }
             ) { _ ->
                 TabsSection(
@@ -128,40 +162,6 @@ fun MarketScreen(
                         marketViewModel.onSelect(tab)
                     }
                 )
-            }
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(ComposeAppTheme.colors.blade)
-                        .height(48.dp)
-                        .clickable {
-                            navController.slideFromBottom(R.id.marketSearchFragment)
-                            stat(
-                                page = StatPage.Markets,
-                                event = StatEvent.Open(StatPage.MarketSearch)
-                            )
-                        }
-                        .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_search),
-                        contentDescription = "Search",
-                        tint = ComposeAppTheme.colors.andy,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    HSpacer(8.dp)
-                    body_andy(
-                        text = stringResource(R.string.Balance_ReceiveHint_Search),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
             }
         }
     }
@@ -224,7 +224,8 @@ fun TabsSection(
             Tab.Earn -> MarketEarnScreen(navController)
             Tab.Posts -> MarketPostsScreen(
                 isRefreshing = isRefreshing,
-                onSetRefreshCallback = onSetRefreshCallback
+                onSetRefreshCallback = onSetRefreshCallback,
+                navController = navController
             )
 
             Tab.Platform -> TopPlatforms(
@@ -357,8 +358,8 @@ private fun RowScope.MarketTotalCard(
     Column(
         modifier = Modifier
             .weight(1f)
-            .padding(12.dp)
             .clickable(onClick = onClick)
+            .padding(12.dp)
     ) {
         micro_grey(
             text = title,

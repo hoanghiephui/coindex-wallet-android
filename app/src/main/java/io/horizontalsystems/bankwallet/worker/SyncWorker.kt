@@ -38,7 +38,8 @@ import java.util.concurrent.TimeUnit
 internal class SyncWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    @Dispatcher(AppDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
+    @Dispatcher(AppDispatcher.IO)
+    private val ioDispatcher: CoroutineDispatcher,
     private val repository: CoinBaseRepository
 ) : CoroutineWorker(appContext, workerParams) {
 

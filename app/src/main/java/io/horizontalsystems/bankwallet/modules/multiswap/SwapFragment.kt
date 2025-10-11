@@ -232,14 +232,14 @@ private fun SwapScreenInner(
             )
         },
         containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
+        contentColor = ComposeAppTheme.colors.lawrence,
     ) {
         val focusManager = LocalFocusManager.current
         val keyboardState by observeKeyboardState()
         var amountInputHasFocus by remember { mutableStateOf(false) }
 
         Box(modifier = Modifier
-            .padding(it)
+            .padding(top = it.calculateTopPadding())
             .fillMaxSize()) {
             Column(
                 modifier = Modifier

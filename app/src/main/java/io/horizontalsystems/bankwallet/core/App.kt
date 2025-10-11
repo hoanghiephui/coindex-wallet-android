@@ -142,8 +142,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.security.MessageDigest
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -323,7 +323,8 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
         )
 
         moneroNodeStorage = MoneroNodeStorage(appDatabase)
-        moneroNodeManager = MoneroNodeManager(blockchainSettingsStorage, moneroNodeStorage,marketKit)
+        moneroNodeManager =
+            MoneroNodeManager(blockchainSettingsStorage, moneroNodeStorage, marketKit)
 
         tronKitManager = TronKitManager(appConfigProvider, backgroundManager)
         tonKitManager = TonKitManager(backgroundManager)
@@ -350,7 +351,11 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
         tokenAutoEnableManager = TokenAutoEnableManager(appDatabase.tokenAutoEnabledBlockchainDao())
 
         spamManager = SpamManager(localStorage, SpamAddressStorage(appDatabase.spamAddressDao()))
-        recentAddressManager = RecentAddressManager(accountManager, appDatabase.recentAddressDao(), ActionCompletedDelegate)
+        recentAddressManager = RecentAddressManager(
+            accountManager,
+            appDatabase.recentAddressDao(),
+            ActionCompletedDelegate
+        )
         val evmAccountManagerFactory = EvmAccountManagerFactory(
             accountManager,
             walletManager,
@@ -377,7 +382,12 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
             TonAccountManager(accountManager, walletManager, tonKitManager, tokenAutoEnableManager)
         tonAccountManager.start()
 
-        val stellarAccountManager = StellarAccountManager(accountManager, walletManager, stellarKitManager, tokenAutoEnableManager)
+        val stellarAccountManager = StellarAccountManager(
+            accountManager,
+            walletManager,
+            stellarKitManager,
+            tokenAutoEnableManager
+        )
         stellarAccountManager.start()
 
         systemInfoManager = SystemInfoManager(appConfigProvider)
@@ -391,7 +401,11 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
         zcashBirthdayProvider = ZcashBirthdayProvider(this)
         moneroBirthdayProvider = MoneroBirthdayProvider()
         restoreSettingsManager =
-            RestoreSettingsManager(restoreSettingsStorage, zcashBirthdayProvider, moneroBirthdayProvider)
+            RestoreSettingsManager(
+                restoreSettingsStorage,
+                zcashBirthdayProvider,
+                moneroBirthdayProvider
+            )
 
         evmLabelManager = EvmLabelManager(
             EvmLabelProvider(),
@@ -595,7 +609,8 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
 
     private fun setAnalytic() {
         Firebase.analytics.setAnalyticsCollectionEnabled(if (!BuildConfig.DEBUG) localStorage.uiStatsEnabled == true else false)
-        Firebase.crashlytics.isCrashlyticsCollectionEnabled = if (!BuildConfig.DEBUG) localStorage.isDetectCrash else false
+        Firebase.crashlytics.isCrashlyticsCollectionEnabled =
+            if (!BuildConfig.DEBUG) localStorage.isDetectCrash else false
     }
 
     override val workManagerConfiguration: androidx.work.Configuration
@@ -688,13 +703,11 @@ class App : CoreApp(), WorkConfiguration.Provider, ImageLoaderFactory {
 
     private fun initApplovin() {
         CoroutineScope(ioDispatcher).launch {
-            withContext(ioDispatcher) {
-                AppLovinSdk.getInstance(this@App).settings.also {
-                    it.setVerboseLogging(BuildConfig.DEBUG)
-                }
-                AppLovinSdk.getInstance(this@App).initialize(applovinConfiguration) {
-                    Timber.d("Applovin: $it")
-                }
+            AppLovinSdk.getInstance(this@App).settings.also {
+                it.setVerboseLogging(BuildConfig.DEBUG)
+            }
+            AppLovinSdk.getInstance(this@App).initialize(applovinConfiguration) {
+                Timber.d("Applovin: $it")
             }
         }
     }

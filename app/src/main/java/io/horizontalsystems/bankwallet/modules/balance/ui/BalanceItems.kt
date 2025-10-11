@@ -42,7 +42,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.core.AdType
+import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
 import io.horizontalsystems.bankwallet.core.managers.FaqManager
 import io.horizontalsystems.bankwallet.core.providers.Translator
 import io.horizontalsystems.bankwallet.core.shorten
@@ -67,6 +70,7 @@ import io.horizontalsystems.bankwallet.modules.rateapp.RateAppModule
 import io.horizontalsystems.bankwallet.modules.rateapp.RateAppViewModel
 import io.horizontalsystems.bankwallet.modules.send.address.EnterAddressFragment
 import io.horizontalsystems.bankwallet.modules.sendtokenselect.SendTokenSelectFragment
+import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.HSSwipeRefresh
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
@@ -210,6 +214,12 @@ fun BalanceItems(
     val context = LocalContext.current
     val view = LocalView.current
     var revealedCardId by remember { mutableStateOf<Int?>(null) }
+    val (adState, reloadAd) = rememberAdNativeView(
+        adUnitId = BuildConfig.NATIVE_MANUAL,
+        adPlacements = "Balance",
+        revenueListener = viewModel,
+        adType = AdType.SMALL
+    )
 
     val navigateToTokenBalance: (BalanceViewItem2) -> Unit = remember {
         {
@@ -245,8 +255,7 @@ fun BalanceItems(
     ) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+                .fillMaxSize(),
             state = rememberSaveable(
                 accountViewItem.id,
                 uiState.sortType,
@@ -437,6 +446,13 @@ fun BalanceItems(
                             subheadSB_lucian(stringResource(R.string.Hud_Text_NoInternet))
                         }
                     }
+                )
+            }
+            item {
+                MaxTemplateNativeAdViewComposable(
+                    adViewState = adState,
+                    adType = AdType.SMALL,
+                    navController = navController
                 )
             }
 

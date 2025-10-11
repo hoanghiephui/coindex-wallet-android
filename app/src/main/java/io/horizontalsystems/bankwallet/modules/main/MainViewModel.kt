@@ -88,14 +88,14 @@ class MainViewModel(
                 MainNavigation.Market,
                 MainNavigation.Balance,
                 MainNavigation.Transactions,
-                MainNavigation.Search,
+                //MainNavigation.Search,
                 MainNavigation.Settings,
             )
         } else {
             listOf(
                 MainNavigation.Balance,
                 MainNavigation.Transactions,
-                MainNavigation.Search,
+                //MainNavigation.Search,
                 MainNavigation.Settings,
             )
         }
@@ -290,13 +290,13 @@ class MainViewModel(
             )
         }
 
-        MainNavigation.Search -> {
+        /*MainNavigation.Search -> {
             NavigationViewItem(
                 mainNavItem = item,
                 selected = selected,
                 enabled = true,
             )
-        }
+        }*/
 
     }
 

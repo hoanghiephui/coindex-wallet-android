@@ -4,7 +4,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -21,8 +20,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.R
-import io.horizontalsystems.bankwallet.AdNativeUiState
+import io.horizontalsystems.bankwallet.core.AdType
 import io.horizontalsystems.bankwallet.core.BaseViewModel.Companion.SHOW_ADS
+import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.StatSection
@@ -35,7 +35,6 @@ import io.horizontalsystems.bankwallet.modules.coin.overview.ui.Loading
 import io.horizontalsystems.bankwallet.modules.market.SortingField
 import io.horizontalsystems.bankwallet.modules.market.TopMarket
 import io.horizontalsystems.bankwallet.rememberAdNativeView
-import io.horizontalsystems.bankwallet.ui.compose.HSSwipeRefresh
 import io.horizontalsystems.bankwallet.ui.compose.Select
 import io.horizontalsystems.bankwallet.ui.compose.components.AlertGroup
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryWithIcon
@@ -43,10 +42,9 @@ import io.horizontalsystems.bankwallet.ui.compose.components.CoinListSlidable
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderSorting
 import io.horizontalsystems.bankwallet.ui.compose.components.ListErrorView
+import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.uiv3.components.controls.ButtonVariant
 import io.horizontalsystems.bankwallet.uiv3.components.controls.HSDropdownButton
-import io.horizontalsystems.bankwallet.ui.compose.components.NativeAdView
-import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -63,9 +61,10 @@ fun TopCoins(
         )
     )
     val (adState, reloadAd) = rememberAdNativeView(
-        "022bd57201dc894a",
+        adUnitId = BuildConfig.NATIVE_MANUAL,
         adPlacements = "TopCoins",
-        viewModel
+        revenueListener = viewModel,
+        adType = AdType.MEDIUM
     )
     var openSortingSelector by rememberSaveable { mutableStateOf(false) }
     var openTopSelector by rememberSaveable { mutableStateOf(false) }
@@ -112,10 +111,9 @@ fun TopCoins(
                         stat(
                             page = StatPage.Markets,
 
-                            event = StatEvent.AddToWatchlist(uid)
-                        ,
-                                section = StatSection.Coins
-                            )
+                            event = StatEvent.AddToWatchlist(uid),
+                            section = StatSection.Coins
+                        )
 
                     },
                     onRemoveFavorite = { uid ->
@@ -124,9 +122,9 @@ fun TopCoins(
                         stat(
                             page = StatPage.Markets,
 
-                            event = StatEvent.RemoveFromWatchlist(uid)
-                        ,
-                                section = StatSection.Coins)
+                            event = StatEvent.RemoveFromWatchlist(uid),
+                            section = StatSection.Coins
+                        )
                     },
                     onCoinClick = onCoinClick,
                     preItems = {
@@ -136,7 +134,7 @@ fun TopCoins(
                             ) {
                                 HSpacer(width = 16.dp)
                                 HSDropdownButton(
-                                        variant = ButtonVariant.Secondary,
+                                    variant = ButtonVariant.Secondary,
                                     title = stringResource(uiState.sortingField.titleResId),
                                     onClick = {
                                         openSortingSelector = true
@@ -145,7 +143,7 @@ fun TopCoins(
                                 HSpacer(width = 12.dp)
                                 HSDropdownButton(
                                     variant = ButtonVariant.Secondary,
-                                        title = stringResource(uiState.topMarket.titleResId),
+                                    title = stringResource(uiState.topMarket.titleResId),
                                     onClick = {
                                         openTopSelector = true
                                     }
@@ -153,7 +151,7 @@ fun TopCoins(
                                 HSpacer(width = 12.dp)
                                 HSDropdownButton(
                                     variant = ButtonVariant.Secondary,
-                                        title = stringResource(uiState.period.titleResId),
+                                    title = stringResource(uiState.period.titleResId),
                                     onClick = {
                                         openPeriodSelector = true
                                     }
@@ -165,12 +163,10 @@ fun TopCoins(
                     preAdsItem = {
                         if (SHOW_ADS) {
                             item {
-                                VSpacer(12.dp)
-                                NativeAdView(
-                                    adsState = adState,
-                                    modifier = Modifier
-                                        .padding(horizontal = 8.dp)
-                                        .height(138.dp)
+                                MaxTemplateNativeAdViewComposable(
+                                    adViewState = adState,
+                                    adType = AdType.MEDIUM,
+                                    navController = navController
                                 )
                                 VSpacer(8.dp)
                             }
@@ -194,8 +190,7 @@ fun TopCoins(
                 stat(
                     page = StatPage.Markets,
 
-                    event = StatEvent.SwitchSortType(selected.statSortType)
-                ,
+                    event = StatEvent.SwitchSortType(selected.statSortType),
                     section = StatSection.Coins
                 )
             },
@@ -215,8 +210,7 @@ fun TopCoins(
                 stat(
                     page = StatPage.Markets,
 
-                    event = StatEvent.SwitchMarketTop(it.statMarketTop)
-                ,
+                    event = StatEvent.SwitchMarketTop(it.statMarketTop),
                     section = StatSection.Coins
                 )
             },
@@ -236,8 +230,7 @@ fun TopCoins(
                 stat(
                     page = StatPage.Markets,
 
-                    event = StatEvent.SwitchPeriod(selected.statPeriod)
-                ,
+                    event = StatEvent.SwitchPeriod(selected.statPeriod),
                     section = StatSection.Coins
                 )
             },

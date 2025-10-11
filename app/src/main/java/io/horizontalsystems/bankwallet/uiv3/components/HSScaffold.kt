@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.components.IMenuItem
 import io.horizontalsystems.bankwallet.uiv3.components.bars.HSTopAppBar
@@ -16,13 +17,14 @@ fun HSScaffold(
     title: String,
     menuItems: List<IMenuItem> = listOf(),
     onBack: (() -> Unit)? = null,
+    backgroundColor: Color = ComposeAppTheme.colors.tyler,
     content: @Composable BoxScope.() -> Unit
 ) {
     Scaffold(
         topBar = {
-            HSTopAppBar(title, menuItems, onBack)
+            HSTopAppBar(title, menuItems, onBack, backgroundColor)
         },
-        backgroundColor = ComposeAppTheme.colors.tyler
+        backgroundColor = backgroundColor,
     ) {
         Box(
             modifier = Modifier.padding(it).fillMaxSize(),

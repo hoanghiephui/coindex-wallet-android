@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Surface
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -25,8 +25,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.core.AdType
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
+import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
 import io.horizontalsystems.bankwallet.core.composablePage
 import io.horizontalsystems.bankwallet.core.getInput
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
@@ -34,6 +37,7 @@ import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.core.stats.statAccountType
 import io.horizontalsystems.bankwallet.modules.manageaccounts.ManageAccountsModule
+import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
@@ -76,6 +80,7 @@ private fun CreateAccountNavHost(
                 openCreateAdvancedScreen = { navController.navigate("create_account_advanced") },
                 onBackClick = { fragmentNavController.popBackStack() },
                 onFinish = { fragmentNavController.popBackStack(popUpToInclusiveId, inclusive) },
+                navController = navController
             )
         }
         composablePage("create_account_advanced") {
@@ -92,11 +97,16 @@ private fun CreateAccountNavHost(
 private fun CreateAccountIntroScreen(
     openCreateAdvancedScreen: () -> Unit,
     onBackClick: () -> Unit,
-    onFinish: () -> Unit
+    onFinish: () -> Unit,
+    navController: NavController
 ) {
     val viewModel = viewModel<CreateAccountViewModel>(factory = CreateAccountModule.Factory())
     val view = LocalView.current
-
+    val (adState, _) = rememberAdNativeView(
+        adUnitId = BuildConfig.NATIVE_MANUAL,
+        adPlacements = "CreateAccountIntroScreen",
+        revenueListener = viewModel
+    )
     LaunchedEffect(viewModel.success) {
         viewModel.success?.let { accountType ->
             HudHelper.showSuccessMessage(
@@ -118,18 +128,19 @@ private fun CreateAccountIntroScreen(
     }
 
     Surface(color = MaterialTheme.colorScheme.background) {
-            Column(Modifier.fillMaxSize()) {
-                AppBar(
-                    title = stringResource(R.string.ManageAccounts_CreateNewWallet),
-                    menuItems = listOf(
-                        MenuItem(
-                            title = TranslatableString.ResString(R.string.Button_Create),
-                            onClick = viewModel::createAccount,
-                        tint = ComposeAppTheme.colors.jacob)
-                    ),
-                    navigationIcon = {
-                        HsBackButton(onClick = onBackClick)
-                    },
+        Column(Modifier.fillMaxSize()) {
+            AppBar(
+                title = stringResource(R.string.ManageAccounts_CreateNewWallet),
+                menuItems = listOf(
+                    MenuItem(
+                        title = TranslatableString.ResString(R.string.Button_Create),
+                        onClick = viewModel::createAccount,
+                        tint = ComposeAppTheme.colors.jacob
+                    )
+                ),
+                navigationIcon = {
+                    HsBackButton(onClick = onBackClick)
+                },
             )
             Spacer(Modifier.height(12.dp))
 
@@ -168,6 +179,11 @@ private fun CreateAccountIntroScreen(
                     )
                 }
             }
+
+            MaxTemplateNativeAdViewComposable(
+                adViewState = adState,
+                navController = navController
+            )
 
             Spacer(Modifier.height(32.dp))
         }

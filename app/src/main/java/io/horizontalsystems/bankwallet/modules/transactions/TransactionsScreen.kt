@@ -85,8 +85,11 @@ fun TransactionsScreen(
 ) {
     val accountsViewModel =
         viewModel<BalanceAccountsViewModel>(factory = BalanceModule.AccountsFactory())
-    val (adState, _) = rememberAdNativeView(BuildConfig.HOME_MARKET_NATIVE,
-        adPlacements = "TransactionsScreen", viewModel)
+    val (adState, _) = rememberAdNativeView(
+        BuildConfig.NATIVE_MANUAL,
+        adPlacements = "TransactionsScreen", viewModel,
+        adType = AdType.SMALL
+    )
 
     val filterTypes by viewModel.filterTypesLiveData.observeAsState()
     val showFilterAlertDot by viewModel.filterResetEnabled.observeAsState(false)
@@ -99,7 +102,7 @@ fun TransactionsScreen(
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
+        contentColor = ComposeAppTheme.colors.lawrence,
         topBar = {
             AppBar(
                 scrollBehavior = scrollBehavior,
@@ -454,7 +457,10 @@ private fun FilterTypeTabs(
         TabItem(stringResource(it.item.title), it.selected, it.item)
     }
 
-    TabsTop(TabsTopType.Scrolled, tabItems) { transactionType ->
+    TabsTop(
+        TabsTopType.Scrolled, tabItems,
+        Color.Transparent
+    ) { transactionType ->
         onTransactionTypeClick.invoke(transactionType)
     }
 }

@@ -17,7 +17,7 @@ fun ButtonsGroup(content: @Composable RowScope.() -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(ComposeAppTheme.colors.tyler)
+            .background(ComposeAppTheme.colors.lawrence)
             .padding(horizontal = 16.dp)
             .padding(bottom = 24.dp),
         verticalAlignment = Alignment.CenterVertically,

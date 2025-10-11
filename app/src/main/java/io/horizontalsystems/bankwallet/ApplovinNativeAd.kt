@@ -18,6 +18,7 @@ import com.applovin.mediation.nativeAds.MaxNativeAdLoader
 import com.applovin.mediation.nativeAds.MaxNativeAdView
 import com.applovin.mediation.nativeAds.MaxNativeAdViewBinder
 import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.core.AdType
 import io.horizontalsystems.bankwallet.core.BaseViewModel.Companion.SHOW_ADS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -27,7 +28,8 @@ import timber.log.Timber
 fun rememberAdNativeView(
     adUnitId: String,
     adPlacements: String,
-    revenueListener: MaxAdRevenueListener
+    revenueListener: MaxAdRevenueListener,
+    adType: AdType = AdType.SMALL
 ): Pair<AdNativeUiState, () -> Unit> {
     if (!SHOW_ADS) {
         return Pair(AdNativeUiState.Nothing) {}
@@ -40,10 +42,20 @@ fun rememberAdNativeView(
     var retryCount by remember { mutableIntStateOf(0) }
     val maxRetries = 3
     val scope = rememberCoroutineScope()
+    val adView = remember(adType) {
+        if (adType == AdType.MEDIUM) {
+            createNativeAdMediumView(context)
+        } else {
+            createNativeAdSmallView(context)
+        }
+    }
     val nativeAdLoader = remember(context, adUnitId, adPlacements) {
         MaxNativeAdLoader(adUnitId).apply {
             placement = adPlacements
-            setExtraParameter("content_url", "https://play.google.com/store/apps/details?id=com.blockchain.btc.coinhub")
+            setExtraParameter(
+                "content_url",
+                "https://play.google.com/store/apps/details?id=com.blockchain.btc.coinhub"
+            )
             setRevenueListener(revenueListener)
             setNativeAdListener(object : MaxNativeAdListener() {
                 override fun onNativeAdLoaded(loadedNativeAdView: MaxNativeAdView?, ad: MaxAd) {
@@ -62,7 +74,7 @@ fun rememberAdNativeView(
                                 delay(3000) // Wait for 3 seconds before retrying
                                 retryCount++
                                 Timber.e("Applovin retrying... Attempt $retryCount")
-                                this@apply.loadAd()
+                                this@apply.loadAd(adView)
                             }
                         } else {
                             loadedAd = AdNativeUiState.LoadError
@@ -77,7 +89,7 @@ fun rememberAdNativeView(
                             delay(3000) // Wait for 3 seconds before retrying
                             retryCount++
                             Timber.e("Applovin retrying... Attempt $retryCount")
-                            this@apply.loadAd()
+                            this@apply.loadAd(adView)
                         }
                     } else {
                         loadedAd = AdNativeUiState.LoadError
@@ -88,9 +100,9 @@ fun rememberAdNativeView(
 
                 override fun onNativeAdExpired(nativeAd: MaxAd) {}
             })
-            val adView = createNativeAdView(context)
-            render(adView, nativeAd)
+
             loadAd(adView)
+            Timber.d("Loading Ad...")
         }
     }
 
@@ -126,16 +138,31 @@ sealed interface AdNativeUiState {
     ) : AdNativeUiState
 }
 
-private fun createNativeAdView(context: Context): MaxNativeAdView {
-    val binder: MaxNativeAdViewBinder = MaxNativeAdViewBinder.Builder(R.layout.native_custom_ad_view)
-        .setTitleTextViewId(R.id.title_text_view)
-        .setBodyTextViewId(R.id.body_text_view)
-        .setAdvertiserTextViewId(R.id.advertiser_text_view)
-        .setIconImageViewId(R.id.icon_image_view)
-        .setMediaContentViewGroupId(R.id.media_view_container)
-        .setOptionsContentViewGroupId(R.id.options_view)
-        .setStarRatingContentViewGroupId(R.id.star_rating_view)
-        .setCallToActionButtonId(R.id.cta_button)
-        .build()
+private fun createNativeAdMediumView(context: Context): MaxNativeAdView {
+    val binder: MaxNativeAdViewBinder =
+        MaxNativeAdViewBinder.Builder(R.layout.native_custom_ad_view)
+            .setTitleTextViewId(R.id.title_text_view)
+            .setBodyTextViewId(R.id.body_text_view)
+            .setAdvertiserTextViewId(R.id.advertiser_text_view)
+            .setIconImageViewId(R.id.icon_image_view)
+            .setMediaContentViewGroupId(R.id.media_view_container)
+            .setOptionsContentViewGroupId(R.id.options_view)
+            .setStarRatingContentViewGroupId(R.id.star_rating_view)
+            .setCallToActionButtonId(R.id.cta_button)
+            .build()
+    return MaxNativeAdView(binder, context)
+}
+
+private fun createNativeAdSmallView(context: Context): MaxNativeAdView {
+    val binder: MaxNativeAdViewBinder =
+        MaxNativeAdViewBinder.Builder(R.layout.native_custom_ad_small_view)
+            .setTitleTextViewId(R.id.title_text_view)
+            .setBodyTextViewId(R.id.body_text_view)
+            .setAdvertiserTextViewId(R.id.advertiser_text_view)
+            .setIconImageViewId(R.id.icon_image_view)
+            .setOptionsContentViewGroupId(R.id.options_view)
+            .setStarRatingContentViewGroupId(R.id.star_rating_view)
+            .setCallToActionButtonId(R.id.cta_button)
+            .build()
     return MaxNativeAdView(binder, context)
 }

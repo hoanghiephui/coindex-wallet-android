@@ -106,6 +106,7 @@ fun BalanceForAccount(navController: NavController, accountViewItem: AccountView
     val uiState = viewModel.uiState
 
     HSScaffold(
+        backgroundColor = ComposeAppTheme.colors.lawrence,
         title = accountViewItem.name,
         menuItems = buildList {
             if (uiState.loading) {

@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,10 +42,11 @@ fun HSTopAppBar(
     title: String,
     menuItems: List<IMenuItem>,
     onBack: (() -> Unit)?,
+    containerColor: Color = ComposeAppTheme.colors.tyler,
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = ComposeAppTheme.colors.tyler,
+            containerColor = containerColor,
             titleContentColor = ComposeAppTheme.colors.leah,
         ),
         title = {

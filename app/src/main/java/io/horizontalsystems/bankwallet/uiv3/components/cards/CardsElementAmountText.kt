@@ -28,7 +28,7 @@ fun CardsElementAmountText(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(ComposeAppTheme.colors.tyler)
+            .background(ComposeAppTheme.colors.lawrence)
             .padding(horizontal = 16.dp, vertical = 24.dp),
     ) {
         Text(

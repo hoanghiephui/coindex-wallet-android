@@ -26,7 +26,9 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.core.AdType
 import io.horizontalsystems.bankwallet.core.BaseViewModel.Companion.SHOW_ADS
+import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
@@ -46,7 +48,6 @@ import io.horizontalsystems.bankwallet.ui.compose.components.AlertGroup
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderSorting
 import io.horizontalsystems.bankwallet.ui.compose.components.ListErrorView
-import io.horizontalsystems.bankwallet.ui.compose.components.NativeAdView
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.diffColor
 import io.horizontalsystems.bankwallet.ui.compose.components.marketDataValueComponent
@@ -154,11 +155,10 @@ fun TopPlatforms(
                             if (SHOW_ADS) {
                                 item {
                                     VSpacer(12.dp)
-                                    NativeAdView(
-                                        adsState = adState,
-                                        modifier = Modifier
-                                            .padding(horizontal = 8.dp)
-                                            .height(138.dp)
+                                    MaxTemplateNativeAdViewComposable(
+                                        adViewState = adState,
+                                        adType = AdType.SMALL,
+                                        navController = navController
                                     )
                                     VSpacer(8.dp)
                                 }

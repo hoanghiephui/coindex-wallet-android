@@ -72,7 +72,8 @@ fun CoinAnalyticsScreen(
     val (adState, reloadAd) = rememberAdNativeView(
         BuildConfig.HOME_MARKET_NATIVE,
         adPlacements = "CoinAnalyticsScreen",
-        viewModel
+        viewModel,
+        adType = AdType.SMALL
     )
 
     HSSwipeRefresh(

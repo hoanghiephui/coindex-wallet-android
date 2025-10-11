@@ -2,6 +2,7 @@ package io.horizontalsystems.bankwallet.modules.market.etf
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -122,10 +123,10 @@ fun EtfPage(
         TabItem(stringResource(id = it.titleResId), it == selectedTab, it)
     }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
+    Column(
+        modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.background)
+    ) {
             AppBar(
                 menuItems = listOf(
                     MenuItem(
@@ -137,14 +138,12 @@ fun EtfPage(
                     )
                 )
             )
-        }
-    ) {
+
         Column(
             modifier = Modifier
-                .padding(it)
                 .fillMaxSize(),
         ) {
-            TabsTop(TabsTopType.Fitted, tabItems) {
+            TabsTop(TabsTopType.Fitted, tabItems,MaterialTheme.colorScheme.background) {
                 selectedTab = it
             }
             HorizontalPager(

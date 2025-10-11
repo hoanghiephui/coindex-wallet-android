@@ -311,7 +311,7 @@ private fun NumberInputWithButtons(
 
 @Composable
 fun ButtonsGroupWithShade(
-    ButtonsContent: @Composable (() -> Unit)
+    buttonsContent: @Composable (() -> Unit)
 ) {
     Column(
         modifier = Modifier
@@ -331,7 +331,7 @@ fun ButtonsGroupWithShade(
         Box(
             modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {
-            ButtonsContent()
+            buttonsContent()
         }
     }
 }
@@ -439,10 +439,11 @@ fun FeeInfoCell(
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val interactionSource = remember { MutableInteractionSource() }
         Row(
             modifier = Modifier.clickable(
                 onClick = { navController.slideFromBottom(R.id.feeSettingsInfoDialog, FeeSettingsInfoDialog.Input(title, info)) },
-                interactionSource = MutableInteractionSource(),
+                interactionSource = interactionSource,
                 indication = null
             ),
             verticalAlignment = Alignment.CenterVertically

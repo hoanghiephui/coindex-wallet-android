@@ -402,3 +402,56 @@
     public static *** v(...);
     public static *** i(...);
 }
+# Ktor Client
+-keep class io.ktor.** { *; }
+-keepclassmembers class io.ktor.** { *; }
+-dontwarn io.ktor.**
+
+# Ktor Client Network Sockets
+-keep class io.ktor.client.network.sockets.** { *; }
+-dontwarn io.ktor.client.network.sockets.**
+
+# Ktor Client Plugins
+-keep class io.ktor.client.plugins.** { *; }
+-dontwarn io.ktor.client.plugins.**
+
+# Ktor Utils IO
+-keep class io.ktor.utils.io.** { *; }
+-keepclassmembers class io.ktor.utils.io.** { *; }
+-dontwarn io.ktor.utils.io.**
+
+# Ktor Utils IO Core
+-keep class io.ktor.utils.io.core.** { *; }
+-keepclassmembers class io.ktor.utils.io.core.** { *; }
+-dontwarn io.ktor.utils.io.core.**
+
+# TON Blockchain
+-keep class org.ton.** { *; }
+-keepclassmembers class org.ton.** { *; }
+-dontwarn org.ton.**
+
+# TON TL
+-keep class org.ton.tl.** { *; }
+-dontwarn org.ton.tl.**
+
+# TON BOC
+-keep class org.ton.boc.** { *; }
+-dontwarn org.ton.boc.**
+
+# TON Block
+-keep class org.ton.block.** { *; }
+-dontwarn org.ton.block.**
+-dontwarn io.ktor.client.network.sockets.SocketTimeoutException
+-dontwarn io.ktor.client.plugins.HttpTimeout$HttpTimeoutCapabilityConfiguration
+-dontwarn io.ktor.client.plugins.HttpTimeout$Plugin
+-dontwarn io.ktor.client.plugins.HttpTimeout
+-dontwarn io.ktor.utils.io.CoroutinesKt
+-dontwarn io.ktor.utils.io.core.BytePacketBuilder
+-dontwarn io.ktor.utils.io.core.ByteReadPacket
+-dontwarn io.ktor.utils.io.core.ByteReadPacketExtensionsKt
+-dontwarn io.ktor.utils.io.core.Input
+-dontwarn io.ktor.utils.io.core.InputLittleEndianKt
+-dontwarn io.ktor.utils.io.core.InputPrimitivesKt
+-dontwarn io.ktor.utils.io.core.Output
+-dontwarn io.ktor.utils.io.core.OutputLittleEndianKt
+-dontwarn io.ktor.utils.io.core.OutputPrimitivesKt

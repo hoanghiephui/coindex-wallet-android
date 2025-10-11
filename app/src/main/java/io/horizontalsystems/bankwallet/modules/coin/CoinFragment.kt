@@ -220,7 +220,10 @@ fun CoinTabs(
                     }
 
                     CoinModule.Tab.Market -> {
-                        CoinMarketsScreen(fullCoin = viewModel.fullCoin)
+                        CoinMarketsScreen(
+                            fullCoin = viewModel.fullCoin,
+                            navController = navController
+                        )
                     }
 
                     CoinModule.Tab.Details -> {

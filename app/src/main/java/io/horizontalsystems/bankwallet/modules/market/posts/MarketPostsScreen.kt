@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -19,10 +18,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.analytics.TrackScreenViewEvent
+import io.horizontalsystems.bankwallet.core.AdType
 import io.horizontalsystems.bankwallet.core.BaseViewModel.Companion.SHOW_ADS
+import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.StatSection
@@ -31,10 +33,8 @@ import io.horizontalsystems.bankwallet.entities.ViewState
 import io.horizontalsystems.bankwallet.modules.coin.overview.ui.Loading
 import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.HSSwipeRefresh
 import io.horizontalsystems.bankwallet.ui.compose.components.CellNews
 import io.horizontalsystems.bankwallet.ui.compose.components.ListErrorView
-import io.horizontalsystems.bankwallet.ui.compose.components.NativeAdView
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.helpers.LinkHelper
 
@@ -43,6 +43,7 @@ fun MarketPostsScreen(
     viewModel: MarketPostsViewModel = viewModel(factory = MarketPostsModule.Factory()),
     isRefreshing: (Boolean) -> Unit,
     onSetRefreshCallback: (refresh: () -> Unit) -> Unit,
+    navController: NavController,
 ) {
     val items by viewModel.itemsLiveData.observeAsState(listOf())
     val isRefreshing by viewModel.isRefreshingLiveData.observeAsState(false)
@@ -81,11 +82,10 @@ fun MarketPostsScreen(
                     if (SHOW_ADS) {
                         item {
                             VSpacer(12.dp)
-                            NativeAdView(
-                                adsState = adState,
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .height(138.dp)
+                            MaxTemplateNativeAdViewComposable(
+                                adViewState = adState,
+                                adType = AdType.SMALL,
+                                navController = navController
                             )
                         }
                     }
@@ -102,9 +102,9 @@ fun MarketPostsScreen(
                             stat(
                                 page = StatPage.Markets,
 
-                                event = StatEvent.Open(StatPage.ExternalNews)
-                            ,
-                                    section = StatSection.News)
+                                event = StatEvent.Open(StatPage.ExternalNews),
+                                section = StatSection.News
+                            )
                         }
                     }
                     item {

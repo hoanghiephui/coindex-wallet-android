@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:maxHeight="350dp"
     android:layout_centerInParent="true"
     android:padding="8dp">
 
@@ -105,16 +104,6 @@
         app:layout_constraintTop_toBottomOf="@+id/icon_image_view"
         tools:text="Body" />
 
-    <FrameLayout
-        android:id="@+id/media_view_container"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="4dp"
-        android:maxHeight="150dp"
-        app:layout_constraintDimensionRatio="W,16:9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/body_text_view" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/cta_button"
@@ -125,7 +114,7 @@
         android:fontFamily="@font/manrope_medium"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/media_view_container"
+        app:layout_constraintTop_toBottomOf="@+id/body_text_view"
         tools:layout_editor_absoluteX="8dp"
         tools:text="Install" />
 </androidx.constraintlayout.widget.ConstraintLayout>

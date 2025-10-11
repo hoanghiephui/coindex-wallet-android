@@ -274,12 +274,12 @@ private fun MainScreen(
                     )
 
                     MainNavigation.Settings -> SettingsScreen(fragmentNavController)
-                    MainNavigation.Search -> {
+                    /*MainNavigation.Search -> {
                         SearchScreen(
                             searchViewModel,
                             fragmentNavController
                         )
-                    }
+                    }*/
                 }
             }
         }

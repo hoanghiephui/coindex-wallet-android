@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.android.billing"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 27

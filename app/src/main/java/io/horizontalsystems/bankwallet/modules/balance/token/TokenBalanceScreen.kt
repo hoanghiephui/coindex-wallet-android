@@ -6,13 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -24,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -98,9 +91,12 @@ fun TokenBalanceScreen(
         rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val loading = uiState.balanceViewItem?.syncingProgress?.progress != null
-        androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val (adState, _) = rememberAdNativeView(BuildConfig.HOME_MARKET_NATIVE,
-        adPlacements = "TokenBalanceScreen", viewModel)
+    rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val (adState, _) = rememberAdNativeView(
+        adUnitId = BuildConfig.NATIVE_MANUAL,
+        adPlacements = "TokenBalanceScreen",
+        revenueListener = viewModel
+    )
 
     LaunchedEffect(uiState.failedIconVisible) {
         if (uiState.failedIconVisible) {
@@ -109,6 +105,7 @@ fun TokenBalanceScreen(
     }
 
     HSScaffold(
+        backgroundColor = ComposeAppTheme.colors.lawrence,
         title = uiState.title,
         onBack = navController::popBackStack,
         menuItems = buildList {
@@ -116,6 +113,7 @@ fun TokenBalanceScreen(
                 loading -> {
                     add(MenuItemLoading)
                 }
+
                 uiState.failedIconVisible -> {
                     add(
                         MenuItem(
@@ -208,7 +206,8 @@ fun TokenBalanceScreen(
                                 },
                                 right = {
                                     CellRightNavigation(
-                                        subtitle = receiveAddress.shorten().hs(color = ComposeAppTheme.colors.leah)
+                                        subtitle = receiveAddress.shorten()
+                                            .hs(color = ComposeAppTheme.colors.leah)
                                     )
                                 },
                                 backgroundColor = ComposeAppTheme.colors.tyler,
@@ -327,7 +326,7 @@ private fun TokenBalanceHeader(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(ComposeAppTheme.colors.tyler)
+            .background(ComposeAppTheme.colors.lawrence)
     ) {
         val title: HSString
         val body: HSString
@@ -345,7 +344,10 @@ private fun TokenBalanceHeader(
             }
 
             title = balanceViewItem.primaryValue.value.hs(color = color)
-            body = (balanceViewItem.syncingLineText ?: balanceViewItem.secondaryValue?.value ?: "").hs(color = color)
+            body =
+                (balanceViewItem.syncingLineText ?: balanceViewItem.secondaryValue?.value ?: "").hs(
+                    color = color
+                )
         }
 
         CardsElementAmountText(

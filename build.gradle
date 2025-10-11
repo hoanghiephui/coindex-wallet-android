@@ -11,7 +11,7 @@ buildscript {
         constraint_version = "2.2.1"
         core_ktx_version = "1.17.0"
         fragment_ktx_version = "1.8.9"
-        navigation_ktx_version = "2.9.4"
+        navigation_ktx_version = "2.9.5"
         rxjava_version = "2.2.21"
         biometric_version = "1.1.0"
         junit_version = "4.13.2"
@@ -28,7 +28,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:8.13.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.4.3'
+        classpath 'com.google.gms:google-services:4.4.4'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.6'
         classpath 'com.google.dagger:hilt-android-gradle-plugin:2.57.2'
 
@@ -53,6 +53,6 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }

@@ -20,10 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.core.AdType
+import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
 import io.horizontalsystems.bankwallet.modules.balance.BalanceViewItem2
 import io.horizontalsystems.bankwallet.modules.balance.ui.BalanceCardInner2
 import io.horizontalsystems.bankwallet.modules.balance.ui.BalanceCardSubtitleType
+import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.ListEmptyView
@@ -48,7 +52,12 @@ fun TokenSelectScreen(
     var isSearchActive by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val uiState = viewModel.uiState
-
+    val (adState, reloadAd) = rememberAdNativeView(
+        BuildConfig.NATIVE_MANUAL,
+        adPlacements = "CoinAnalyticsScreen",
+        viewModel,
+        adType = AdType.SMALL
+    )
     val lazyListState = rememberSaveable(
         uiState.items.size,
         saver = LazyListState.Saver
@@ -67,6 +76,7 @@ fun TokenSelectScreen(
     HSScaffold(
         title = title,
         onBack = { navController.popBackStack() },
+        backgroundColor = ComposeAppTheme.colors.lawrence
     ) {
 
         Column {
@@ -78,7 +88,7 @@ fun TokenSelectScreen(
                 )
             }
             if (tabItems.isNotEmpty()) {
-                TabsTop(TabsTopType.Scrolled, tabItems) {
+                TabsTop(TabsTopType.Scrolled, tabItems, ComposeAppTheme.colors.lawrence) {
                     viewModel.onTabSelected(it)
                 }
             }
@@ -109,6 +119,13 @@ fun TokenSelectScreen(
                     ) {
                         item {
                             header?.invoke()
+                        }
+                        item {
+                            MaxTemplateNativeAdViewComposable(
+                                adViewState = adState,
+                                adType = AdType.SMALL,
+                                navController = navController
+                            )
                         }
                         val balanceViewItems = uiState.items
                         items(balanceViewItems) { item ->

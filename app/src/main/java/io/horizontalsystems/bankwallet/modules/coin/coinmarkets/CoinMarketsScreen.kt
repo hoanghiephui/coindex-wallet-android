@@ -11,31 +11,30 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.wallet.blockchain.bitcoin.BuildConfig
 import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.AdNativeUiState
+import io.horizontalsystems.bankwallet.core.AdType
+import io.horizontalsystems.bankwallet.core.MaxTemplateNativeAdViewComposable
 import io.horizontalsystems.bankwallet.entities.ViewState
 import io.horizontalsystems.bankwallet.modules.coin.MarketTickerViewItem
 import io.horizontalsystems.bankwallet.modules.coin.coinmarkets.CoinMarketsModule.ExchangeType
 import io.horizontalsystems.bankwallet.modules.coin.overview.ui.Loading
 import io.horizontalsystems.bankwallet.modules.market.MarketDataValue
+import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.Select
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
@@ -61,15 +60,21 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CoinMarketsScreen(
-    fullCoin: FullCoin
+    fullCoin: FullCoin,
+    navController: NavController
 ) {
     val viewModel = viewModel<CoinMarketsViewModel>(factory = CoinMarketsModule.Factory(fullCoin))
 
     var scrollToTopAfterUpdate by rememberSaveable { mutableStateOf(false) }
     var showExchangeTypeSelector by rememberSaveable { mutableStateOf(false) }
     val uiState = viewModel.uiState
-
-    Surface(color = ComposeAppTheme.colors.tyler) {
+    val (adState, _) = rememberAdNativeView(
+        BuildConfig.HOME_MARKET_NATIVE,
+        adPlacements = "CoinMarketsScreen",
+        viewModel,
+        adType = AdType.SMALL
+    )
+    Surface(color = ComposeAppTheme.colors.lawrence) {
         Crossfade(uiState.viewState, label = "") { viewItemState ->
             when (viewItemState) {
                 ViewState.Loading -> {
@@ -97,7 +102,11 @@ fun CoinMarketsScreen(
                                     scrollToTopAfterUpdate = true
                                 }
                             )
-                            CoinMarketList(uiState.items, scrollToTopAfterUpdate)
+                            CoinMarketList(
+                                uiState.items, scrollToTopAfterUpdate,
+                                adState = adState,
+                                navController = navController
+                            )
                             if (scrollToTopAfterUpdate) {
                                 scrollToTopAfterUpdate = false
                             }
@@ -151,11 +160,20 @@ fun CoinMarketsMenu(
 fun CoinMarketList(
     items: List<MarketTickerViewItem>,
     scrollToTop: Boolean,
+    adState: AdNativeUiState,
+    navController: NavController,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
     LazyColumn(state = listState) {
+        item {
+            MaxTemplateNativeAdViewComposable(
+                adViewState = adState,
+                adType = AdType.SMALL,
+                navController = navController
+            )
+        }
         items(items) { item ->
             BoxBordered(bottom = true) {
                 CoinMarketCell(
@@ -198,7 +216,7 @@ fun CoinMarketCell(
                 size = 32,
                 painter = rememberAsyncImagePainter(
                     model = iconUrl,
-                    error =painterResource(R.drawable.ic_platform_placeholder_24)
+                    error = painterResource(R.drawable.ic_platform_placeholder_24)
                 ),
             )
         },
@@ -215,7 +233,7 @@ fun CoinMarketCell(
                 subtitle = marketDataValueComponent(marketDataValue)
             )
         },
-        onClick =  tradeUrl?.let {
+        onClick = tradeUrl?.let {
             { LinkHelper.openLinkInAppBrowser(context, it) }
         }
     )
