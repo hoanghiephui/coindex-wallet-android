@@ -315,8 +315,8 @@ fun ButtonsGroupWithShade(
 ) {
     Column(
         modifier = Modifier
-            .offset(y = -(24.dp))
             .navigationBarsPadding()
+            .offset(y = -(24.dp))
     ) {
         Box(
             modifier = Modifier

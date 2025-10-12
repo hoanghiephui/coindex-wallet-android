@@ -455,3 +455,26 @@
 -dontwarn io.ktor.utils.io.core.Output
 -dontwarn io.ktor.utils.io.core.OutputLittleEndianKt
 -dontwarn io.ktor.utils.io.core.OutputPrimitivesKt
+-keep class io.horizontalsystems.monerokit.** { *; }
+-keep class io.horizontalsystems.monerokit.models.** { *; }
+-keep class io.horizontalsystems.monerokit.utils.** { *; }
+-keepclassmembers class io.horizontalsystems.monerokit.utils.** { *; }
+-dontwarn io.horizontalsystems.monerokit.**
+-keep class io.horizontalsystems.monerokit.crypto.** { *; }
+-keepclassmembers class io.horizontalsystems.monerokit.crypto.** { *; }
+-dontwarn io.horizontalsystems.monerokit.crypto.**
+-keep class io.horizontalsystems.monerokit.transport.** { *; }
+-keepclassmembers class io.horizontalsystems.monerokit.transport.** { *; }
+-dontwarn io.horizontalsystems.monerokit.transport.**
+-keep class io.horizontalsystems.monerokit.blockchain.** { *; }
+-keepclassmembers class io.horizontalsystems.monerokit.blockchain.** { *; }
+-dontwarn io.horizontalsystems.monerokit.blockchain.**
+-keep class io.horizontalsystems.monerokit.daos.** { *; }
+-keepclassmembers class io.horizontalsystems.monerokit.daos.** { *; }
+-dontwarn io.horizontalsystems.monerokit.daos.**
+-keep class io.horizontalsystems.monerokit.natives.** { *; }
+-keepclassmembers class io.horizontalsystems.monerokit.natives.** { *; }
+-dontwarn io.horizontalsystems.monerokit.natives.**
+-keep class io.horizontalsystems.monerokit.pools.** { *; }
+-keepclassmembers class io.horizontalsystems.monerokit.pools.** { *; }
+-dontwarn io.horizontalsystems.monerokit.pools.**

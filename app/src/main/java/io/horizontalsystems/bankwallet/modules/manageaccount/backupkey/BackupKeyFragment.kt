@@ -2,6 +2,7 @@ package io.horizontalsystems.bankwallet.modules.manageaccount.backupkey
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -82,7 +83,7 @@ fun RecoveryPhraseScreen(
             )
         }
     ) {
-        Column(modifier = Modifier.padding(it)) {
+        Column(modifier = Modifier.fillMaxSize().padding(top = it.calculateTopPadding())) {
             var hidden by remember { mutableStateOf(true) }
 
             InfoText(text = stringResource(R.string.RecoveryPhrase_Description))
