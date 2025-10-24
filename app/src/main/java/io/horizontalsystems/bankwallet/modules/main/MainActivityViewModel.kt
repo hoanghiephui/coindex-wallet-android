@@ -88,7 +88,6 @@ class MainActivityViewModel(
         if (accountManager.isAccountsEmpty && systemInfoManager.isSystemLockOff) {
             throw when {
                 !localStorage.mainShowedOnce -> MainScreenValidationError.Welcome()
-                pinComponent.isLocked -> MainScreenValidationError.Unlock()
                 else -> MainScreenValidationError.UseAppNotWallet()
             }
         } else {
@@ -100,10 +99,6 @@ class MainActivityViewModel(
                 keyStoreManager.validateKeyStore()
                 if (!localStorage.mainShowedOnce) {
                     throw MainScreenValidationError.Welcome()
-                }
-
-                if (pinComponent.isLocked) {
-                    throw MainScreenValidationError.Unlock()
                 }
                 throw MainScreenValidationError.UseAppWallet()
             } catch (e: KeyStoreValidationError.UserNotAuthenticated) {

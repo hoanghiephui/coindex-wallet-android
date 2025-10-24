@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import androidx.core.net.toUri
 
 class SubscriptionServiceGooglePlay(
     context: Context,
@@ -218,7 +219,7 @@ class SubscriptionServiceGooglePlay(
 
         val packageName = "com.blockchain.btc.coinhub"
         val s = "https://play.google.com/store/account/subscriptions?sku=${subscriptionId}&package=$packageName"
-        val intent = Intent(ACTION_VIEW, Uri.parse(s)).apply {
+        val intent = Intent(ACTION_VIEW, s.toUri()).apply {
             // The URL should either launch directly in a non-browser app (if it's
             // the default) or in the disambiguation dialog.
             addCategory(CATEGORY_BROWSABLE)

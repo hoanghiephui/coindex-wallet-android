@@ -126,8 +126,8 @@ android {
         coinhub {
             dimension = "distribution"
             applicationId 'com.blockchain.btc.coinhub'
-            versionCode 180
-            versionName '1.5.4'
+            versionCode 181
+            versionName '1.5.5'
             resValue "string", "companyWebPageLink", "https://bestwallet.money"
             resValue "string", "appWebPageLink", "https://play.google.com/store/apps/details?id=com.blockchain.btc.coinhub"
         }
@@ -282,7 +282,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:23.0.0'
 
     // Room
-    def room_version = '2.8.2'
+    def room_version = '2.8.3'
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
@@ -402,7 +402,7 @@ dependencies {
     fdroidCiImplementation project(':subscriptions-fdroid')
     ciImplementation project(':subscriptions-dev')
 
-    implementation platform('androidx.compose:compose-bom:2025.10.00')
+    implementation platform('androidx.compose:compose-bom:2025.10.01')
     // Integration with activities
     implementation 'androidx.activity:activity-compose:1.11.0'
     // Compose Material Design
@@ -454,7 +454,7 @@ dependencies {
 
     api 'com.jaredrummler:android-shell:1.0.0'
     api 'com.offbynull.portmapper:portmapper:2.0.6'
-    implementation("com.applovin:applovin-sdk:13.4.0")
+    implementation("com.applovin:applovin-sdk:13.5.0")
     //implementation 'com.applovin.mediation:bytedance-adapter:7.3.0.3.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
     implementation("com.google.android.gms:play-services-ads-identifier:18.2.0")
@@ -470,7 +470,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.4")
-    implementation("androidx.work:work-runtime-ktx:2.10.5")
+    implementation("androidx.work:work-runtime-ktx:2.11.0")
     implementation("androidx.hilt:hilt-work:1.3.0")
     implementation("joda-time:joda-time:2.14.0")
     implementation project(":lightweightlibrary")
