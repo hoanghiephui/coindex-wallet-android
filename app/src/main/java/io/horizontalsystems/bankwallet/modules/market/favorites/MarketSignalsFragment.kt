@@ -51,7 +51,6 @@ class MarketSignalsFragment : BaseComposeFragment() {
     data class Result(val enabled: Boolean) : Parcelable
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarketSignalsScreen(navController: NavController) {
     HSScaffold(

@@ -63,7 +63,6 @@ class FilterCoinFragment : BaseComposeFragment() {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterCoinScreen(navController: NavController, viewModel: TransactionsViewModel) {
     val filterCoins by viewModel.filterTokensLiveData.observeAsState()

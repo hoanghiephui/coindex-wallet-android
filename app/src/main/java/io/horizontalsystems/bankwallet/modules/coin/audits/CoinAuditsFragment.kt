@@ -64,7 +64,6 @@ class CoinAuditsFragment : BaseComposeFragment() {
     data class Input(val audits: List<CoinAuditsModule.AuditParcelable>) : Parcelable
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CoinAuditsScreen(
     viewModel: CoinAuditsViewModel,

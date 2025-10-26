@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,7 +49,6 @@ class WCPairingsFragment : BaseComposeFragment() {
         get() = "WC2PairingsFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WCPairingsScreen(navController: NavController) {
     val viewModel = viewModel<WCPairingsViewModel>(factory = WCPairingsViewModel.Factory())
@@ -92,24 +90,24 @@ fun WCPairingsScreen(navController: NavController) {
                                 if (result.confirmed) {
                                     viewModel.deleteAll()
                                 }
-                                }
                             }
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_delete_20),
-                                contentDescription = null,
-                                tint = ComposeAppTheme.colors.lucian
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            body_lucian(text = stringResource(id = R.string.WalletConnect_Pairings_DeleteAll))
                         }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_delete_20),
+                            contentDescription = null,
+                            tint = ComposeAppTheme.colors.lucian
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        body_lucian(text = stringResource(id = R.string.WalletConnect_Pairings_DeleteAll))
                     }
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-            }
+                }
+            )
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
+
 
 @Composable
 fun Pairing(pairing: PairingViewItem, onDelete: () -> Unit) {

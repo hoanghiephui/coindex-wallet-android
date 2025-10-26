@@ -97,7 +97,6 @@ class WCSessionFragment : BaseComposeFragment() {
         get() = "WCSessionFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WCSessionPage(
     navController: NavController,

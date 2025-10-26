@@ -27,7 +27,6 @@ import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WcRequestScreen(
     navController: NavController,

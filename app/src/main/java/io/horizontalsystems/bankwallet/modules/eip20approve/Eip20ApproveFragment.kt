@@ -56,7 +56,6 @@ class Eip20ApproveFragment(override val logScreen: String = "Eip20ApproveFragmen
     ) : Parcelable
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Eip20ApproveScreen(navController: NavController, input: Eip20ApproveFragment.Input) {
     val viewModelStoreOwner = remember(navController.currentBackStackEntry) {

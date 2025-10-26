@@ -69,7 +69,6 @@ class WCNetworksFragment : BaseComposeFragment() {
         get() = "WCNetworksFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NetworksScreen(
     blockchains: List<BlockchainType>,

@@ -82,7 +82,6 @@ class CoinMajorHoldersFragment : BaseComposeFragment() {
     data class Input(val coinUid: String, val blockchain: Blockchain) : Parcelable
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CoinMajorHoldersScreen(
     coinUid: String,

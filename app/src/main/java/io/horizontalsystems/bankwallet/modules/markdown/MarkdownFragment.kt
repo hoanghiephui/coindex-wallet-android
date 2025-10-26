@@ -48,7 +48,6 @@ class MarkdownFragment : BaseComposeFragment() {
     ) : Parcelable
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MarkdownScreen(
     handleRelativeUrl: Boolean,

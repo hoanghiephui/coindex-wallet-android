@@ -51,7 +51,6 @@ class OverallScoreInfoFragment : BaseComposeFragment() {
         get() = "OverallScoreInfoFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun InfoScreen(
     categoryTitle: Int,

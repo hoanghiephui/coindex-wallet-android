@@ -30,7 +30,6 @@ class SwapSettingsFragment : BaseComposeFragment() {
         get() = "SwapSettingsFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SwapProviderSettingsScreen(navController: NavController) {
     val previousBackStackEntry = remember { navController.previousBackStackEntry }

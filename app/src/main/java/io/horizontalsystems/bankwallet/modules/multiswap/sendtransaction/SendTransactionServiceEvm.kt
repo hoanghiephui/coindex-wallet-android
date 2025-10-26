@@ -268,7 +268,6 @@ class SendTransactionServiceEvm(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SendEvmFeeSettingsScreen(
     viewModel: SendEvmSettingsViewModel,

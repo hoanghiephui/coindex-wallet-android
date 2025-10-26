@@ -31,7 +31,7 @@ class FeePriorityInfoFragment : BaseComposeFragment() {
         get() = "FeePriorityInfoFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 private fun InfoScreen(
     navController: NavController

@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
 import androidx.compose.material.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
@@ -22,7 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import io.horizontalsystems.bankwallet.R
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.ui.compose.Bright
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer

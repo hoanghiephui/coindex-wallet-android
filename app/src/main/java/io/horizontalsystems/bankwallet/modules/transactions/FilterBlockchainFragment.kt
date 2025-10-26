@@ -59,7 +59,6 @@ class FilterBlockchainFragment : BaseComposeFragment() {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterBlockchainScreen(navController: NavController, viewModel: TransactionsViewModel) {
     val filterBlockchains by viewModel.filterBlockchainsLiveData.observeAsState()

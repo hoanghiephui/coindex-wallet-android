@@ -52,7 +52,6 @@ class AddressCheckerFragment : BaseComposeFragment() {
         get() = "AddressCheckerFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddressCheckerScreen(
     onCheckAddressClick: () -> Unit,

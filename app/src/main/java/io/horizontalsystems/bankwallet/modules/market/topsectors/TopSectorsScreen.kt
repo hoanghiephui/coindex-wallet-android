@@ -107,7 +107,7 @@ fun TopSectorsScreen(
                     stickyHeader {
                         HeaderSorting(
                                     borderBottom = true,
-                                    backgroundColor = ComposeAppTheme.colors.lawrence
+                                    background = ComposeAppTheme.colors.lawrence
                                 ) {
                             HSpacer(width = 16.dp)
                             HSDropdownButton(

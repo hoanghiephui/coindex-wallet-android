@@ -72,7 +72,6 @@ fun SwapSelectProviderScreen(navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SwapSelectProviderScreenInner(
     onClickClose: () -> Unit,

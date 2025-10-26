@@ -35,7 +35,6 @@ import io.horizontalsystems.bankwallet.uiv3.components.info.TextBlock
 import io.horizontalsystems.marketkit.models.FullCoin
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NetworkSelectScreen(
     navController: NavController,

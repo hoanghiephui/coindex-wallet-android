@@ -180,7 +180,6 @@ fun SwapScreen(navController: NavController, tokenIn: Token?) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SwapScreenInner(
     uiState: SwapUiState,

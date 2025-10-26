@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import io.horizontalsystems.bankwallet.R
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.imageUrl
@@ -46,6 +46,8 @@ class DonateAddressesFragment : BaseComposeFragment() {
         )
     }
 
+    override val logScreen: String
+        get() = "DonateAddressesFragment"
 }
 
 @Composable

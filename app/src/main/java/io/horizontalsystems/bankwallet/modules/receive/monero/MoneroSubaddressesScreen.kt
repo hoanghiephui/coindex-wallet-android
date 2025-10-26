@@ -36,7 +36,6 @@ data class SubaddressesParams(
     val subaddresses: List<SubaddressViewItem>
 ) : Parcelable
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoneroSubaddressesScreen(
     params: SubaddressesParams,

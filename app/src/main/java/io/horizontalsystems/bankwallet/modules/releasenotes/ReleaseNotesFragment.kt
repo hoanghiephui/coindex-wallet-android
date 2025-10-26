@@ -53,7 +53,6 @@ class ReleaseNotesFragment : BaseComposeFragment() {
         get() = "ReleaseNotesFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReleaseNotesScreen(
     closeablePopup: Boolean,

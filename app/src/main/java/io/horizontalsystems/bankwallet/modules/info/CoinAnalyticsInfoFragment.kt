@@ -33,7 +33,6 @@ class CoinAnalyticsInfoFragment : BaseComposeFragment() {
         get() = "CoinAnalyticsInfoFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CoinAnalyticsInfoScreen(
     analyticsInfo: AnalyticInfo,

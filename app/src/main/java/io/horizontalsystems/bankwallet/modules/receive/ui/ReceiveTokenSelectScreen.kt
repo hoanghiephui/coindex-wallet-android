@@ -42,7 +42,6 @@ import io.horizontalsystems.bankwallet.uiv3.components.cell.CellRightNavigation
 import io.horizontalsystems.bankwallet.uiv3.components.cell.hs
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReceiveTokenSelectScreen(
     activeAccount: Account,

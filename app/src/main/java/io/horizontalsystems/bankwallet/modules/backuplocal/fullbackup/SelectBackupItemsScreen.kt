@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -19,7 +18,6 @@ import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderText
 import io.horizontalsystems.bankwallet.ui.compose.components.HsCheckbox
-import io.horizontalsystems.bankwallet.ui.compose.components.NiaBackground
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
@@ -29,11 +27,10 @@ import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_lucian
 import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectBackupItemsScreen(
     onNextClick: (accountIds: List<String>) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     val viewModel =
         viewModel<SelectBackupItemsViewModel>(factory = SelectBackupItemsViewModel.Factory())
@@ -71,45 +68,45 @@ fun SelectBackupItemsScreen(
                                     onClick = { viewModel.toggle(wallet) }
                                 ) {
 
-                                            Column(modifier = Modifier.weight(1f)) {
-                                                headline2_leah(text = wallet.name)
-                                                if (wallet.backupRequired) {
-                                                    subhead2_lucian(text = stringResource(id = R.string.BackupManager_BackupRequired))
-                                                } else {
-                                                    subhead2_grey(
-                                                        text = wallet.type,
-                                                        overflow = TextOverflow.Ellipsis,
-                                                        maxLines = 1
-                                                    )
-                                                }
-                                            }
-                                            HsCheckbox(
-                                                checked = wallet.selected,
-                                                onCheckedChange = {
-                                                    viewModel.toggle(wallet)
-                                                },
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        headline2_leah(text = wallet.name)
+                                        if (wallet.backupRequired) {
+                                            subhead2_lucian(text = stringResource(id = R.string.BackupManager_BackupRequired))
+                                        } else {
+                                            subhead2_grey(
+                                                text = wallet.type,
+                                                overflow = TextOverflow.Ellipsis,
+                                                maxLines = 1
                                             )
                                         }
                                     }
-                                    VSpacer(height = 24.dp)
+                                    HsCheckbox(
+                                        checked = wallet.selected,
+                                        onCheckedChange = {
+                                            viewModel.toggle(wallet)
+                                        },
+                                    )
                                 }
                             }
-
-                            item {
-                                OtherBackupItems(uiState.otherBackupItems)
-                                VSpacer(height = 32.dp)
-                            }
+                            VSpacer(height = 24.dp)
                         }
-
-                        is ViewState.Error,
-                        ViewState.Loading -> Unit
                     }
 
+                    item {
+                        OtherBackupItems(uiState.otherBackupItems)
+                        VSpacer(height = 32.dp)
+                    }
                 }
+
+                is ViewState.Error,
+                ViewState.Loading,
+                    -> Unit
             }
+
         }
     }
 }
+
 
 @Composable
 fun OtherBackupItems(otherBackupItems: List<SelectBackupItemsViewModel.OtherBackupViewItem>) {

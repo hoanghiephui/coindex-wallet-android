@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -23,7 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import io.horizontalsystems.bankwallet.R
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.Caution
 import io.horizontalsystems.bankwallet.core.authorizedAction
@@ -83,6 +83,9 @@ class BackupManagerFragment : BaseComposeFragment() {
             }
         )
     }
+
+    override val logScreen: String
+        get() = "BackupManagerFragment"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

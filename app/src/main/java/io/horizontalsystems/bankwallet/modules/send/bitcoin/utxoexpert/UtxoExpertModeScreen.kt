@@ -40,7 +40,6 @@ import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import io.horizontalsystems.bitcoincore.storage.UnspentOutputInfo
 import io.horizontalsystems.marketkit.models.Token
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UtxoExpertModeScreen(
     adapter: ISendBitcoinAdapter,

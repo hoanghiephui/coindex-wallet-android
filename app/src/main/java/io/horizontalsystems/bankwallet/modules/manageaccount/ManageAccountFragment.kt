@@ -18,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
@@ -87,7 +86,6 @@ class ManageAccountFragment : BaseComposeFragment() {
         get() = "ManageAccountFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageAccountScreen(navController: NavController, accountId: String) {
     val viewModel =
@@ -97,6 +95,10 @@ fun ManageAccountScreen(navController: NavController, accountId: String) {
         navController.popBackStack()
         viewModel.onClose()
     }
+    val (adState, _) = rememberAdNativeView(
+        BuildConfig.HOME_MARKET_NATIVE,
+        adPlacements = "ManageAccountScreen", viewModel
+    )
     HSScaffold(
         title = viewModel.viewState.title,
         onBack = { navController.popBackStack() },

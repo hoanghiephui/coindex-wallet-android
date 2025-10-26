@@ -1,7 +1,7 @@
 package io.horizontalsystems.bankwallet.modules.managewallets
 
 import androidx.lifecycle.viewModelScope
-import io.horizontalsystems.bankwallet.R
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.Clearable
 import io.horizontalsystems.bankwallet.core.ViewModelUiState
 import io.horizontalsystems.bankwallet.core.alternativeImageUrl

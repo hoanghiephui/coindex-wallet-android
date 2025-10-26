@@ -61,7 +61,6 @@ class TransactionDoubleSpendInfoFragment : BaseComposeFragment() {
         get() = "TransactionDoubleSpendInfoFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun InfoScreen(
     txHash: String,

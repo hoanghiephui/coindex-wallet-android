@@ -31,7 +31,6 @@ class TransactionStatusInfoFragment : BaseComposeFragment() {
         get() = "TransactionStatusInfoFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun InfoScreen(
     navController: NavController

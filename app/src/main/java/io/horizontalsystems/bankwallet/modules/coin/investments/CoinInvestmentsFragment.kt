@@ -17,7 +17,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -73,7 +72,6 @@ class CoinInvestmentsFragment : BaseComposeFragment() {
     data class Input(val coinUid: String) : Parcelable
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CoinInvestmentsScreen(
     viewModel: CoinInvestmentsViewModel,

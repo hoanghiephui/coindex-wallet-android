@@ -71,7 +71,6 @@ import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabItem
 import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabsTop
 import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabsTopType
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionsScreen(
     navController: NavController,

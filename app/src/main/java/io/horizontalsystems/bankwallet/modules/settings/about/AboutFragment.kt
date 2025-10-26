@@ -69,7 +69,6 @@ private fun AboutNavHost(fragmentNavController: NavController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AboutScreen(
     navController: NavController,

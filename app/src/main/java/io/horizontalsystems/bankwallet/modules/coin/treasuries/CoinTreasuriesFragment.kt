@@ -61,7 +61,6 @@ class CoinTreasuriesFragment : BaseComposeFragment() {
         get() = "CoinTreasuriesFragment"
 }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun CoinTreasuriesScreen(
         viewModel: CoinTreasuriesViewModel,

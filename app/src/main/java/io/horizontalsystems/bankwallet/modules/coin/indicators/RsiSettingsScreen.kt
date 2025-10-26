@@ -9,7 +9,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -29,7 +28,6 @@ import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RsiSettingsScreen(navController: NavController, indicatorSetting: ChartIndicatorSetting) {
     val viewModel = viewModel<RsiSettingViewModel>(

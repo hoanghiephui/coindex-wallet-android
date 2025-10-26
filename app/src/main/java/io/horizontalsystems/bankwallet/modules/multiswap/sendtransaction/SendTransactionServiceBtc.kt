@@ -195,7 +195,6 @@ class SendTransactionServiceBtc(private val token: Token) : AbstractSendTransact
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SendBtcFeeSettingsScreen(
     navController: NavController,

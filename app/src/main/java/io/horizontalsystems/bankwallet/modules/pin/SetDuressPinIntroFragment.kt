@@ -48,7 +48,6 @@ class SetDuressPinIntroFragment : BaseComposeFragment() {
         get() = "SetDuressPinIntroFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetDuressPinIntroScreen(navController: NavController) {
     val viewModel =

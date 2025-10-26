@@ -69,7 +69,6 @@ class TransactionsFilterFragment : BaseComposeFragment() {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterScreen(
     navController: NavController,

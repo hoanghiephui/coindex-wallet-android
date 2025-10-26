@@ -1,9 +1,7 @@
 // NB: Android Studio can't find the imports; this does not affect the
 // actual build since Gradle can find them just fine.
 // remove after upgrading to 'com.android.tools.build:gradle:8.1.0' (AGP 8.1)
-import com.android.tools.profgen.ArtProfileKt
-import com.android.tools.profgen.ArtProfileSerializer
-import com.android.tools.profgen.DexFile
+
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
@@ -206,15 +204,16 @@ android {
     packagingOptions {
         resources {
             pickFirsts += [
-                'META-INF/atomicfu.kotlin_module',
-                'META-INF/FastDoubleParser-LICENSE',
-                'META-INF/FastDoubleParser-NOTICE',
-                'META-INF/io.netty.versions.properties'
+                    'META-INF/atomicfu.kotlin_module',
+                    'META-INF/FastDoubleParser-LICENSE',
+                    'META-INF/FastDoubleParser-NOTICE',
+                    'META-INF/io.netty.versions.properties'
             ]
             excludes += [
-                'META-INF/INDEX.LIST',
-                'META-INF/DEPENDENCIES',
-                'META-INF/LICENSE.md'
+                    'META-INF/INDEX.LIST',
+                    'META-INF/DEPENDENCIES',
+                    'META-INF/LICENSE.md',
+                    'META-INF/NOTICE.md'
             ]
         }
         jniLibs {

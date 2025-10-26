@@ -45,7 +45,6 @@ class SelectContactFragment : BaseComposeFragment() {
         get() = "SelectContactFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectContactScreen(navController: NavController, input: SelectContactFragment.Input?) {
     val viewModel = viewModel<SelectContactViewModel>(

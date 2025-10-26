@@ -82,7 +82,6 @@ class VaultBlockchainsSelectorFragment : BaseComposeFragment() {
         get() = "VaultBlockchainsSelectorFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FilterByBlockchainsScreen(
     blockchains: List<Blockchain>,

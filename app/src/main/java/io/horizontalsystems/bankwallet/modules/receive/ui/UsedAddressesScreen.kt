@@ -58,7 +58,6 @@ enum class UsedAddressTab(@StringRes val titleResId: Int) {
     ChangeAddress(R.string.Balance_Receive_ChangeAddresses);
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UsedAddressScreen(
     params: UsedAddressesParams,

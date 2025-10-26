@@ -45,7 +45,6 @@ class SetDuressPinSelectAccountsFragment : BaseComposeFragment() {
         get() = "SetDuressPinSelectAccountsFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetDuressPinSelectAccountsScreen(navController: NavController) {
     val viewModel =

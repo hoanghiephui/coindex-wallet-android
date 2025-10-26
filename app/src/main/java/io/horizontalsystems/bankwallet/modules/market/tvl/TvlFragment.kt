@@ -253,7 +253,7 @@ private fun TvlMenu(
     HeaderSorting(
         borderBottom = true,
         borderTop = true,
-        backgroundColor = ComposeAppTheme.colors.lawrence
+        background = ComposeAppTheme.colors.lawrence
     ) {
         HSpacer(16.dp)
         HSDropdownButton(

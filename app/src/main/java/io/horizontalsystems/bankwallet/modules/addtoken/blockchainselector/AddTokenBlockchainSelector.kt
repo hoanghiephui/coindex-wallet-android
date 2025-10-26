@@ -19,7 +19,6 @@ import io.horizontalsystems.marketkit.models.Blockchain
 
 const val BlockchainSelectorResult = "blockchain_selector_result_key"
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTokenBlockchainSelectorScreen(
     blockchains: List<Blockchain>,

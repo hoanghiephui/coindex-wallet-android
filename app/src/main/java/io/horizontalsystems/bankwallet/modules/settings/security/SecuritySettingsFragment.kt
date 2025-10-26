@@ -58,7 +58,6 @@ class SecuritySettingsFragment : BaseComposeFragment() {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SecurityCenterScreen(
     securitySettingsViewModel: SecuritySettingsViewModel,

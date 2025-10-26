@@ -42,6 +42,7 @@ import io.horizontalsystems.bankwallet.entities.ViewState
 import io.horizontalsystems.bankwallet.modules.coin.CoinFragment
 import io.horizontalsystems.bankwallet.modules.coin.analytics.CoinAnalyticsModule.RankType
 import io.horizontalsystems.bankwallet.modules.coin.overview.ui.Loading
+import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.Select
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryCircle
@@ -76,7 +77,7 @@ class CoinRankFragment : BaseComposeFragment() {
         get() = "CoinRankFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn( ExperimentalFoundationApi::class)
 @Composable
 private fun CoinRankScreen(
     type: RankType,

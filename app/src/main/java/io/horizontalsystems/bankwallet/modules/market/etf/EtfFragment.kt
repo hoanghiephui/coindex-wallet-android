@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -103,7 +104,6 @@ class EtfFragment : BaseComposeFragment() {
         get() = "EtfFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EtfPage(
     viewModel: EtfViewModel,
@@ -222,7 +222,7 @@ fun EtfByChain(
                             HeaderSorting(
                                 borderBottom = true,
                                 borderTop = true,
-                                backgroundColor = ComposeAppTheme.colors.lawrence
+                                background = ComposeAppTheme.colors.lawrence
                             ) {
                                 HSpacer(width = 16.dp)
                                 HSDropdownButton(

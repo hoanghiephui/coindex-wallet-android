@@ -34,6 +34,7 @@ import io.horizontalsystems.bankwallet.modules.settings.privacy.tor.SecurityTorS
 import io.horizontalsystems.bankwallet.modules.settings.security.SecurityCenterCell
 import io.horizontalsystems.bankwallet.modules.settings.security.ui.TorBlock
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
+import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HsSwitch
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.TextImportantWarning

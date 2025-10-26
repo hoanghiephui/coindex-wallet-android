@@ -13,7 +13,6 @@ import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.modules.pin.unlock.PinConfirmViewModel
 import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PinConfirm(
     onSuccess: () -> Unit,

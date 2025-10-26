@@ -41,7 +41,6 @@ class SubscriptionFragment : BaseComposeFragment() {
         get() = "SubscriptionFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubscriptionScreen(navController: NavController) {
     val viewModel = viewModel<SubscriptionViewModel>()

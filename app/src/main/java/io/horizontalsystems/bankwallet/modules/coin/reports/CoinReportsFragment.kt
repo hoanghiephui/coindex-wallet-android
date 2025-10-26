@@ -55,7 +55,6 @@ class CoinReportsFragment : BaseComposeFragment() {
     data class Input(val coinUid: String) : Parcelable
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CoinReportsScreen(
     viewModel: CoinReportsViewModel,

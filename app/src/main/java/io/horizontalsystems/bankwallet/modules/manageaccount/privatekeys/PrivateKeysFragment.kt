@@ -42,7 +42,6 @@ class PrivateKeysFragment : BaseComposeFragment() {
         get() = "PrivateKeysFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageAccountScreen(navController: NavController, account: Account) {
     val viewModel = viewModel<PrivateKeysViewModel>(factory = PrivateKeysModule.Factory(account))

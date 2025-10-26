@@ -17,7 +17,6 @@ import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.animations.CrossSlide
 import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PinSet(
     title: String,

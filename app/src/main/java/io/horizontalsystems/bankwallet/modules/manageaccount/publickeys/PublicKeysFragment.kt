@@ -41,7 +41,6 @@ class PublicKeysFragment : BaseComposeFragment() {
         get() = "PublicKeysFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageAccountScreen(navController: NavController, account: Account) {
     val viewModel = viewModel<PublicKeysViewModel>(factory = PublicKeysModule.Factory(account))

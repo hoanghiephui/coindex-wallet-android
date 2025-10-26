@@ -72,7 +72,7 @@ class MarketFiltersResultsFragment : BaseComposeFragment() {
         get() = "MarketFiltersResultsFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SearchResultsScreen(
     viewModel: MarketFiltersResultViewModel,

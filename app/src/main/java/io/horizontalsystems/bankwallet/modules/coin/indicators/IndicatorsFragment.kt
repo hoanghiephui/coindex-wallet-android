@@ -43,7 +43,6 @@ class IndicatorsFragment : BaseComposeFragment() {
         get() = "IndicatorsFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IndicatorsScreen(navController: NavController) {
     val chartIndicatorsViewModel =

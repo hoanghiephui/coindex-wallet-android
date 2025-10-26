@@ -39,6 +39,7 @@ import io.horizontalsystems.bankwallet.modules.coin.overview.ui.Chart
 import io.horizontalsystems.bankwallet.modules.coin.overview.ui.Loading
 import io.horizontalsystems.bankwallet.modules.metricchart.MetricsType
 import io.horizontalsystems.bankwallet.rememberAdNativeView
+import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.HSSwipeRefresh
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.DescriptionCard
@@ -158,7 +159,7 @@ class MetricsPageFragment : BaseComposeFragment() {
                                         HeaderSorting(
                                             borderBottom = true,
                                             borderTop = true,
-                                            backgroundColor = ComposeAppTheme.colors.lawrence
+                                            background = ComposeAppTheme.colors.lawrence
                                         ) {
                                             HSpacer(width = 16.dp)
                                             HSButton(

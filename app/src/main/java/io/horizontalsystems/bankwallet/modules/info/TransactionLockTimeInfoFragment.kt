@@ -38,7 +38,6 @@ class TransactionLockTimeInfoFragment : BaseComposeFragment() {
         get() = "TransactionLockTimeInfoFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun InfoScreen(
     lockDate: String,
