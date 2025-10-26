@@ -2,16 +2,14 @@ package io.horizontalsystems.bankwallet.modules.settings.appstatus
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -22,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.R
 import io.horizontalsystems.bankwallet.core.stats.StatEntity
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
@@ -30,22 +28,20 @@ import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.modules.settings.appstatus.AppStatusModule.BlockContent
 import io.horizontalsystems.bankwallet.modules.settings.appstatus.AppStatusModule.BlockData
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryDefault
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_leah
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import io.horizontalsystems.core.helpers.HudHelper
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppStatusScreen(
     navController: NavController
@@ -56,71 +52,62 @@ fun AppStatusScreen(
     val localView = LocalView.current
     val context = LocalContext.current
 
-    ComposeAppTheme {
-        Scaffold(
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.background,
-            topBar = {
-                AppBar(
-                    title = stringResource(R.string.Settings_AppStatus),
-                    navigationIcon = {
-                        HsBackButton(onClick = { navController.popBackStack() })
-                    },
-                )
-            }
+    HSScaffold(
+        title = stringResource(R.string.Settings_AppStatus),
+        onBack = navController::popBackStack,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .verticalScroll(rememberScrollState())
         ) {
-            Column(Modifier.padding(it)) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp, top = 12.dp)
-                    ) {
-                        ButtonPrimaryYellow(
-                            modifier = Modifier.weight(1f),
-                            title = stringResource(R.string.Button_Copy),
-                            onClick = {
-                                uiState.appStatusAsText?.let {
-                                    clipboardManager.setText(AnnotatedString(it))
-                                    HudHelper.showSuccessMessage(localView, R.string.Hud_Text_Copied)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 12.dp)
+            ) {
+                ButtonPrimaryYellow(
+                    modifier = Modifier.weight(1f),
+                    title = stringResource(R.string.Button_Copy),
+                    onClick = {
+                        uiState.appStatusAsText?.let {
+                            clipboardManager.setText(AnnotatedString(it))
+                            HudHelper.showSuccessMessage(localView, R.string.Hud_Text_Copied)
 
                             stat(
-                                    page = StatPage.AppStatus,
-                                    event= StatEvent.Copy(StatEntity.Status)
-                                )
-                            }}
-                        )
-                        HSpacer(8.dp)
-                        ButtonPrimaryDefault(
-                            modifier = Modifier.weight(1f),
-                            title = stringResource(R.string.Button_Share),
-                            onClick = {
-                                uiState.appStatusAsText?.let {
-                                    ShareCompat.IntentBuilder(context)
-                                        .setType("text/plain")
-                                        .setText(it)
-                                        .startChooser()
-                                    stat(
-                                    page = StatPage.AppStatus,
-                                    event= StatEvent.Share(StatEntity.Status)
-                                )
-                                }
-                            }
-                        )
+                                page = StatPage.AppStatus,
+                                event = StatEvent.Copy(StatEntity.Status)
+                            )
+                        }
                     }
-                    uiState.blockViewItems.forEach { blockData ->
-                        StatusBlock(
-                            sectionTitle = blockData.title,
-                            contentItems = blockData.content,
-                        )
+                )
+                HSpacer(8.dp)
+                ButtonPrimaryDefault(
+                    modifier = Modifier.weight(1f),
+                    title = stringResource(R.string.Button_Share),
+                    onClick = {
+                        uiState.appStatusAsText?.let {
+                            ShareCompat.IntentBuilder(context)
+                                .setType("text/plain")
+                                .setText(it)
+                                .startChooser()
+
+                            stat(
+                                page = StatPage.AppStatus,
+                                event = StatEvent.Share(StatEntity.Status)
+                            )
+                        }
                     }
-                    VSpacer(32.dp)
-                }
+                )
             }
+            uiState.blockViewItems.forEach { blockData ->
+                StatusBlock(
+                    sectionTitle = blockData.title,
+                    contentItems = blockData.content,
+                )
+            }
+            VSpacer(32.dp)
         }
     }
 }

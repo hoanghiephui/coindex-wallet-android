@@ -14,10 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -51,13 +48,11 @@ import io.horizontalsystems.bankwallet.modules.manageaccount.ManageAccountModule
 import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryDefault
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
 import io.horizontalsystems.bankwallet.ui.compose.components.FormsInput
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderText
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsImage
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
@@ -69,6 +64,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.body_lucian
 import io.horizontalsystems.bankwallet.uiv3.components.AlertCard
 import io.horizontalsystems.bankwallet.uiv3.components.AlertFormat
 import io.horizontalsystems.bankwallet.uiv3.components.AlertType
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -101,36 +97,20 @@ fun ManageAccountScreen(navController: NavController, accountId: String) {
         navController.popBackStack()
         viewModel.onClose()
     }
-
-    val (adState, _) = rememberAdNativeView(
-        BuildConfig.HOME_MARKET_NATIVE,
-        adPlacements = "ManageAccountFragment",
-        viewModel
-    )
-
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = viewModel.viewState.title,
-                navigationIcon = {
-                    HsBackButton(onClick = { navController.popBackStack() })
-                },
-                menuItems = listOf(
-                    MenuItem(
-                        title = TranslatableString.ResString(R.string.ManageAccount_Save),
-                        onClick = { viewModel.onSave() },
-                        enabled = viewModel.viewState.canSave,
-                        tint = ComposeAppTheme.colors.jacob
-                    )
-                )
+    HSScaffold(
+        title = viewModel.viewState.title,
+        onBack = { navController.popBackStack() },
+        menuItems = listOf(
+            MenuItem(
+                title = TranslatableString.ResString(R.string.ManageAccount_Save),
+                onClick = { viewModel.onSave() },
+                enabled = viewModel.viewState.canSave,
+                tint = ComposeAppTheme.colors.jacob
             )
-        },
-    ) { innerPaddings ->
+        )
+    ) {
         Box(
             modifier = Modifier
-                .padding(innerPaddings)
                 .fillMaxSize()
                 .imePadding()
         ) {

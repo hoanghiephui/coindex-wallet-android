@@ -3,33 +3,27 @@ package io.horizontalsystems.bankwallet.modules.settings.security.autolock
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
 class AutoLockIntervalsFragment : BaseComposeFragment() {
 
@@ -40,12 +34,8 @@ class AutoLockIntervalsFragment : BaseComposeFragment() {
         )
     }
 
-    override var logScreen: String
-        get() = "AutoLockIntervalsFragment"
-        set(value) {}
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AutoLockIntervalsScreen(
     close: () -> Unit,
@@ -53,36 +43,24 @@ private fun AutoLockIntervalsScreen(
         factory = AutoLockModule.Factory()
     )
 ) {
-    ComposeAppTheme {
-        Scaffold(
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.background,
-            topBar = {
-                AppBar(
-                    title = stringResource(R.string.Settings_AutoLock),
-                    navigationIcon = {
-                        HsBackButton(onClick = close)
-                    },
+    HSScaffold(
+        title = stringResource(R.string.Settings_AutoLock),
+        onBack = close,
+    ) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(
+                    rememberScrollState()
                 )
-            }
         ) {
-            Column(modifier = Modifier.padding(it)) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .verticalScroll(
-                            rememberScrollState()
-                        )
-                ) {
-                    VSpacer(12.dp)
-                    CellUniversalLawrenceSection(viewModel.intervals) { item ->
-                        IntervalCell(item.interval, item.selected) { interval ->
-                            viewModel.onSelectAutoLockInterval(interval)
-                            close.invoke()
-                        }
-                    }
+            VSpacer(12.dp)
+            CellUniversalLawrenceSection(viewModel.intervals) { item ->
+                IntervalCell(item.interval, item.selected) { interval ->
+                    viewModel.onSelectAutoLockInterval(interval)
+                    close.invoke()
                 }
             }
+            VSpacer(24.dp)
         }
     }
 }

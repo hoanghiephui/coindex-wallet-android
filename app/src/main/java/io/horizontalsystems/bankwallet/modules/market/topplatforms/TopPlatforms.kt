@@ -42,6 +42,7 @@ import io.horizontalsystems.bankwallet.modules.market.MarketDataValue
 import io.horizontalsystems.bankwallet.modules.market.SortingField
 import io.horizontalsystems.bankwallet.modules.market.TimeDuration
 import io.horizontalsystems.bankwallet.modules.market.Value
+import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.Select
 import io.horizontalsystems.bankwallet.ui.compose.components.AlertGroup
@@ -130,7 +131,10 @@ fun TopPlatforms(
                         },
                         preItems = {
                             stickyHeader {
-                                HeaderSorting(borderBottom = true) {
+                                HeaderSorting(
+                                            borderBottom = true,
+                                            backgroundColor = ComposeAppTheme.colors.lawrence
+                                        ) {
                                     HSpacer(width = 16.dp)
                                     HSDropdownButton(
                                         variant = ButtonVariant.Secondary,

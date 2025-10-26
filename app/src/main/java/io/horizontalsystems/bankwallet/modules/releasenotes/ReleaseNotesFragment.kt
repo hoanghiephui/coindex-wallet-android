@@ -11,11 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,13 +28,12 @@ import io.horizontalsystems.bankwallet.core.getInput
 import io.horizontalsystems.bankwallet.modules.markdown.MarkdownContent
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.caption_jacob
 import io.horizontalsystems.bankwallet.ui.helpers.LinkHelper
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import kotlinx.parcelize.Parcelize
 
 class ReleaseNotesFragment : BaseComposeFragment() {
@@ -70,37 +65,24 @@ fun ReleaseNotesScreen(
         onCloseClick.invoke()
     }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        modifier = Modifier
-            .statusBarsPadding()
-            .navigationBarsPadding(),
-        topBar = {
-            if (closeablePopup) {
-                AppBar(
-                    menuItems = listOf(
-                        MenuItem(
-                            title = TranslatableString.ResString(R.string.Button_Close),
-                            icon = R.drawable.ic_close,
-                            onClick = {
-                                viewModel.whatsNewShown()
-                                onCloseClick.invoke()
-                            }
-                        )
-                    )
-                )
-            } else {
-                AppBar(
-                    navigationIcon = {
-                        HsBackButton(onClick = onCloseClick)
-                    }
-                )
-            }
-        }
+    HSScaffold(
+        title = "",
+        onBack = if (closeablePopup) null else onCloseClick,
+        menuItems = if (closeablePopup) listOf(
+            MenuItem(
+                title = TranslatableString.ResString(R.string.Button_Close),
+                icon = R.drawable.ic_close,
+                onClick = {
+                    viewModel.whatsNewShown()
+                    onCloseClick.invoke()
+                }
+            )
+        ) else listOf()
     ) {
         Column(
-            modifier = Modifier.padding(it)
+            modifier = Modifier
+                .statusBarsPadding()
+                .navigationBarsPadding()
         ) {
             MarkdownContent(
                 modifier = Modifier.weight(1f),

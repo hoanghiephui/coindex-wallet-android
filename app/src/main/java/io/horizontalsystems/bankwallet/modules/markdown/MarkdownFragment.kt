@@ -2,24 +2,18 @@ package io.horizontalsystems.bankwallet.modules.markdown
 
 import android.os.Parcelable
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
-import io.horizontalsystems.bankwallet.ui.compose.components.NiaBackground
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import kotlinx.parcelize.Parcelize
 
 class MarkdownFragment : BaseComposeFragment() {
@@ -64,30 +58,21 @@ private fun MarkdownScreen(
     onUrlClick: (String) -> Unit,
     viewModel: MarkdownViewModel = viewModel(factory = MarkdownModule.Factory(markdownUrl))
 ) {
-
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            if (showAsPopup) {
-                AppBar(
-                    menuItems = listOf(
-                        MenuItem(
-                            title = TranslatableString.ResString(R.string.Button_Close),
-                            icon = R.drawable.ic_close,
-                            onClick = onCloseClick
-                        )
-                    )
-                )
-            } else {
-                AppBar(navigationIcon = { HsBackButton(onClick = onCloseClick) })
-            }
-        },
-        modifier = Modifier
-            .statusBarsPadding(),
+    HSScaffold(
+        title = stringResource(R.string.CoinPage_Indicators),
+        onBack = if (showAsPopup) null else onCloseClick,
+        menuItems = if (showAsPopup) listOf(
+            MenuItem(
+                title = TranslatableString.ResString(R.string.Button_Close),
+                icon = R.drawable.ic_close,
+                onClick = onCloseClick
+            )
+        ) else listOf()
     ) {
         MarkdownContent(
-            modifier = Modifier.padding(it),
+            modifier = Modifier
+                .statusBarsPadding()
+                .navigationBarsPadding(),
             viewState = viewModel.viewState,
             markdownBlocks = viewModel.markdownBlocks,
             handleRelativeUrl = handleRelativeUrl,

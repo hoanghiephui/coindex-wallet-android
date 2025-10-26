@@ -11,9 +11,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,10 +29,8 @@ import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.analytics.TrackScreenViewEvent
 import io.horizontalsystems.bankwallet.core.UsedAddress
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryCircle
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
@@ -44,6 +39,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.subheadSB_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead_leah
 import io.horizontalsystems.bankwallet.ui.helpers.LinkHelper
 import io.horizontalsystems.bankwallet.ui.helpers.TextHelper
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabItem
 import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabsTop
 import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabsTopType
@@ -72,27 +68,17 @@ fun UsedAddressScreen(
     var selectedTab by remember { mutableStateOf(UsedAddressTab.ReceiveAddress) }
     val pagerState = rememberPagerState(initialPage = selectedTab.ordinal) { tabs.size }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = stringResource(id = R.string.Balance_Receive_UsedAddresses),
-                navigationIcon = {
-                    HsBackButton(onClick = onBackPress)
-                }
-            )
-        }
+    HSScaffold(
+        title = stringResource(R.string.Balance_Receive_UsedAddresses),
+        onBack = onBackPress,
     ) {
         Column(
             modifier = Modifier
-                .padding(it)
                 .fillMaxSize()
                 .background(ComposeAppTheme.colors.lawrence)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
             InfoText(
                 modifier = Modifier.background(ComposeAppTheme.colors.tyler),
                 text = stringResource(

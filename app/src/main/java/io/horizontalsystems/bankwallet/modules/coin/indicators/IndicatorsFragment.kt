@@ -4,10 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,16 +20,15 @@ import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.modules.chart.ChartIndicatorSetting
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderText
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsSwitch
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
 class IndicatorsFragment : BaseComposeFragment() {
 
@@ -50,7 +46,8 @@ class IndicatorsFragment : BaseComposeFragment() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IndicatorsScreen(navController: NavController) {
-    val chartIndicatorsViewModel = viewModel<ChartIndicatorsViewModel>(factory = ChartIndicatorsViewModel.Factory())
+    val chartIndicatorsViewModel =
+        viewModel<ChartIndicatorsViewModel>(factory = ChartIndicatorsViewModel.Factory())
 
     val uiState = chartIndicatorsViewModel.uiState
     val toggleIndicator = { indicator: ChartIndicatorSetting, checked: Boolean ->
@@ -61,19 +58,11 @@ fun IndicatorsScreen(navController: NavController) {
         }
     }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.CoinPage_Indicators),
-                navigationIcon = {
-                    HsBackButton(onClick = { navController.popBackStack() })
-                }
-            )
-        }
+    HSScaffold(
+        title = stringResource(R.string.CoinPage_Indicators),
+        onBack = navController::popBackStack,
     ) {
-        Column(Modifier.padding(it)) {
+        Column {
             HeaderText(
                 stringResource(R.string.CoinPage_MovingAverages).uppercase()
             )
@@ -93,7 +82,10 @@ fun IndicatorsScreen(navController: NavController) {
                         toggleIndicator.invoke(indicator, it)
                     },
                     onEditClick = {
-                        navController.slideFromRight(R.id.indicatorSettingsFragment, IndicatorSettingsFragment.Input(indicator.id))
+                        navController.slideFromRight(
+                            R.id.indicatorSettingsFragment,
+                            IndicatorSettingsFragment.Input(indicator.id)
+                        )
                     }
                 )
             }
@@ -109,7 +101,10 @@ fun IndicatorsScreen(navController: NavController) {
                         toggleIndicator.invoke(indicator, it)
                     },
                     onEditClick = {
-                        navController.slideFromRight(R.id.indicatorSettingsFragment, IndicatorSettingsFragment.Input(indicator.id))
+                        navController.slideFromRight(
+                            R.id.indicatorSettingsFragment,
+                            IndicatorSettingsFragment.Input(indicator.id)
+                        )
                     }
                 )
             }

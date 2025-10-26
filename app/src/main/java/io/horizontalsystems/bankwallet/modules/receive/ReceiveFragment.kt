@@ -137,12 +137,10 @@ fun ReceiveScreen(navController: NavController, wallet: Wallet, receiveEntryPoin
             }
         },
         onBackPress = { navController.popBackStack() },
-        closeModule = {
-            if (receiveEntryPointDestId == 0) {
-                navController.popBackStack()
-            } else {
-                navController.popBackStack(receiveEntryPointDestId, true)
-            }
+        closeModule = if (receiveEntryPointDestId == 0) {
+            null
+        } else {
+            { navController.popBackStack(receiveEntryPointDestId, true) }
         },
         nativeAd = adState,
         navController = navController

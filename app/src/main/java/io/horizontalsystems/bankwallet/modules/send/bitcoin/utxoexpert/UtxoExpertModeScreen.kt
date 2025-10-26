@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,11 +25,9 @@ import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.ISendBitcoinAdapter
 import io.horizontalsystems.bankwallet.core.shorten
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryTransparent
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsCheckbox
 import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
@@ -38,6 +36,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_lucian
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import io.horizontalsystems.bitcoincore.storage.UnspentOutputInfo
 import io.horizontalsystems.marketkit.models.Token
 
@@ -61,21 +60,14 @@ fun UtxoExpertModeScreen(
     val uiState = viewModel.uiState
 
     ComposeAppTheme {
-        Scaffold(
-            backgroundColor = ComposeAppTheme.colors.tyler,
-            topBar = {
-                AppBar(
-                    title = stringResource(R.string.Send_Utxos),
-                    navigationIcon = {
-                        HsBackButton(onClick = onBackClick)
-                    },
-                )
-            }
+        HSScaffold(
+            title = stringResource(R.string.Send_Utxos),
+            onBack = onBackClick,
         ) {
             Column(
                 modifier = Modifier
-                    .padding(it)
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
                 CellUniversalLawrenceSection {
                     UtxoInfoCell(
@@ -99,7 +91,7 @@ fun UtxoExpertModeScreen(
                     modifier = Modifier
                         .height(62.dp)
                         .fillMaxWidth()
-                ){
+                ) {
                     HsDivider(modifier = Modifier.fillMaxWidth())
                     Row(
                         modifier = Modifier

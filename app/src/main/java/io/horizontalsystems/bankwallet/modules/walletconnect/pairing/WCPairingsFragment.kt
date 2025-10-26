@@ -13,9 +13,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -32,15 +29,13 @@ import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.slideFromBottomForResult
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryCircle
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
-import io.horizontalsystems.bankwallet.ui.compose.components.NiaBackground
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.body_lucian
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
 class WCPairingsFragment : BaseComposeFragment() {
 
@@ -67,41 +62,31 @@ fun WCPairingsScreen(navController: NavController) {
         }
     }
 
-    NiaBackground {
-        Scaffold(
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.background,
-            topBar = {
-                AppBar(
-                    title = stringResource(R.string.WalletConnect_PairedDApps),
-                    navigationIcon = {
-                        HsBackButton(onClick = { navController.popBackStack() })
-                    },
-                )
-            }
+    HSScaffold(
+        title = stringResource(R.string.WalletConnect_PairedDApps),
+        onBack = navController::popBackStack,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Spacer(modifier = Modifier.height(12.dp))
-                val pairings = uiState.pairings
-                CellUniversalLawrenceSection(pairings) { pairing ->
-                    Pairing(pairing = pairing) {
-                        viewModel.delete(pairing)
-                    }
+            Spacer(modifier = Modifier.height(12.dp))
+            val pairings = uiState.pairings
+            CellUniversalLawrenceSection(pairings) { pairing ->
+                Pairing(pairing = pairing) {
+                    viewModel.delete(pairing)
                 }
-                Spacer(modifier = Modifier.height(32.dp))
-                CellUniversalLawrenceSection(
-                    listOf {
-                        RowUniversal(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp)
-                                .fillMaxWidth(),
-                            onClick = {
-                                navController.slideFromBottomForResult<ConfirmDeleteAllPairingsDialog.Result>(
+            }
+            Spacer(modifier = Modifier.height(32.dp))
+            CellUniversalLawrenceSection(
+                listOf {
+                    RowUniversal(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        onClick = {
+                            navController.slideFromBottomForResult<ConfirmDeleteAllPairingsDialog.Result>(
                                 R.id.confirmDeleteAllPairingsDialog
                             ) { result ->
                                 if (result.confirmed) {

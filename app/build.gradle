@@ -26,11 +26,11 @@ android {
 
     defaultConfig {
         applicationId "com.wallet.blockchain.bitcoin"
-        compileSdk compile_sdk_version
+        compileSdkVersion compile_sdk_version
         minSdkVersion min_sdk_version
         targetSdkVersion compile_sdk_version
         versionCode 146
-        versionName "0.45.2"
+        versionName "0.46.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ['de', 'es', 'en', 'fa', 'fr', 'ko', 'pt', 'pt-rBR', 'ru', 'tr', 'zh']
 
@@ -205,8 +205,17 @@ android {
 
     packagingOptions {
         resources {
-            pickFirsts += ['META-INF/atomicfu.kotlin_module']
-            excludes += ['META-INF/INDEX.LIST', 'META-INF/DEPENDENCIES', 'META-INF/LICENSE.md', 'META-INF/NOTICE.md']
+            pickFirsts += [
+                'META-INF/atomicfu.kotlin_module',
+                'META-INF/FastDoubleParser-LICENSE',
+                'META-INF/FastDoubleParser-NOTICE',
+                'META-INF/io.netty.versions.properties'
+            ]
+            excludes += [
+                'META-INF/INDEX.LIST',
+                'META-INF/DEPENDENCIES',
+                'META-INF/LICENSE.md'
+            ]
         }
         jniLibs {
             useLegacyPackaging true
@@ -334,7 +343,7 @@ dependencies {
     implementation("io.github.alexzhirkevich:qrose:1.0.1")
 
     // WorkManager Kotlin
-    def work_version = "2.10.4"
+    def work_version = "2.10.5"
     implementation "androidx.work:work-runtime-ktx:$work_version"
     // WorkManager RxJava2 support
     implementation "androidx.work:work-rxjava2:$work_version"
@@ -359,7 +368,7 @@ dependencies {
     // Zcash SDK
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
     implementation "cash.z.ecc.android:zcash-android-sdk:2.3.2"
-    implementation("io.github.binance:binance-connector-java:3.0.0rc2") {
+    implementation("io.github.binance:binance-connector-java:3.4.1") {
         exclude group: "org.bouncycastle", module: "bcprov-jdk18on"
     }
 

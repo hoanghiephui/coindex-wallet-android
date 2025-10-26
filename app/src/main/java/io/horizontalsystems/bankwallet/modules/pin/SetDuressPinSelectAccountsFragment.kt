@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
@@ -25,13 +22,10 @@ import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.entities.Account
 import io.horizontalsystems.bankwallet.modules.evmfee.ButtonsGroupWithShade
-import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
 import io.horizontalsystems.bankwallet.ui.compose.components.HFillSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderText
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsCheckbox
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
@@ -39,6 +33,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_lucian
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
 class SetDuressPinSelectAccountsFragment : BaseComposeFragment() {
     @Composable
@@ -53,22 +48,15 @@ class SetDuressPinSelectAccountsFragment : BaseComposeFragment() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetDuressPinSelectAccountsScreen(navController: NavController) {
-    val viewModel = viewModel<SetDuressPinSelectAccountsViewModel>(factory = SetDuressPinSelectAccountsViewModel.Factory())
+    val viewModel =
+        viewModel<SetDuressPinSelectAccountsViewModel>(factory = SetDuressPinSelectAccountsViewModel.Factory())
     val regularAccounts = viewModel.regularAccounts
     val watchAccounts = viewModel.watchAccounts
     val selected = remember { mutableStateListOf<String>() }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.DuressPinSelectAccounts_Title),
-                navigationIcon = {
-                    HsBackButton(onClick = { navController.popBackStack() })
-                },
-            )
-        },
+    HSScaffold(
+        title = stringResource(R.string.DuressPinSelectAccounts_Title),
+        onBack = navController::popBackStack,
         bottomBar = {
             ButtonsGroupWithShade {
                 ButtonPrimaryYellow(
@@ -77,16 +65,17 @@ fun SetDuressPinSelectAccountsScreen(navController: NavController) {
                         .padding(start = 16.dp, end = 16.dp),
                     title = stringResource(R.string.Button_Next),
                     onClick = {
-                        navController.slideFromRight(R.id.setDuressPinFragment, SetDuressPinFragment.Input(selected))
+                        navController.slideFromRight(
+                            R.id.setDuressPinFragment,
+                            SetDuressPinFragment.Input(selected)
+                        )
                     },
                 )
             }
         }
-    ) { innerPaddings ->
+    ) {
         Column(
-            modifier = Modifier
-                .padding(innerPaddings)
-                .verticalScroll(rememberScrollState())
+            modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
             InfoText(
                 text = stringResource(R.string.DuressPinSelectAccounts_Description),
@@ -124,7 +113,6 @@ fun SetDuressPinSelectAccountsScreen(navController: NavController) {
             }
         }
     }
-
 }
 
 @Composable

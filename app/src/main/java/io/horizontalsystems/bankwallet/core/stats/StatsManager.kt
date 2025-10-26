@@ -5,6 +5,8 @@ import com.google.gson.Gson
 import io.horizontalsystems.bankwallet.analytics.AnalyticsEvent
 import io.horizontalsystems.bankwallet.analytics.AnalyticsHelper
 import io.horizontalsystems.bankwallet.core.App
+import io.horizontalsystems.bankwallet.core.BackgroundManager
+import io.horizontalsystems.bankwallet.core.BackgroundManagerState
 import io.horizontalsystems.bankwallet.core.ILocalStorage
 import io.horizontalsystems.bankwallet.core.providers.AppConfigProvider
 import io.horizontalsystems.bankwallet.core.storage.StatsDao

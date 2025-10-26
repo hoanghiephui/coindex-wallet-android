@@ -11,11 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,17 +27,16 @@ import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.modules.evmfee.ButtonsGroupWithShade
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderText
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
 class SetDuressPinIntroFragment : BaseComposeFragment() {
     @Composable
@@ -56,24 +51,16 @@ class SetDuressPinIntroFragment : BaseComposeFragment() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetDuressPinIntroScreen(navController: NavController) {
-    val viewModel = viewModel<SetDuressPinIntroViewModel>(factory = SetDuressPinIntroViewModel.Factory())
+    val viewModel =
+        viewModel<SetDuressPinIntroViewModel>(factory = SetDuressPinIntroViewModel.Factory())
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.DuressPin_Title),
-                navigationIcon = {
-                    HsBackButton(onClick = { navController.popBackStack() })
-                },
-            )
-        }
+    HSScaffold(
+        title = stringResource(R.string.DuressPin_Title),
+        onBack = navController::popBackStack,
     ) {
         Column(
             Modifier
                 .fillMaxHeight()
-                .padding(it)
                 .verticalScroll(rememberScrollState())
         ) {
             InfoText(
@@ -129,7 +116,12 @@ fun SetDuressPinIntroScreen(navController: NavController) {
 }
 
 @Composable
-private fun NotesCell(icon: Painter, title: String, description: String, borderTop: Boolean = false) {
+private fun NotesCell(
+    icon: Painter,
+    title: String,
+    description: String,
+    borderTop: Boolean = false
+) {
     Box {
         if (borderTop) {
             HsDivider(modifier = Modifier.align(Alignment.TopCenter))

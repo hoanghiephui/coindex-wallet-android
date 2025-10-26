@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,7 +28,6 @@ import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.HFillSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
@@ -38,6 +35,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_leah
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
 class SwapSelectProviderFragment : BaseComposeFragment() {
     @Composable
@@ -82,23 +80,17 @@ private fun SwapSelectProviderScreenInner(
     currentQuote: SwapProviderQuote?,
     onSelectQuote: (SwapProviderQuote) -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.Swap_Providers),
-                menuItems = listOf(
-                    MenuItem(
-                        title = TranslatableString.ResString(R.string.Button_Done),
-                        onClick = onClickClose,
-                        tint = ComposeAppTheme.colors.jacob
-                    )
-                ),
+    HSScaffold(
+        title = stringResource(R.string.Swap_Providers),
+        menuItems = listOf(
+            MenuItem(
+                title = TranslatableString.ResString(R.string.Button_Done),
+                onClick = onClickClose,
+                tint = ComposeAppTheme.colors.jacob
             )
-        },
-        backgroundColor = ComposeAppTheme.colors.tyler,
+        ),
     ) {
         LazyColumn(
-            modifier = Modifier.padding(it),
             contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
             item {

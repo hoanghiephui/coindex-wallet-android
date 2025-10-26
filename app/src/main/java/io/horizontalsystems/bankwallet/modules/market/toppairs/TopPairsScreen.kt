@@ -94,7 +94,8 @@ fun TopPairsScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     stickyHeader {
-                        HeaderSorting(borderBottom = true) {
+                        HeaderSorting(borderBottom = true,
+                                    backgroundColor = ComposeAppTheme.colors.lawrence) {
                             HSpacer(width = 16.dp)
                             HSButton(
                                 variant = ButtonVariant.Secondary,
@@ -144,7 +145,7 @@ fun TopPairItem(
 
                 val targetCoinModifier = Modifier
                     .size(32.dp)
-                    .background(ComposeAppTheme.colors.tyler)
+                    .background(ComposeAppTheme.colors.lawrence)
                     .clip(CircleShape)
                     .align(Alignment.TopEnd)
 
@@ -164,7 +165,7 @@ fun TopPairItem(
                 val baseCoinModifier = Modifier
                     .size(32.dp)
                     .clip(CircleShape)
-                    .background(ComposeAppTheme.colors.tyler)
+                    .background(ComposeAppTheme.colors.lawrence)
                     .align(Alignment.TopStart)
 
                 if (item.baseCoin != null) {

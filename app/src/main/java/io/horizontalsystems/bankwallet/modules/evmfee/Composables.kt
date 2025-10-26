@@ -292,7 +292,7 @@ private fun NumberInputWithButtons(
                 textStyle = ComposeAppTheme.typography.body
             ),
             singleLine = true,
-            cursorBrush = SolidColor(ComposeAppTheme.colors.jacob),
+            cursorBrush = SolidColor(ComposeAppTheme.colors.leah),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
 

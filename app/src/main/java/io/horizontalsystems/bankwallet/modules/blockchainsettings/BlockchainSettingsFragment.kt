@@ -5,38 +5,32 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.slideFromBottom
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
 import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
+import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
 class BlockchainSettingsFragment : BaseComposeFragment() {
 
@@ -47,41 +41,30 @@ class BlockchainSettingsFragment : BaseComposeFragment() {
         )
     }
 
-    override val logScreen: String
-        get() = "BlockchainSettingsFragment"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BlockchainSettingsScreen(
     navController: NavController,
     viewModel: BlockchainSettingsViewModel = viewModel(factory = BlockchainSettingsModule.Factory()),
 ) {
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.BlockchainSettings_Title),
-                navigationIcon = {
-                    HsBackButton(onClick = { navController.popBackStack() })
-                },
-            )
-        }
+
+    HSScaffold(
+        title = stringResource(R.string.BlockchainSettings_Title),
+        onBack = navController::popBackStack,
     ) {
         Column(
             modifier = Modifier
-                .padding(it)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
         ) {
-            Spacer(Modifier.height(12.dp))
+            VSpacer(12.dp)
             BlockchainSettingsBlock(
                 btcLikeChains = viewModel.btcLikeChains,
                 otherChains = viewModel.otherChains,
                 navController = navController
             )
-            Spacer(Modifier.height(44.dp))
+            VSpacer(44.dp)
         }
     }
 }

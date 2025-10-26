@@ -60,19 +60,17 @@ import io.horizontalsystems.bankwallet.modules.evmfee.ButtonsGroupWithShade
 import io.horizontalsystems.bankwallet.modules.send.SendFragment
 import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.FormsInputAddress
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.TextImportantError
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
-import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_lucian
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_remus
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import io.horizontalsystems.subscriptions.core.AddressBlacklist
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -130,23 +128,13 @@ fun EnterAddressScreen(navController: NavController, input: EnterAddressFragment
     var checkTypeInfoBottomSheet by remember { mutableStateOf<AddressCheckType?>(null) }
 
     val uiState = viewModel.uiState
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = ComposeAppTheme.colors.lawrence,
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.Send_EnterAddress),
-                navigationIcon = {
-                    HsBackButton(onClick = { navController.popBackStack() })
-                },
-            )
-        },
-    ) { innerPaddings ->
+
+    HSScaffold(
+        title = stringResource(R.string.Send_EnterAddress),
+        onBack = navController::popBackStack,
+    ) {
         Column(
-            modifier = Modifier
-                .background(ComposeAppTheme.colors.lawrence)
-                .padding(top = innerPaddings.calculateTopPadding())
-                .windowInsetsPadding(WindowInsets.ime)
+            modifier = Modifier.windowInsetsPadding(WindowInsets.ime)
         ) {
             Column(
                 modifier = Modifier
@@ -168,11 +156,7 @@ fun EnterAddressScreen(navController: NavController, input: EnterAddressFragment
                 }
 
                 if (uiState.value.isBlank()) {
-                    AddressSuggestions(
-                        uiState.recentAddress,
-                        uiState.recentContact,
-                        uiState.contacts
-                    ) {
+                    AddressSuggestions(uiState.contacts) {
                         viewModel.onEnterAddress(it)
                     }
                 } else if (uiState.addressCheckEnabled || uiState.addressValidationError != null) {
@@ -393,50 +377,9 @@ fun CheckLocked() {
 
 @Composable
 fun AddressSuggestions(
-    recent: String?,
-    recentContact: SContact?,
     contacts: List<SContact>,
     onClick: (String) -> Unit
 ) {
-    if (recentContact != null) {
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .border(
-                    0.5.dp,
-                    ComposeAppTheme.colors.blade,
-                    RoundedCornerShape(16.dp)
-                )
-                .clickable {
-                    onClick.invoke(recentContact.address)
-                }
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-        ) {
-            headline2_leah(recentContact.name)
-            subhead2_grey(recentContact.address.shortAddress)
-        }
-    } else recent?.let { address ->
-        SectionHeaderText(stringResource(R.string.Send_Address_Recent))
-        Box(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .border(
-                    0.5.dp,
-                    ComposeAppTheme.colors.blade,
-                    RoundedCornerShape(16.dp)
-                )
-                .clickable {
-                    onClick.invoke(address)
-                }
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-        ) {
-            body_leah(address)
-        }
-    }
     if (contacts.isNotEmpty()) {
         SectionHeaderText(stringResource(R.string.Contacts))
         Column(

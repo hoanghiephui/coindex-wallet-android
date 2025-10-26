@@ -5,33 +5,25 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.R
 import io.horizontalsystems.bankwallet.modules.evmfee.ButtonsGroupWithShade
-import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsCheckbox
-import io.horizontalsystems.bankwallet.ui.compose.components.NiaBackground
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.TextImportantWarning
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_leah
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocalBackupTermsScreen(
     onTermsAccepted: () -> Unit,
@@ -39,50 +31,38 @@ fun LocalBackupTermsScreen(
 ) {
     var termChecked by rememberSaveable { mutableStateOf(false) }
 
-    ComposeAppTheme {
-        NiaBackground {
-            Scaffold(
-                containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.background,
-                topBar = {
-                    AppBar(
-                        title = stringResource(R.string.LocalBackup_Title),
-                        navigationIcon = {
-                            HsBackButton(onClick = onBackClick)
-                        },
-                    )
-                }
-            ) {
-                Column(modifier = Modifier.padding(it)) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        TextImportantWarning(
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                            text = stringResource(R.string.LocalBackup_TermsWarningText)
-                        )
-                        VSpacer(24.dp)
-                        CellUniversalLawrenceSection(
-                            listOf {
-                                LocalBackupTerm(
-                                    text = stringResource(R.string.LocalBackup_Term1),
-                                    checked = termChecked,
-                                    onCheckedChange = { checked ->
-                                        termChecked = checked
-                                    }
-                                )
+    HSScaffold(
+        title = stringResource(R.string.LocalBackup_Title),
+        onBack = onBackClick,
+    ) {
+        Column {
+            Column(modifier = Modifier.weight(1f)) {
+                TextImportantWarning(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    text = stringResource(R.string.LocalBackup_TermsWarningText)
+                )
+                VSpacer(24.dp)
+                CellUniversalLawrenceSection(
+                    listOf {
+                        LocalBackupTerm(
+                            text = stringResource(R.string.LocalBackup_Term1),
+                            checked = termChecked,
+                            onCheckedChange = { checked ->
+                                termChecked = checked
                             }
                         )
                     }
-                    ButtonsGroupWithShade {
-                        ButtonPrimaryYellow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp),
-                            title = stringResource(R.string.Button_Continue),
-                            enabled = termChecked,
-                            onClick = onTermsAccepted,
-                        )
-                    }
-                }
+                )
+            }
+            ButtonsGroupWithShade {
+                ButtonPrimaryYellow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp),
+                    title = stringResource(R.string.Button_Continue),
+                    enabled = termChecked,
+                    onClick = onTermsAccepted,
+                )
             }
         }
     }

@@ -1,10 +1,10 @@
 buildscript {
     ext {
         compile_sdk_version = 36
-        min_sdk_version = 27
+        min_sdk_version = 29
         lifecycle_version = '2.9.3'
 
-        compose_version = '1.8.3'
+        compose_version = '1.9.2'
         kotlin_version = '2.2.0'
         material_version = "1.13.0"
         appcompat_version = "1.7.1"

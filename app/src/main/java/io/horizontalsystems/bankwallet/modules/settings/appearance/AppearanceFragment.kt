@@ -21,15 +21,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material3.Scaffold
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,15 +34,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.core.stats.StatEvent
@@ -57,22 +49,21 @@ import io.horizontalsystems.bankwallet.core.stats.stat
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.Select
 import io.horizontalsystems.bankwallet.ui.compose.components.AlertGroup
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryTransparent
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderText
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsSwitch
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.TextImportantWarning
+import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_grey
-import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_jacob
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.extensions.BottomSheetHeader
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import kotlinx.coroutines.launch
 
 class AppearanceFragment : BaseComposeFragment() {
@@ -82,9 +73,6 @@ class AppearanceFragment : BaseComposeFragment() {
         AppearanceScreen(navController)
     }
 
-    override var logScreen: String
-        get() = "AppearanceFragment"
-        set(value) {}
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,125 +81,125 @@ fun AppearanceScreen(navController: NavController) {
     val viewModel = viewModel<AppearanceViewModel>(factory = AppearanceModule.Factory())
     val uiState = viewModel.uiState
 
-    val scope = rememberCoroutineScope()
     var selectedAppIcon by remember { mutableStateOf<AppIcon?>(null) }
-    val sheetState = rememberModalBottomSheetState(
-        ModalBottomSheetValue.Hidden
-    )
 
     var openThemeSelector by rememberSaveable { mutableStateOf(false) }
     var openLaunchPageSelector by rememberSaveable { mutableStateOf(false) }
     var openBalanceValueSelector by rememberSaveable { mutableStateOf(false) }
     var openPriceChangeIntervalSelector by rememberSaveable { mutableStateOf(false) }
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    ModalBottomSheetLayout(
-        sheetState = sheetState,
-        sheetBackgroundColor = ComposeAppTheme.colors.transparent,
-        sheetContent = {
-            AppCloseWarningBottomSheet(
-                onCloseClick = { scope.launch { sheetState.hide() } },
-                onChangeClick = {
-                    selectedAppIcon?.let { viewModel.onEnterAppIcon(it) }
-                    scope.launch { sheetState.hide() }
+
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    HSScaffold(
+        title = stringResource(R.string.Settings_AppSettings),
+        onBack = navController::popBackStack,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .navigationBarsPadding(),
+        ) {
+            VSpacer(height = 12.dp)
+            CellUniversalLawrenceSection(
+                listOf {
+                    MenuItemWithDialog(
+                        R.string.Settings_Theme,
+                        value = uiState.selectedTheme.title.getString(),
+                        onClick = { openThemeSelector = true }
+                    )
                 }
             )
-        }
-    ) {
-        Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.background,
-            topBar = {
-                AppBar(
-                    title = stringResource(R.string.Settings_AppSettings),
-                    navigationIcon = {
-                        HsBackButton(onClick = { navController.popBackStack() })
+
+            VSpacer(32.dp)
+
+            CellUniversalLawrenceSection(
+                buildList {
+                    add {
+                        MenuItem(
+                            R.string.Settings_Language,
+                            value = uiState.currentLanguage,
+                            onClick = {
+                                navController.slideFromRight(R.id.languageSettingsFragment)
+
+                                stat(
+                                    page = StatPage.Settings,
+                                    event = StatEvent.Open(StatPage.Language)
+                                )
+                            }
+                        )
+                    }
+                    add {
+                        MenuItem(
+                            R.string.Settings_BaseCurrency,
+                            value = uiState.baseCurrencyCode,
+                            onClick = {
+                                navController.slideFromRight(R.id.baseCurrencySettingsFragment)
+
+                                stat(
+                                    page = StatPage.Settings,
+                                    event = StatEvent.Open(StatPage.BaseCurrency)
+                                )
+                            }
+                        )
+                    }
+                }
+            )
+
+            VSpacer(24.dp)
+
+            HeaderText(text = stringResource(id = R.string.Appearance_MarketsTab))
+            CellUniversalLawrenceSection(
+                listOf(
+                    {
+                        SettingUniversalCell(
+                            title = R.string.Appearance_HideMarketsTab,
+                            subtitle = R.string.Appearance_HideMarketsTab_Tip,
+                        ) {
+                            HsSwitch(
+                                checked = uiState.marketsTabHidden,
+                                onCheckedChange = {
+                                    viewModel.onSetMarketTabsHidden(it)
+                                }
+                            )
+                        }
                     },
-                    menuItems = listOf(),
-                    scrollBehavior = scrollBehavior
-                )
-            }
-        ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .navigationBarsPadding()
-                    .padding(paddingValues),
-            ) {
-                VSpacer(height = 12.dp)
-                CellUniversalLawrenceSection(
-                    listOf {
-                        MenuItemWithDialog(
-                            R.string.Settings_Theme,
-                            value = uiState.selectedTheme.title.getString(),
-                            onClick = { openThemeSelector = true }
-                        )
-                    }
-                )
-
-                VSpacer(32.dp)
-
-                CellUniversalLawrenceSection(
-                    buildList {
-                        add {
-                            MenuItem(
-                                R.string.Settings_Language,
-                                value = uiState.currentLanguage,
-                                onClick = {
-                                    navController.slideFromRight(R.id.languageSettingsFragment)
-
-                                    stat(
-                                        page = StatPage.Settings,
-                                        event = StatEvent.Open(StatPage.Language)
-                                    )
-                                }
+                    {
+                        SettingUniversalCell(
+                            title = R.string.Appearance_PriceChangeInterval,
+                            subtitle = R.string.Appearance_PriceChangeInterval_Tip,
+                            onClick = { openPriceChangeIntervalSelector = true }
+                        ) {
+                            subhead1_leah(
+                                text = uiState.priceChangeInterval.title.getString(),
+                                maxLines = 1,
+                                modifier = Modifier.padding(horizontal = 8.dp)
                             )
-                        }
-                        add {
-                            MenuItem(
-                                R.string.Settings_BaseCurrency,
-                                value = uiState.baseCurrencyCode,
-                                onClick = {
-                                    navController.slideFromRight(R.id.baseCurrencySettingsFragment)
 
-                                    stat(
-                                        page = StatPage.Settings,
-                                        event = StatEvent.Open(StatPage.BaseCurrency)
-                                    )
-                                }
+                            Image(
+                                modifier = Modifier.size(20.dp),
+                                painter = painterResource(id = R.drawable.ic_down_arrow_20),
+                                contentDescription = null,
                             )
                         }
                     }
                 )
+            )
 
-                VSpacer(24.dp)
-
-                HeaderText(text = stringResource(id = R.string.Appearance_MarketsTab))
-                CellUniversalLawrenceSection(
-                    listOf(
-                        {
+            AnimatedVisibility(visible = !uiState.marketsTabHidden) {
+                Column {
+                    VSpacer(32.dp)
+                    CellUniversalLawrenceSection(
+                        listOf {
                             SettingUniversalCell(
-                                title = R.string.Appearance_HideMarketsTab,
-                                subtitle = R.string.Appearance_HideMarketsTab_Tip,
-                            ) {
-                                HsSwitch(
-                                    checked = uiState.marketsTabHidden,
-                                    onCheckedChange = {
-                                        viewModel.onSetMarketTabsHidden(it)
-                                    }
-                                )
-                            }
-                        },
-                        {
-                            SettingUniversalCell(
-                                title = R.string.Appearance_PriceChangeInterval,
-                                subtitle = R.string.Appearance_PriceChangeInterval_Tip,
-                                onClick = { openPriceChangeIntervalSelector = true }
+                                title = R.string.Settings_LaunchScreen,
+                                subtitle = R.string.Settings_LaunchScreen_Tip,
+                                onClick = { openLaunchPageSelector = true }
                             ) {
                                 subhead1_leah(
-                                    text = uiState.priceChangeInterval.title.getString(),
+                                    text = uiState.selectedLaunchScreen.title.getString(),
                                     maxLines = 1,
                                     modifier = Modifier.padding(horizontal = 8.dp)
                                 )
@@ -224,98 +212,71 @@ fun AppearanceScreen(navController: NavController) {
                             }
                         }
                     )
-                )
-
-                AnimatedVisibility(visible = !uiState.marketsTabHidden) {
-                    Column {
-                        VSpacer(32.dp)
-                        CellUniversalLawrenceSection(
-                            listOf {
-                                SettingUniversalCell(
-                                    title = R.string.Settings_LaunchScreen,
-                                    subtitle = R.string.Settings_LaunchScreen_Tip,
-                                    onClick = { openLaunchPageSelector = true }
-                                ) {
-                                    subhead1_leah(
-                                        text = uiState.selectedLaunchScreen.title.getString(),
-                                        maxLines = 1,
-                                        modifier = Modifier.padding(horizontal = 8.dp)
-                                    )
-
-                                    Image(
-                                        modifier = Modifier.size(20.dp),
-                                        painter = painterResource(id = R.drawable.ic_down_arrow_20),
-                                        contentDescription = null,
-                                    )
-                                }
-                            }
-                        )
-                    }
                 }
-
-                VSpacer(24.dp)
-                HeaderText(text = stringResource(id = R.string.Appearance_BalanceTab))
-                CellUniversalLawrenceSection(
-                    listOf(
-                        {
-                            SettingUniversalCell(
-                                title = R.string.Appearance_HideBalanceTabButtons,
-                                subtitle = R.string.Appearance_HideBalanceTabButtons_Tip,
-                            ) {
-                                HsSwitch(
-                                    checked = uiState.balanceTabButtonsHidden,
-                                    onCheckedChange = {
-                                        viewModel.onSetBalanceTabButtonsHidden(it)
-                                    }
-                                )
-                            }
-                        },
-                        {
-                            SettingUniversalCell(
-                                title = R.string.Appearance_AmountRounding,
-                                subtitle = R.string.Appearance_AmountRounding_Tip,
-                            ) {
-                                HsSwitch(
-                                    checked = uiState.amountRoundingEnabled,
-                                    onCheckedChange = {
-                                        viewModel.onAmountRoundingToggle(it)
-                                    }
-                                )
-                            }
-                        },
-                        {
-                            SettingUniversalCell(
-                                title = R.string.Appearance_BalanceValue,
-                                subtitle = R.string.Appearance_BalanceValue_Tip,
-                                onClick = { openBalanceValueSelector = true }
-                            ) {
-                                subhead1_leah(
-                                    text = uiState.selectedBalanceViewType.title.getString(),
-                                    maxLines = 1,
-                                    modifier = Modifier.padding(horizontal = 8.dp)
-                                )
-
-                                Image(
-                                    modifier = Modifier.size(20.dp),
-                                    painter = painterResource(id = R.drawable.ic_down_arrow_20),
-                                    contentDescription = null,
-                                )
-                            }
-                        }
-                    )
-                )
-
-                VSpacer(24.dp)
-                HeaderText(text = stringResource(id = R.string.Appearance_AppIcon))
-                AppIconSection(uiState.appIconOptions) {
-                    scope.launch {
-                        selectedAppIcon = it
-                        sheetState.show()
-                    }
-                }
-
-                VSpacer(32.dp)
             }
+
+            VSpacer(24.dp)
+            HeaderText(text = stringResource(id = R.string.Appearance_BalanceTab))
+            CellUniversalLawrenceSection(
+                listOf(
+                    {
+                        SettingUniversalCell(
+                            title = R.string.Appearance_HideBalanceTabButtons,
+                            subtitle = R.string.Appearance_HideBalanceTabButtons_Tip,
+                        ) {
+                            HsSwitch(
+                                checked = uiState.balanceTabButtonsHidden,
+                                onCheckedChange = {
+                                    viewModel.onSetBalanceTabButtonsHidden(it)
+                                }
+                            )
+                        }
+                    },
+                    {
+                        SettingUniversalCell(
+                            title = R.string.Appearance_AmountRounding,
+                            subtitle = R.string.Appearance_AmountRounding_Tip,
+                        ) {
+                            HsSwitch(
+                                checked = uiState.amountRoundingEnabled,
+                                onCheckedChange = {
+                                    viewModel.onAmountRoundingToggle(it)
+                                }
+                            )
+                        }
+                    },
+                    {
+                        SettingUniversalCell(
+                            title = R.string.Appearance_BalanceValue,
+                            subtitle = R.string.Appearance_BalanceValue_Tip,
+                            onClick = { openBalanceValueSelector = true }
+                        ) {
+                            subhead1_leah(
+                                text = uiState.selectedBalanceViewType.title.getString(),
+                                maxLines = 1,
+                                modifier = Modifier.padding(horizontal = 8.dp)
+                            )
+
+                            Image(
+                                modifier = Modifier.size(20.dp),
+                                painter = painterResource(id = R.drawable.ic_down_arrow_20),
+                                contentDescription = null,
+                            )
+                        }
+                    }
+                )
+            )
+
+            VSpacer(24.dp)
+            HeaderText(text = stringResource(id = R.string.Appearance_AppIcon))
+            AppIconSection(uiState.appIconOptions) {
+                scope.launch {
+                    selectedAppIcon = it
+                    showBottomSheet = true
+                }
+            }
+
+            VSpacer(32.dp)
         }
         //Dialogs
         if (openThemeSelector) {
@@ -361,6 +322,34 @@ fun AppearanceScreen(navController: NavController) {
                 },
                 { openPriceChangeIntervalSelector = false }
             )
+        }
+
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    showBottomSheet = false
+                },
+                sheetState = sheetState,
+                containerColor = ComposeAppTheme.colors.transparent
+            ) {
+                AppCloseWarningBottomSheet(
+                    onCloseClick = {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                            }
+                        }
+                    },
+                    onChangeClick = {
+                        selectedAppIcon?.let { viewModel.onEnterAppIcon(it) }
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                            }
+                        }
+                    }
+                )
+            }
         }
     }
 }
@@ -434,7 +423,7 @@ private fun AppIconSection(appIconOptions: Select<AppIcon>, onAppIconSelect: (Ap
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(CardDefaults.cardColors().containerColor)
+            .background(ComposeAppTheme.colors.lawrence)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {

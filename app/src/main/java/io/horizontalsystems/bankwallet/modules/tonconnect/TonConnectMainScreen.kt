@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material3.Scaffold
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -33,10 +32,9 @@ import io.horizontalsystems.bankwallet.modules.contacts.screen.ConfirmationBotto
 import io.horizontalsystems.bankwallet.modules.evmfee.ButtonsGroupWithShade
 import io.horizontalsystems.bankwallet.modules.qrscanner.QRScannerActivity
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.ListEmptyView
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -101,50 +99,40 @@ fun TonConnectMainScreen(navController: NavController, deepLinkUri: String?) {
             )
         }
     ) {
-        Scaffold(
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.background,
-            topBar = {
-                AppBar(
-                    title = stringResource(R.string.TonConnect_Title),
-                    navigationIcon = {
-                        HsBackButton(onClick = { navController.popBackStack() })
-                    }
-                )
-            }
+        HSScaffold(
+            title = stringResource(R.string.TonConnect_Title),
+            onBack = navController::popBackStack,
         ) {
-            Column(modifier = Modifier.padding(it)) {
-                Column(modifier = Modifier.weight(1f)) {
-                    val dapps = uiState.dapps
-                    if (dapps.isEmpty()) {
-                        ListEmptyView(
-                            text = stringResource(R.string.WalletConnect_NoConnection),
-                            icon = R.drawable.ic_ton_connect_24
-                        )
-                    } else {
-                        TonConnectSessionList(
-                            dapps = dapps,
-                            navController = navController,
-                            onDelete = viewModel::disconnect
-                        )
-                    }
-                }
-                ButtonsGroupWithShade {
-                    ButtonPrimaryYellow(
-                        modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp)
-                            .fillMaxWidth(),
-                        title = stringResource(R.string.TonConnect_NewConnect),
-                        onClick = {
-                            qrScannerLauncher.launch(
-                                QRScannerActivity.getScanQrIntent(
-                                    context,
-                                    true
-                                )
-                            )
-                        }
+            Column {
+                val dapps = uiState.dapps
+                if (dapps.isEmpty()) {
+                    ListEmptyView(
+                        text = stringResource(R.string.WalletConnect_NoConnection),
+                        icon = R.drawable.ic_ton_connect_24
+                    )
+                } else {
+                    TonConnectSessionList(
+                        dapps = dapps,
+                        navController = navController,
+                        onDelete = viewModel::disconnect
                     )
                 }
+            }
+            ButtonsGroupWithShade {
+                ButtonPrimaryYellow(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp)
+                        .fillMaxWidth(),
+                    title = stringResource(R.string.TonConnect_NewConnect),
+                    onClick = {
+                        qrScannerLauncher.launch(
+                            QRScannerActivity.getScanQrIntent(
+                                context,
+                                true
+                            )
+                        )
+                    }
+                )
             }
         }
     }

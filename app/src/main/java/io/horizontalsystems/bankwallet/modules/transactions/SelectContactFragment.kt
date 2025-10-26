@@ -2,16 +2,10 @@ package io.horizontalsystems.bankwallet.modules.transactions
 
 import android.os.Parcelable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,16 +17,14 @@ import io.horizontalsystems.bankwallet.core.getInput
 import io.horizontalsystems.bankwallet.core.setNavigationResultX
 import io.horizontalsystems.bankwallet.modules.contacts.model.Contact
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.HFillSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoErrorMessageDefault
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.cell.CellUniversal
-import io.horizontalsystems.bankwallet.ui.compose.components.title3_leah
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import io.horizontalsystems.marketkit.models.BlockchainType
 import kotlinx.parcelize.Parcelize
 
@@ -56,25 +48,20 @@ class SelectContactFragment : BaseComposeFragment() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectContactScreen(navController: NavController, input: SelectContactFragment.Input?) {
-    val viewModel = viewModel<SelectContactViewModel>(initializer = SelectContactViewModel.init(input?.selected, input?.blockchainType))
+    val viewModel = viewModel<SelectContactViewModel>(
+        initializer = SelectContactViewModel.init(
+            input?.selected,
+            input?.blockchainType
+        )
+    )
     val uiState = viewModel.uiState
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = {
-                    title3_leah(text = stringResource(id = R.string.Contacts))
-                },
-                navigationIcon = {
-                    HsBackButton(onClick = navController::popBackStack)
-                },
-            )
-        }
+    HSScaffold(
+        title = stringResource(R.string.Contacts),
+        onBack = navController::popBackStack,
     ) {
         if (uiState.items.isEmpty()) {
-            Column(modifier = Modifier.padding(it)) {
+            Column {
                 InfoText(text = stringResource(id = R.string.Transactions_Filter_ChooseContact_Hint))
                 InfoErrorMessageDefault(
                     painter = painterResource(id = R.drawable.ic_user_24),
@@ -82,7 +69,7 @@ fun SelectContactScreen(navController: NavController, input: SelectContactFragme
                 )
             }
         } else {
-            LazyColumn(modifier = Modifier.padding(it)) {
+            LazyColumn {
                 item {
                     InfoText(text = stringResource(id = R.string.Transactions_Filter_ChooseContact_Hint))
                 }

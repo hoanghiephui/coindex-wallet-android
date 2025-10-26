@@ -17,6 +17,7 @@ fun HSScaffold(
     title: String,
     menuItems: List<IMenuItem> = listOf(),
     onBack: (() -> Unit)? = null,
+    bottomBar: @Composable () -> Unit = {},
     backgroundColor: Color = ComposeAppTheme.colors.tyler,
     content: @Composable BoxScope.() -> Unit
 ) {
@@ -24,6 +25,7 @@ fun HSScaffold(
         topBar = {
             HSTopAppBar(title, menuItems, onBack, backgroundColor)
         },
+        bottomBar = bottomBar,
         backgroundColor = backgroundColor,
     ) {
         Box(

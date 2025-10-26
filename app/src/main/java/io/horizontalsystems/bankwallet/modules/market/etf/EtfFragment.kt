@@ -18,10 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -62,12 +59,12 @@ import io.horizontalsystems.bankwallet.ui.compose.HSSwipeRefresh
 import io.horizontalsystems.bankwallet.ui.compose.Select
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
 import io.horizontalsystems.bankwallet.ui.compose.components.AlertGroup
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.DescriptionCard
 import io.horizontalsystems.bankwallet.ui.compose.components.GraphicBarsWithNegative
 import io.horizontalsystems.bankwallet.ui.compose.components.HFillSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderSorting
+import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.ListErrorView
 import io.horizontalsystems.bankwallet.ui.compose.components.MarketCoin
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
@@ -81,7 +78,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_remus
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.title3_leah
 import io.horizontalsystems.bankwallet.ui.compose.hsRememberLazyListState
-import io.horizontalsystems.bankwallet.uiv3.components.BoxBordered
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import io.horizontalsystems.bankwallet.uiv3.components.controls.ButtonVariant
 import io.horizontalsystems.bankwallet.uiv3.components.controls.HSDropdownButton
 import io.horizontalsystems.bankwallet.uiv3.components.tabs.TabItem
@@ -123,25 +120,20 @@ fun EtfPage(
         TabItem(stringResource(id = it.titleResId), it == selectedTab, it)
     }
 
-    Column(
-        modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.background)
-    ) {
-            AppBar(
-                menuItems = listOf(
-                    MenuItem(
-                        title = TranslatableString.ResString(R.string.Button_Close),
-                        icon = R.drawable.ic_close,
-                        onClick = {
-                            navController.popBackStack()
-                        }
-                    )
-                )
+    HSScaffold(
+        title = "",
+        menuItems = listOf(
+            MenuItem(
+                title = TranslatableString.ResString(R.string.Button_Close),
+                icon = R.drawable.ic_close,
+                onClick = {
+                    navController.popBackStack()
+                }
             )
-
+        ),
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
         ) {
             TabsTop(TabsTopType.Fitted, tabItems,MaterialTheme.colorScheme.background) {
                 selectedTab = it
@@ -196,7 +188,9 @@ fun EtfByChain(
                         uiState.listTimePeriod
                     )
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(ComposeAppTheme.colors.lawrence),
                         state = listState,
                         contentPadding = PaddingValues(bottom = 32.dp),
                     ) {
@@ -208,16 +202,28 @@ fun EtfByChain(
                             )
                         }
                         item {
-                            ChartEtf(uiState.chartDataLoading, uiState.etfPoints, uiState.currency)
-                            VSpacer(height = 8.dp)
-                            ChartTab(
-                                tabItems = uiState.chartTabs,
-                            ) { tab ->
-                                viewModel.onSelectChartInterval(tab)
+                            Column(
+                                modifier = Modifier.background(ComposeAppTheme.colors.tyler)
+                            ) {
+                                ChartEtf(
+                                    uiState.chartDataLoading,
+                                    uiState.etfPoints,
+                                    uiState.currency
+                                )
+                                VSpacer(height = 8.dp)
+                                ChartTab(
+                                    tabItems = uiState.chartTabs,
+                                ) { tab ->
+                                    viewModel.onSelectChartInterval(tab)
+                                }
                             }
                         }
                         stickyHeader {
-                            HeaderSorting(borderBottom = true, borderTop = true) {
+                            HeaderSorting(
+                                borderBottom = true,
+                                borderTop = true,
+                                backgroundColor = ComposeAppTheme.colors.lawrence
+                            ) {
                                 HSpacer(width = 16.dp)
                                 HSDropdownButton(
                                     variant = ButtonVariant.Secondary,
@@ -238,17 +244,16 @@ fun EtfByChain(
                             }
                         }
                         items(uiState.viewItems) { viewItem ->
-                            BoxBordered(bottom = true) {
-                                MarketCoin(
-                                    title = viewItem.title,
-                                    subtitle = viewItem.subtitle,
-                                    coinIconUrl = viewItem.iconUrl,
-                                    coinIconPlaceholder = R.drawable.ic_platform_placeholder_24,
-                                    value = viewItem.value,
-                                    marketDataValue = viewItem.subvalue,
-                                    label = viewItem.rank,
-                                )
-                            }
+                            MarketCoin(
+                                title = viewItem.title,
+                                subtitle = viewItem.subtitle,
+                                coinIconUrl = viewItem.iconUrl,
+                                coinIconPlaceholder = R.drawable.ic_platform_placeholder_24,
+                                value = viewItem.value,
+                                marketDataValue = viewItem.subvalue,
+                                label = viewItem.rank,
+                            )
+                            HsDivider()
                         }
                     }
                 }

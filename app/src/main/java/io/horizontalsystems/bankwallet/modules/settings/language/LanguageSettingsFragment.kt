@@ -1,7 +1,6 @@
 package io.horizontalsystems.bankwallet.modules.settings.language
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,13 +27,11 @@ import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.modules.main.MainModule
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
-import io.horizontalsystems.bankwallet.ui.compose.components.NiaBackground
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
 class LanguageSettingsFragment : BaseComposeFragment() {
 
@@ -69,18 +66,14 @@ private fun LanguageScreen(
         reloadApp()
     }
 
-    Column(
-        modifier = Modifier
-            .background(color = ComposeAppTheme.colors.tyler)
+    HSScaffold(
+        title = stringResource(R.string.Settings_Language),
+        onBack = navController::popBackStack,
     ) {
-        AppBar(
-            title = stringResource(R.string.Settings_Language),
-            navigationIcon = {
-                HsBackButton(onClick = { navController.popBackStack() })
-            }
-        )
         Column(
-            Modifier.verticalScroll(rememberScrollState())
+            modifier = Modifier
+                .navigationBarsPadding()
+                .verticalScroll(rememberScrollState())
         ) {
             Spacer(Modifier.height(12.dp))
             CellUniversalLawrenceSection(viewModel.languageItems) { item ->

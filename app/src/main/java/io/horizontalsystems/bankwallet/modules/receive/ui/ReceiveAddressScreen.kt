@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -85,14 +86,12 @@ import io.horizontalsystems.bankwallet.modules.receive.ReceiveModule
 import io.horizontalsystems.bankwallet.ui.compose.ColoredTextStyle
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryCircle
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryJacobCircle
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryCircle
 import io.horizontalsystems.bankwallet.ui.compose.components.ErrorScreenWithAction
 import io.horizontalsystems.bankwallet.ui.compose.components.HSpacer
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsDivider
 import io.horizontalsystems.bankwallet.ui.compose.components.HsIconButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsTextButton
@@ -114,6 +113,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.subhead_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.title3_leah
 import io.horizontalsystems.bankwallet.ui.extensions.BottomSheetHeader
 import io.horizontalsystems.bankwallet.ui.helpers.TextHelper
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -129,7 +129,7 @@ fun ReceiveAddressScreen(
     onErrorClick: () -> Unit = {},
     slot1: @Composable () -> Unit = {},
     onBackPress: () -> Unit,
-    closeModule: () -> Unit,
+    closeModule: (() -> Unit)? = null,
     nativeAd: AdNativeUiState,
     navController: NavController,
 ) {
@@ -155,53 +155,41 @@ fun ReceiveAddressScreen(
         }
     }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = title,
-                navigationIcon = {
-                    HsBackButton(onClick = onBackPress)
-                },
-                menuItems =  listOf(
-                    MenuItem(
-                        title = TranslatableString.ResString(R.string.Button_Done),
-                        onClick = closeModule
-                    )
-                )
+    HSScaffold(
+        title = title,
+        onBack = onBackPress,
+        menuItems = if (closeModule == null) emptyList() else listOf(
+            MenuItem(
+                title = TranslatableString.ResString(R.string.Button_Done),
+                icon = R.drawable.ic_close,
+                onClick = closeModule
             )
-        }
+        )
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-        ) {
-            Crossfade(uiState.viewState, label = "") { viewState ->
-                Column {
-                    when (viewState) {
-                        is ViewState.Error -> {
-                            ErrorScreenWithAction(
-                                text = stringResource(R.string.SyncError),
-                                icon = R.drawable.ic_warning_64,
+        Crossfade(uiState.viewState, label = "") { viewState ->
+            Column {
+                when (viewState) {
+                    is ViewState.Error -> {
+                        ErrorScreenWithAction(
+                            text = stringResource(R.string.SyncError),
+                            icon = R.drawable.ic_warning_64,
+                        ) {
+                            HsTextButton(
+                                onClick = onErrorClick,
                             ) {
-                                HsTextButton(
-                                    onClick = onErrorClick,
-                                ) {
-                                    captionSB_jacob(
-                                        text = stringResource(R.string.Button_Retry),
-                                    )
-                                }
+                                captionSB_jacob(
+                                    text = stringResource(R.string.Button_Retry),
+                                )
                             }
                         }
+                    }
 
-                        ViewState.Loading -> {
-                            Loading()
-                        }
+                    ViewState.Loading -> {
+                        Loading()
+                    }
 
-                        ViewState.Success -> {
-                            TrackScreenViewEvent(screenName = "ReceiveAddressScreen: ${uiState.blockchainName}")
+                    ViewState.Success -> {
+                        TrackScreenViewEvent(screenName = "ReceiveAddressScreen: ${uiState.blockchainName}")
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
@@ -218,23 +206,23 @@ fun ReceiveAddressScreen(
                                         text = stringResource(R.string.Balance_Receive_WatchAddressAlert),
                                     )
                                 }
-                                VSpacer(12.dp)
+                            VSpacer(12.dp)
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(ComposeAppTheme.colors.lawrence),
+                            ) {
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 16.dp)
-                                        .clip(RoundedCornerShape(16.dp))
-                                        .background(ComposeAppTheme.colors.lawrence),
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable {
-                                                TextHelper.copyText(uiState.uri)
-                                                HudHelper.showSuccessMessage(
-                                                    localView,
-                                                    R.string.Hud_Text_Copied
-                                                )
+                                        .clickable {
+                                            TextHelper.copyText(uiState.uri)
+                                            HudHelper.showSuccessMessage(
+                                                localView,
+                                                R.string.Hud_Text_Copied
+                                            )
 
                                                 stat(
                                                     page = StatPage.Receive,
@@ -286,27 +274,27 @@ fun ReceiveAddressScreen(
                                         }
                                     }
 
-                                    if (additionalItems.isNotEmpty()) {
-                                        AdditionalDataSection(
-                                            items = additionalItems,
-                                            onClearAmount = {
-                                                setAmount(null)
+                                if (additionalItems.isNotEmpty()) {
+                                    AdditionalDataSection(
+                                        items = additionalItems,
+                                        onClearAmount = {
+                                            setAmount(null)
 
-                                                stat(
-                                                    page = StatPage.Receive,
-                                                    event = StatEvent.RemoveAmount
-                                                )
-                                            },
-                                            showAccountNotActiveWarningDialog = {
-                                                isTronInfoVisible = true
-                                            }
-                                        )
-                                    }
-
-                                    slot1.invoke()
+                                            stat(
+                                                page = StatPage.Receive,
+                                                event = StatEvent.RemoveAmount
+                                            )
+                                        },
+                                        showAccountNotActiveWarningDialog = {
+                                            isTronInfoVisible = true
+                                        }
+                                    )
                                 }
 
-                                MaxTemplateNativeAdViewComposable(
+                                slot1.invoke()
+                            }
+
+                            MaxTemplateNativeAdViewComposable(
                                     nativeAd,
                                     AdType.SMALL,
                                     navController
@@ -320,24 +308,23 @@ fun ReceiveAddressScreen(
 
                                     )
 
-                                VSpacer(32.dp)
-                            }
+                            VSpacer(32.dp)
                         }
                     }
                 }
             }
-            if (openAmountDialog.value) {
-                AmountInputDialog(
-                    initialAmount = uiState.amount,
-                    onDismissRequest = { openAmountDialog.value = false },
-                    onAmountConfirm = { amount ->
-                        setAmount(amount)
-                        openAmountDialog.value = false
+        }
+        if (openAmountDialog.value) {
+            AmountInputDialog(
+                initialAmount = uiState.amount,
+                onDismissRequest = { openAmountDialog.value = false },
+                onAmountConfirm = { amount ->
+                    setAmount(amount)
+                    openAmountDialog.value = false
 
-                        stat(page = StatPage.Receive, event = StatEvent.SetAmount)
-                    }
-                )
-            }
+                    stat(page = StatPage.Receive, event = StatEvent.SetAmount)
+                }
+            )
         }
     }
     if (isTronInfoVisible) {
@@ -636,7 +623,7 @@ fun AmountInputDialog(
                     innerTextField()
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                cursorBrush = SolidColor(ComposeAppTheme.colors.jacob),
+                cursorBrush = SolidColor(ComposeAppTheme.colors.leah),
             )
             SideEffect {
                 focusRequester.requestFocus()

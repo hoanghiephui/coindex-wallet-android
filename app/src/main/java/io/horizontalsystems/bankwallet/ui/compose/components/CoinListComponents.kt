@@ -155,7 +155,7 @@ fun CoinListSlidable(
             }
         }
         item {
-            VSpacer(72.dp)
+            VSpacer(36.dp)
         }
         if (scrollToTop) {
             coroutineScope.launch {

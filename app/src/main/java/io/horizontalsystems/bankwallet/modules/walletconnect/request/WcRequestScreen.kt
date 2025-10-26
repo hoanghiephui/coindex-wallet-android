@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -23,13 +20,12 @@ import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.stats.StatPage
 import io.horizontalsystems.bankwallet.modules.evmfee.ButtonsGroupWithShade
 import io.horizontalsystems.bankwallet.modules.sendevmtransaction.SectionView
-import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryDefault
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,22 +46,34 @@ fun WcRequestScreen(
         }
     }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = uiState.title.getString(),
-                menuItems = listOf(
-                    MenuItem(
-                        title = TranslatableString.ResString(R.string.Button_Close),
-                        icon = R.drawable.ic_close,
-                        onClick = { navController.popBackStack() }
-                    )
-                )
+    HSScaffold(
+        title = uiState.title.getString(),
+        menuItems = listOf(
+            MenuItem(
+                title = TranslatableString.ResString(R.string.Button_Close),
+                icon = R.drawable.ic_close,
+                onClick = navController::popBackStack
             )
-        },
-        bottomBar = {
+        )
+    ) {
+        Column {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .weight(1f)
+                    .fillMaxWidth()
+            ) {
+                VSpacer(12.dp)
+
+                uiState.contentItems.forEach { sectionViewItem ->
+                    SectionView(
+                        sectionViewItem.viewItems,
+                        navController,
+                        StatPage.WalletConnect
+                    )
+                    Spacer(Modifier.height(16.dp))
+                }
+            }
             ButtonsGroupWithShade {
                 Column(Modifier.padding(horizontal = 24.dp)) {
                     ButtonPrimaryYellow(
@@ -81,24 +89,6 @@ fun WcRequestScreen(
                         onClick = viewModel::reject
                     )
                 }
-            }
-        }
-    ) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(it)
-                .fillMaxWidth()
-        ) {
-            VSpacer(12.dp)
-
-            uiState.contentItems.forEach { sectionViewItem ->
-                SectionView(
-                    sectionViewItem.viewItems,
-                    navController,
-                    StatPage.WalletConnect
-                )
-                Spacer(Modifier.height(16.dp))
             }
         }
     }

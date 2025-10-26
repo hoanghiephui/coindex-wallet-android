@@ -12,30 +12,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.wallet.blockchain.bitcoin.R
+import io.horizontalsystems.bankwallet.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.entities.Account
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryDefault
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.coroutines.delay
 
@@ -44,18 +39,13 @@ class BackupConfirmKeyFragment : BaseComposeFragment() {
     @Composable
     override fun GetContent(navController: NavController) {
         withInput<Account>(navController) { input ->
-            input?.let {
-                RecoveryPhraseVerifyScreen(navController, input)
-            } ?: navController.popBackStack()
+            RecoveryPhraseVerifyScreen(navController, input)
         }
     }
 
-    override var logScreen: String
-        get() = "BackupConfirmKeyFragment"
-        set(value) {}
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RecoveryPhraseVerifyScreen(navController: NavController, account: Account) {
     val viewModel =
@@ -81,19 +71,11 @@ fun RecoveryPhraseVerifyScreen(navController: NavController, account: Account) {
         viewModel.onErrorShown()
     }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.RecoveryPhraseVerify_Title),
-                navigationIcon = {
-                    HsBackButton(onClick = { navController.popBackStack() })
-                }
-            )
-        }
+    HSScaffold(
+        title = stringResource(R.string.RecoveryPhraseVerify_Title),
+        onBack = { navController.popBackStack() },
     ) {
-        Column(modifier = Modifier.padding(it)) {
+        Column {
             InfoText(text = stringResource(R.string.RecoveryPhraseVerify_Description))
             Spacer(Modifier.height(12.dp))
 

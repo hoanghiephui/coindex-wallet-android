@@ -3,11 +3,7 @@ package io.horizontalsystems.bankwallet.modules.pin.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,8 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.modules.pin.unlock.PinConfirmViewModel
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,24 +26,14 @@ fun PinConfirm(
         viewModel.unlocked()
     }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        modifier = Modifier
-            .statusBarsPadding()
-            .navigationBarsPadding(),
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.Unlock_Title),
-                navigationIcon = {
-                    HsBackButton(onClick = onCancel)
-                },
-            )
-        }
+    HSScaffold(
+        title = stringResource(R.string.Unlock_Title),
+        onBack = onCancel,
     ) {
         Column(
             modifier = Modifier
-                .padding(it)
+                .statusBarsPadding()
+                .navigationBarsPadding()
                 .fillMaxSize()
         ) {
             PinTopBlock(

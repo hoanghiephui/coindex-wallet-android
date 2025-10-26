@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,58 +76,56 @@ fun CoinMarketsScreen(
         viewModel,
         adType = AdType.SMALL
     )
-    Surface(color = ComposeAppTheme.colors.lawrence) {
-        Crossfade(uiState.viewState, label = "") { viewItemState ->
-            when (viewItemState) {
-                ViewState.Loading -> {
-                    Loading()
-                }
+    Crossfade(uiState.viewState, label = "") { viewItemState ->
+        when (viewItemState) {
+            ViewState.Loading -> {
+                Loading()
+            }
 
-                is ViewState.Error -> {
-                    ListErrorView(stringResource(R.string.SyncError), viewModel::onErrorClick)
-                }
+            is ViewState.Error -> {
+                ListErrorView(stringResource(R.string.SyncError), viewModel::onErrorClick)
+            }
 
-                ViewState.Success -> {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        if (uiState.items.isEmpty()) {
-                            ListEmptyView(
-                                text = stringResource(R.string.CoinPage_NoDataAvailable),
-                                icon = R.drawable.ic_no_data
-                            )
-                        } else {
-                            CoinMarketsMenu(
-                                exchangeTypeMenu = uiState.exchangeTypeMenu,
-                                verified = viewModel.verified,
-                                showExchangeTypeSelector = { showExchangeTypeSelector = true },
-                                onVerifiedEnabled = { verified ->
-                                    viewModel.setVerified(verified)
-                                    scrollToTopAfterUpdate = true
-                                }
-                            )
-                            CoinMarketList(
+            ViewState.Success -> {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    if (uiState.items.isEmpty()) {
+                        ListEmptyView(
+                            text = stringResource(R.string.CoinPage_NoDataAvailable),
+                            icon = R.drawable.ic_no_data
+                        )
+                    } else {
+                        CoinMarketsMenu(
+                            exchangeTypeMenu = uiState.exchangeTypeMenu,
+                            verified = viewModel.verified,
+                            showExchangeTypeSelector = { showExchangeTypeSelector = true },
+                            onVerifiedEnabled = { verified ->
+                                viewModel.setVerified(verified)
+                                scrollToTopAfterUpdate = true
+                            }
+                        )
+                        CoinMarketList(
                                 uiState.items, scrollToTopAfterUpdate,
                                 adState = adState,
                                 navController = navController
                             )
-                            if (scrollToTopAfterUpdate) {
-                                scrollToTopAfterUpdate = false
-                            }
+                        if (scrollToTopAfterUpdate) {
+                            scrollToTopAfterUpdate = false
                         }
                     }
                 }
             }
         }
-        if (showExchangeTypeSelector) {
-            AlertGroup(
-                title = stringResource(R.string.CoinPage_MarketsVerifiedMenu_ExchangeType),
-                select = uiState.exchangeTypeMenu,
-                onSelect = {
-                    viewModel::setExchangeType.invoke(it)
-                    showExchangeTypeSelector = false
-                },
-                onDismiss = { showExchangeTypeSelector = false }
-            )
-        }
+    }
+    if (showExchangeTypeSelector) {
+        AlertGroup(
+            title = stringResource(R.string.CoinPage_MarketsVerifiedMenu_ExchangeType),
+            select = uiState.exchangeTypeMenu,
+            onSelect = {
+                viewModel::setExchangeType.invoke(it)
+                showExchangeTypeSelector = false
+            },
+            onDismiss = { showExchangeTypeSelector = false }
+        )
     }
 }
 

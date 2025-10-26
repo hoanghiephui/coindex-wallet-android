@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,12 +15,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.entities.ViewState
 import io.horizontalsystems.bankwallet.modules.evmfee.ButtonsGroupWithShade
-import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
 import io.horizontalsystems.bankwallet.ui.compose.components.HeaderText
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsCheckbox
 import io.horizontalsystems.bankwallet.ui.compose.components.NiaBackground
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
@@ -33,6 +27,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead1_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_lucian
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,48 +35,41 @@ fun SelectBackupItemsScreen(
     onNextClick: (accountIds: List<String>) -> Unit,
     onBackClick: () -> Unit
 ) {
-    val viewModel = viewModel<SelectBackupItemsViewModel>(factory = SelectBackupItemsViewModel.Factory())
+    val viewModel =
+        viewModel<SelectBackupItemsViewModel>(factory = SelectBackupItemsViewModel.Factory())
     val uiState = viewModel.uiState
 
-    ComposeAppTheme {
-        NiaBackground {
-            Scaffold(
-                containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.background,
-                topBar = {
-                    AppBar(
-                        title = stringResource(R.string.BackupManager_BаckupFile),
-                        navigationIcon = {
-                            HsBackButton(onClick = onBackClick)
-                        },
-                    )
-                },
-                bottomBar = {
-                    ButtonsGroupWithShade {
-                        ButtonPrimaryYellow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp),
-                            title = stringResource(R.string.Button_Next),
-                            onClick = {
-                                onNextClick(viewModel.selectedWallets)
-                            }
-                        )
+    HSScaffold(
+        title = stringResource(R.string.BackupManager_BаckupFile),
+        onBack = onBackClick,
+        bottomBar = {
+            ButtonsGroupWithShade {
+                ButtonPrimaryYellow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp),
+                    title = stringResource(R.string.Button_Next),
+                    onClick = {
+                        onNextClick(viewModel.selectedWallets)
                     }
-                }
-            ) {
-                LazyColumn(modifier = Modifier.padding(it)) {
-
-                    when (uiState.viewState) {
-                        ViewState.Success -> {
-                            if (uiState.wallets.isNotEmpty()) {
-                                item {
-                                    HeaderText(text = stringResource(id = R.string.BackupManager_Wallets))
-                                    CellUniversalLawrenceSection(items = uiState.wallets, showFrame = true) { wallet ->
-                                        RowUniversal(
-                                            modifier = Modifier.padding(horizontal = 16.dp),
-                                            onClick = { viewModel.toggle(wallet) }
-                                        ) {
+                )
+            }
+        }
+    ) {
+        LazyColumn {
+            when (uiState.viewState) {
+                ViewState.Success -> {
+                    if (uiState.wallets.isNotEmpty()) {
+                        item {
+                            HeaderText(text = stringResource(id = R.string.BackupManager_Wallets))
+                            CellUniversalLawrenceSection(
+                                items = uiState.wallets,
+                                showFrame = true
+                            ) { wallet ->
+                                RowUniversal(
+                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                    onClick = { viewModel.toggle(wallet) }
+                                ) {
 
                                             Column(modifier = Modifier.weight(1f)) {
                                                 headline2_leah(text = wallet.name)

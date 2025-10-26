@@ -10,10 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,15 +33,14 @@ import io.horizontalsystems.bankwallet.core.slideFromRightForResult
 import io.horizontalsystems.bankwallet.modules.evmfee.ButtonsGroupWithShade
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
 import io.horizontalsystems.bankwallet.ui.compose.TranslatableString
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonPrimaryYellow
 import io.horizontalsystems.bankwallet.ui.compose.components.CellSingleLineLawrenceSection
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsSwitch
 import io.horizontalsystems.bankwallet.ui.compose.components.InfoText
 import io.horizontalsystems.bankwallet.ui.compose.components.MenuItem
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
 import io.horizontalsystems.bankwallet.ui.compose.components.body_leah
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 
 class TransactionsFilterFragment : BaseComposeFragment() {
 
@@ -95,29 +91,21 @@ fun FilterScreen(
 
     val filterBlockchain = filterBlockchains?.firstOrNull { it.selected }?.item
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.Transactions_Filter),
-                navigationIcon = {
-                    HsBackButton(onClick = navController::popBackStack)
-                },
-                menuItems = listOf(
-                    MenuItem(
-                        title = TranslatableString.ResString(R.string.Button_Reset),
-                        enabled = filterResetEnabled,
-                        tint = ComposeAppTheme.colors.jacob,
-                        onClick = {
-                            viewModel.resetFilters()
-                        }
-                    )
-                )
+    HSScaffold(
+        title = stringResource(R.string.Transactions_Filter),
+        onBack = navController::popBackStack,
+        menuItems = listOf(
+            MenuItem(
+                title = TranslatableString.ResString(R.string.Button_Reset),
+                enabled = filterResetEnabled,
+                tint = ComposeAppTheme.colors.jacob,
+                onClick = {
+                    viewModel.resetFilters()
+                }
             )
-        }
+        )
     ) {
-        Column(Modifier.padding(it)) {
+        Column {
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -128,7 +116,8 @@ fun FilterScreen(
                     listOf {
                         FilterDropdownCell(
                             title = stringResource(R.string.Transactions_Filter_Blockchain),
-                            value = filterBlockchain?.name ?: stringResource(id = R.string.Transactions_Filter_AllBlockchains) ,
+                            value = filterBlockchain?.name
+                                ?: stringResource(id = R.string.Transactions_Filter_AllBlockchains),
                             valueColor = if (filterBlockchain != null) ComposeAppTheme.colors.leah else ComposeAppTheme.colors.grey,
                             onClick = {
                                 navController.slideFromRight(R.id.filterBlockchainFragment)
@@ -141,7 +130,8 @@ fun FilterScreen(
                     listOf {
                         FilterDropdownCell(
                             title = stringResource(R.string.Transactions_Filter_Coin),
-                            value = selectedCoinFilterTitle ?: stringResource(id = R.string.Transactions_Filter_AllCoins) ,
+                            value = selectedCoinFilterTitle
+                                ?: stringResource(id = R.string.Transactions_Filter_AllCoins),
                             valueColor = if (filterBlockchain != null) ComposeAppTheme.colors.leah else ComposeAppTheme.colors.grey,
                             onClick = {
                                 navController.slideFromRight(R.id.filterCoinFragment)
@@ -154,12 +144,16 @@ fun FilterScreen(
                     listOf {
                         FilterDropdownCell(
                             title = stringResource(R.string.Transactions_Filter_Contacts),
-                            value = filterContact?.name ?: stringResource(id = R.string.Transactions_Filter_AllContacts) ,
+                            value = filterContact?.name
+                                ?: stringResource(id = R.string.Transactions_Filter_AllContacts),
                             valueColor = if (filterContact != null) ComposeAppTheme.colors.leah else ComposeAppTheme.colors.grey,
                             onClick = {
                                 navController.slideFromRightForResult<SelectContactFragment.Result>(
                                     R.id.selectContact,
-                                    SelectContactFragment.Input(filterContact, filterBlockchain?.type)
+                                    SelectContactFragment.Input(
+                                        filterContact,
+                                        filterBlockchain?.type
+                                    )
                                 ) {
                                     viewModel.onEnterContact(it.contact)
                                 }

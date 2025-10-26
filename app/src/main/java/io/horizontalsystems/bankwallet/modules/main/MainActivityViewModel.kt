@@ -66,7 +66,7 @@ class MainActivityViewModel(
             }
         }
         viewModelScope.launch {
-            pinComponent.isLockedFlowable.collect { locked ->
+            pinComponent.isLockedFlow.collect { locked ->
                 _contentHidden.update { locked }
             }
         }

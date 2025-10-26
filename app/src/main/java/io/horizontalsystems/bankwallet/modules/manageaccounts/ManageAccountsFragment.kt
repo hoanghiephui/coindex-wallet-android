@@ -1,11 +1,10 @@
 package io.horizontalsystems.bankwallet.modules.manageaccounts
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,10 +42,8 @@ import io.horizontalsystems.bankwallet.modules.manageaccounts.ManageAccountsModu
 import io.horizontalsystems.bankwallet.modules.manageaccounts.ManageAccountsModule.ActionViewItem
 import io.horizontalsystems.bankwallet.rememberAdNativeView
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
-import io.horizontalsystems.bankwallet.ui.compose.components.AppBar
 import io.horizontalsystems.bankwallet.ui.compose.components.ButtonSecondaryCircle
 import io.horizontalsystems.bankwallet.ui.compose.components.CellUniversalLawrenceSection
-import io.horizontalsystems.bankwallet.ui.compose.components.HsBackButton
 import io.horizontalsystems.bankwallet.ui.compose.components.HsRadioButton
 import io.horizontalsystems.bankwallet.ui.compose.components.RowUniversal
 import io.horizontalsystems.bankwallet.ui.compose.components.VSpacer
@@ -54,6 +51,7 @@ import io.horizontalsystems.bankwallet.ui.compose.components.body_jacob
 import io.horizontalsystems.bankwallet.ui.compose.components.headline2_leah
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_grey
 import io.horizontalsystems.bankwallet.ui.compose.components.subhead2_lucian
+import io.horizontalsystems.bankwallet.uiv3.components.HSScaffold
 import io.horizontalsystems.subscriptions.core.MultiWallet
 
 class ManageAccountsFragment : BaseComposeFragment() {
@@ -90,29 +88,25 @@ fun ManageAccountsScreen(navController: NavController, mode: ManageAccountsModul
         viewModel
     )
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.ManageAccounts_Title),
-                navigationIcon = { HsBackButton(onClick = { navController.popBackStack() }) }
-            )
-        }
+    HSScaffold(
+        title = stringResource(R.string.ManageAccounts_Title),
+        onBack = navController::popBackStack,
     ) {
-        LazyColumn(modifier = Modifier.padding(it)) {
+        LazyColumn(
+            modifier = Modifier
+        ) {
             item {
-                Spacer(modifier = Modifier.height(12.dp))
+                VSpacer(12.dp)
 
                 viewItems?.let { (regularAccounts, watchAccounts) ->
                     if (regularAccounts.isNotEmpty()) {
                         AccountsSection(regularAccounts, viewModel, navController)
-                        Spacer(modifier = Modifier.height(32.dp))
+                        VSpacer(32.dp)
                     }
 
                     if (watchAccounts.isNotEmpty()) {
                         AccountsSection(watchAccounts, viewModel, navController)
-                        Spacer(modifier = Modifier.height(32.dp))
+                        VSpacer(32.dp)
                     }
                 }
 
@@ -129,7 +123,10 @@ fun ManageAccountsScreen(navController: NavController, mode: ManageAccountsModul
                 }
 
                 val actions = listOf(
-                    ActionViewItem(R.drawable.ic_plus, R.string.ManageAccounts_CreateNewWallet) {
+                    ActionViewItem(
+                        R.drawable.ic_plus,
+                        R.string.ManageAccounts_CreateNewWallet
+                    ) {
                         if (isPlusMode || viewItems?.first?.isEmpty() == true) {
                             navController.navigateWithTermsAccepted {
                                 navController.slideFromRight(R.id.createAccountFragment, args)
@@ -182,11 +179,9 @@ fun ManageAccountsScreen(navController: NavController, mode: ManageAccountsModul
                         body_jacob(text = stringResource(id = it.title))
                     }
                 }
-
                 VSpacer(height = 8.dp)
                 MaxTemplateNativeAdViewComposable(adState, AdType.SMALL, navController)
-
-                Spacer(modifier = Modifier.height(32.dp))
+                VSpacer(32.dp)
             }
         }
     }
