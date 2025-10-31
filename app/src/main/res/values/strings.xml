@@ -410,6 +410,7 @@
     <string name="Balance_SearchingTransactions">Searching transactions…</string>
     <string name="Balance_FoundTx">%s tx</string>
     <string name="Balance_Syncing_WithProgress">Syncing… %s%%</string>
+    <string name="Balance_BlocksRemaining">Blocks Remaining - %d</string>
     <string name="Balance_Sort_Balance">Balance</string>
     <string name="Balance_Sort_PopupTitle">Sort by</string>
     <string name="Balance_Sort_Az">Name</string>
@@ -448,6 +449,9 @@
     <string name="Balance_Receive_Subaddresses">Subadresses</string>
     <string name="Balance_Receive_SubaddressesInfo">Subaddresses let you use multiple unique addresses within one wallet for convenience and enhanced privacy.</string>
     <string name="Balance_Receive_SubaddressesTransactions">Transactions: %s</string>
+    <string name="Balance_Receive_HaveYouOwnedCoins">Have you previously owned any %s coins?</string>
+    <string name="Balance_Receive_YesAlreadyOwn">Yes, I already own</string>
+    <string name="Balance_Receive_IDontHave">No, I don\'t have</string>
 
     <string name="Balance_Zcash_UnshieldedBalance_Title">Transparent</string>
     <string name="Balance_Zcash_UnshieldedBalance_Info_Title">Transparent amount</string>
