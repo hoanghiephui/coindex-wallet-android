@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.App
+import io.horizontalsystems.bankwallet.modules.walletconnect.session.WCRequestViewItem
 
 object WalletConnectListModule {
 
@@ -13,7 +14,7 @@ object WalletConnectListModule {
 
             return WalletConnectListViewModel(
                 App.wcSessionManager,
-                App.evmBlockchainManager,
+                App.wcManager,
             ) as T
         }
     }
@@ -25,6 +26,7 @@ object WalletConnectListModule {
         val url: String,
         val imageUrl: String?,
         val pendingRequestsCount: Int = 0,
+        val requests: List<WCRequestViewItem>,
     )
 
     fun getVersionFromUri(scannedText: String): Int {

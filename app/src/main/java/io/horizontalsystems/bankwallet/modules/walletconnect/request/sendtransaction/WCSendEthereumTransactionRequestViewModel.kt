@@ -8,7 +8,6 @@ import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.core.ViewModelUiState
 import io.horizontalsystems.bankwallet.core.ethereum.CautionViewItem
 import io.horizontalsystems.bankwallet.core.ethereum.EvmCoinServiceFactory
-import io.horizontalsystems.bankwallet.core.providers.Translator
 import io.horizontalsystems.bankwallet.core.toHexString
 import io.horizontalsystems.bankwallet.modules.multiswap.sendtransaction.SendTransactionData
 import io.horizontalsystems.bankwallet.modules.multiswap.sendtransaction.SendTransactionServiceEvm
@@ -29,7 +28,6 @@ import kotlinx.coroutines.withContext
 
 class WCSendEthereumTransactionRequestViewModel(
     private val sendEvmTransactionViewItemFactory: SendEvmTransactionViewItemFactory,
-    private val dAppName: String,
     transaction: WalletConnectTransaction,
     blockchainType: BlockchainType
 ) : ViewModelUiState<WCSendEthereumTransactionRequestUiState>() {
@@ -80,14 +78,6 @@ class WCSendEthereumTransactionRequestViewModel(
             sendTransactionService.decorate(transactionData)
         ) + SectionViewItem(
             buildList {
-                add(
-                    ViewItem.Value(
-                        Translator.getString(R.string.WalletConnect_SignMessageRequest_dApp),
-                        dAppName,
-                        ValueType.Regular
-                    )
-                )
-
                 val chain: WCChainData? = null // todo: need to implement it
                 chain?.let {
                     add(
@@ -143,7 +133,6 @@ class WCSendEthereumTransactionRequestViewModel(
 
             return WCSendEthereumTransactionRequestViewModel(
                 sendEvmTransactionViewItemFactory,
-                peerName,
                 transaction,
                 blockchainType
             ) as T

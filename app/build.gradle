@@ -359,14 +359,14 @@ dependencies {
     implementation 'com.github.horizontalsystems:stellar-kit-android:519533b'
     implementation 'com.github.horizontalsystems:ton-kit-android:dcddd90'
     implementation 'com.github.horizontalsystems:bitcoin-kit-android:4219945'
-    implementation 'com.github.horizontalsystems:ethereum-kit-android:23675dd'
+    implementation 'com.github.horizontalsystems:ethereum-kit-android:7270dc6'
     implementation 'com.github.horizontalsystems:blockchain-fee-rate-kit-android:7d01e63'
     implementation 'com.github.horizontalsystems:market-kit-android:8bd85cc'
     implementation 'com.github.horizontalsystems:solana-kit-android:eae6858'
     implementation 'com.github.horizontalsystems:tron-kit-android:16ae04a'
     // Zcash SDK
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
-    implementation "cash.z.ecc.android:zcash-android-sdk:2.3.2"
+    implementation "cash.z.ecc.android:zcash-android-sdk:2.4.0"
     implementation("io.github.binance:binance-connector-java:3.4.1") {
         exclude group: "org.bouncycastle", module: "bcprov-jdk18on"
     }

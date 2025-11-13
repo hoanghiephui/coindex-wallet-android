@@ -47,7 +47,7 @@ class ReceiveFragment : BaseComposeFragment() {
                                 it.receiveEntryPointDestId
                             )
                         } else if (token.type == TokenType.Native) {
-                            ReceiveScreen(navController, wallet, it.receiveEntryPointDestId)
+                            ReceiveScreen(navController, wallet, it.receiveEntryPointDestId, it.isTransparentAddress)
                         }
                     }
                 BlockchainType.Monero -> {
@@ -74,7 +74,7 @@ class ReceiveFragment : BaseComposeFragment() {
 //        BlockchainType.Zcash -> TODO()
 //        BlockchainType.ZkSync -> TODO()
                     else -> {
-                        ReceiveScreen(navController, wallet, it.receiveEntryPointDestId)
+                        ReceiveScreen(navController, wallet, it.receiveEntryPointDestId, it.isTransparentAddress)
                     }
                 }
             } ?: run {
@@ -88,14 +88,23 @@ class ReceiveFragment : BaseComposeFragment() {
         get() = "ReceiveFragment"
 
     @Parcelize
-    data class Input(val wallet: Wallet, val receiveEntryPointDestId: Int = 0) : Parcelable
+    data class Input(
+        val wallet: Wallet,
+        val receiveEntryPointDestId: Int = 0,
+        val isTransparentAddress: Boolean = false
+    ) : Parcelable
 
 }
 
 @Composable
-fun ReceiveScreen(navController: NavController, wallet: Wallet, receiveEntryPointDestId: Int) {
+fun ReceiveScreen(
+    navController: NavController,
+    wallet: Wallet,
+    receiveEntryPointDestId: Int,
+    isTransparentAddress: Boolean,
+) {
     val addressViewModel =
-        viewModel<ReceiveAddressViewModel>(factory = ReceiveModule.Factory(wallet))
+        viewModel<ReceiveAddressViewModel>(factory = ReceiveModule.Factory(wallet, isTransparentAddress))
     val (adState, reloadAd) = rememberAdNativeView(BuildConfig.HOME_MARKET_NATIVE,
         adPlacements = "ReceiveScreen", addressViewModel)
     val uiState = addressViewModel.uiState

@@ -1,6 +1,5 @@
 package io.horizontalsystems.bankwallet.modules.walletconnect.session
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.wallet.blockchain.bitcoin.R
 import com.walletconnect.web3.wallet.client.Wallet
@@ -64,6 +63,7 @@ class WCSessionViewModel(
     private var whiteListState = WCWhiteListState.InProgress
     private var whiteListCache: List<ServiceWCWhitelist.WCWhiteList>? = null
     private var hasSubscription = false
+    private var closeDialog = false
 
     override fun createState() = WCSessionUiState(
         peerMeta = peerMeta,
@@ -78,6 +78,7 @@ class WCSessionViewModel(
         blockchainTypes = blockchainTypes,
         whiteListState = whiteListState,
         hasSubscription = hasSubscription,
+        closeDialog = closeDialog
     )
 
     private var sessionServiceState: WCSessionServiceState = WCSessionServiceState.Idle
@@ -347,6 +348,8 @@ class WCSessionViewModel(
         val proposal = proposal ?: return
 
         if (!connectivityManager.isConnected) {
+            showError = Translator.getString(R.string.Hud_Text_NoInternet)
+            emitState()
             showNoInternetErrorLiveEvent.postValue(Unit)
             return
         }
@@ -355,6 +358,7 @@ class WCSessionViewModel(
             reject(proposal.proposerPublicKey) {
                 sessionServiceState = Killed
             }
+            closeDialog = true
         }
     }
 
@@ -362,6 +366,8 @@ class WCSessionViewModel(
         val proposal = proposal ?: return
 
         if (!connectivityManager.isConnected) {
+            showError = Translator.getString(R.string.Hud_Text_NoInternet)
+            emitState()
             showNoInternetErrorLiveEvent.postValue(Unit)
             return
         }
@@ -384,6 +390,8 @@ class WCSessionViewModel(
 
     fun disconnect() {
         if (!connectivityManager.isConnected) {
+            showError = Translator.getString(R.string.Hud_Text_NoInternet)
+            emitState()
             showNoInternetErrorLiveEvent.postValue(Unit)
             return
         }
@@ -394,6 +402,10 @@ class WCSessionViewModel(
             topic = sessionNonNull.topic,
             onSuccess = {
                 sessionServiceState = Killed
+                closeDialog = true
+            },
+            onError = {
+                closeDialog = true
             }
         )
     }
@@ -426,10 +438,12 @@ class WCSessionViewModel(
                     onError = { error ->
                         continuation.resumeWithException(error.throwable)
                         WCDelegate.sessionProposalEvent = null
+                        closeDialog = true
                     },
                     onSuccess = {
                         continuation.resume(Unit)
                         WCDelegate.sessionProposalEvent = null
+                        closeDialog = true
                     })
             }
         }
@@ -475,7 +489,7 @@ class WCSessionViewModel(
         connection: Boolean?
     ) {
         buttonStates = WCSessionButtonStates(
-            connect = getConnectButtonState(state, connection),
+            connect = getConnectButtonState(state),
             disconnect = getDisconnectButtonState(state, connection),
             cancel = getCancelButtonState(state),
             remove = getRemoveButtonState(state, connection),
@@ -492,10 +506,9 @@ class WCSessionViewModel(
 
     private fun getConnectButtonState(
         state: WCSessionServiceState,
-        connectionState: Boolean?
     ): WCButtonState {
         return when {
-            state == WaitingForApproveSession && connectionState == true -> WCButtonState.Enabled
+            state == WaitingForApproveSession -> WCButtonState.Enabled
             else -> WCButtonState.Hidden
         }
     }
@@ -604,6 +617,11 @@ class WCSessionViewModel(
 
     fun setRequestToOpen(request: Wallet.Model.SessionRequest) {
         WCDelegate.sessionRequestEvent = request
+    }
+
+    fun errorShown() {
+        showError = null
+        emitState()
     }
 
 }

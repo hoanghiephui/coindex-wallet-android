@@ -27,6 +27,7 @@ import io.horizontalsystems.bankwallet.ui.helpers.LinkHelper
 import io.horizontalsystems.bankwallet.worker.NewsNotificationWorker.Companion.INTENT_NEWS_NOTIFICATION
 import io.horizontalsystems.bankwallet.worker.Sync
 import io.horizontalsystems.bankwallet.ui.compose.ComposeAppTheme
+import io.horizontalsystems.core.helpers.HudHelper
 import io.horizontalsystems.core.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -96,7 +97,19 @@ class MainActivity : BaseActivity() {
                     }
 
                     is Wallet.Model.SessionProposal -> {
-                        navController.slideFromBottom(R.id.wcSessionFragment)
+                        navController.slideFromBottom(R.id.wcSessionBottomSheetDialog)
+                    }
+
+                    is Wallet.Model.Error -> {
+                        navHost.view?.let {
+                            HudHelper.showErrorMessage(it, wcEvent.throwable.message ?: "Error")
+                        }
+                    }
+
+                    is Wallet.Model.SettledSessionResponse.Result -> {
+                        navHost.view?.let {
+                            HudHelper.showSuccessMessage(it, getString(R.string.Hud_Text_Connected))
+                        }
                     }
 
                     else -> {}
