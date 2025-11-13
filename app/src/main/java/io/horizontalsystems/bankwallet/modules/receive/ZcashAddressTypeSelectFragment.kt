@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import io.horizontalsystems.bankwallet.R
+import com.wallet.blockchain.bitcoin.R
 import io.horizontalsystems.bankwallet.core.BaseComposeFragment
 import io.horizontalsystems.bankwallet.core.slideFromRight
 import io.horizontalsystems.bankwallet.entities.Wallet
@@ -33,26 +33,33 @@ import kotlinx.parcelize.Parcelize
 class ZcashAddressTypeSelectFragment : BaseComposeFragment() {
     @Composable
     override fun GetContent(navController: NavController) {
-        withInput<Input>(navController) {
-            val wallet = it.wallet
-            ZcashAddressTypeSelectScreen(
-                onZcashAddressTypeClick = { isTransparent ->
-                    navController.slideFromRight(
-                        R.id.receiveFragment,
-                        ReceiveFragment.Input(
-                            wallet = wallet,
-                            isTransparentAddress = isTransparent
+        withInput<Input>(navController) { input ->
+            input?.wallet?.let {
+                ZcashAddressTypeSelectScreen(
+                    onZcashAddressTypeClick = { isTransparent ->
+                        navController.slideFromRight(
+                            R.id.receiveFragment,
+                            ReceiveFragment.Input(
+                                wallet = it,
+                                isTransparentAddress = isTransparent
+                            )
                         )
-                    )
-                },
-                onBackPress = {
-                    navController.popBackStack()
-                })
+                    },
+                    onBackPress = {
+                        navController.popBackStack()
+                    })
+            } ?: run {
+                navController.popBackStack()
+            }
+
         }
     }
 
     @Parcelize
     data class Input(val wallet: Wallet) : Parcelable
+
+    override val logScreen: String
+        get() = "ZcashAddressTypeSelectFragment"
 }
 
 @Composable

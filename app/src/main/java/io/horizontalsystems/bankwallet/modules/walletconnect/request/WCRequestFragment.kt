@@ -108,8 +108,7 @@ class WCRequestFragment : BaseComposableBottomSheetFragment() {
             }
         }
     }
-    override val logScreen: String
-        get() = "WCRequestFragment"
+
 }
 
 @Composable

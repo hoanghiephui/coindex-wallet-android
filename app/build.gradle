@@ -282,7 +282,7 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     //Splash screen
-    implementation "androidx.core:core-splashscreen:1.0.1"
+    implementation "androidx.core:core-splashscreen:1.2.0"
 
     //AppWidgets
     implementation 'androidx.glance:glance-appwidget:1.1.1'
@@ -313,7 +313,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:3.0.0'
     implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
     implementation 'com.squareup.retrofit2:converter-scalars:3.0.0'
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:5.2.1"))
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:5.3.0"))
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
     implementation 'com.google.code.gson:gson:2.13.2'
@@ -410,7 +410,7 @@ dependencies {
     fdroidCiImplementation project(':subscriptions-fdroid')
     ciImplementation project(':subscriptions-dev')
 
-    implementation platform('androidx.compose:compose-bom:2025.10.01')
+    implementation platform('androidx.compose:compose-bom:2025.11.00')
     // Integration with activities
     implementation 'androidx.activity:activity-compose:1.11.0'
     // Compose Material Design
@@ -466,11 +466,11 @@ dependencies {
     //implementation 'com.applovin.mediation:bytedance-adapter:7.3.0.3.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
     implementation("com.google.android.gms:play-services-ads-identifier:18.2.0")
-    implementation("com.android.billingclient:billing:8.0.0")
-    implementation("com.android.billingclient:billing-ktx:8.0.0")
+    implementation("com.android.billingclient:billing:8.1.0")
+    implementation("com.android.billingclient:billing-ktx:8.1.0")
     implementation project(":in-app-update")
-    implementation('com.airbnb.android:lottie:6.6.10')
-    implementation('com.airbnb.android:lottie-compose:6.6.10')
+    implementation('com.airbnb.android:lottie:6.7.1')
+    implementation('com.airbnb.android:lottie-compose:6.7.1')
     implementation "com.google.dagger:hilt-android:2.57.2"
     ksp "com.google.dagger:hilt-compiler:2.57.2"
     ksp "androidx.hilt:hilt-compiler:1.3.0"
